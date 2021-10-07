@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockGetter;
@@ -20,19 +21,17 @@ import javax.annotation.Nullable;
 public class RaycastFix {
 
     public static long lastUpd = 0;
-    public static Map<Long, VoxelShape> shapeCache = new Long2ObjectOpenHashMap<>(65536, 0.75f); // reset every tick, usually up to 22000
-
-    // ===copied and modified===
+    public static Map<Long, VoxelShape> shapeCache = new Long2ObjectOpenHashMap<>(65536, 0.75F); // reset every tick, usually up to 22000
 
     public static BlockHitResult fixedRaycast(ClipContext context, BlockGetter world, @Nullable BlockPos ignore) {
         final Vec3 start = context.getFrom();
         final Vec3 end = context.getTo();
         return raycast(context.getFrom(), context.getTo(), context, (pos) -> {
-            //===============================================
-            if (new BlockPos(pos).equals(ignore)) return null;
-            //===============================================
+            if (new BlockPos(pos).equals(ignore)) {
+                return null;
+            }
 
-            BlockState blockState = world.getBlockState(pos); // better without maps
+            BlockState blockState = world.getBlockState(pos);
             FluidState fluidState = world.getFluidState(pos);
 
             VoxelShape voxelShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> blockState.getCollisionShape(world, pos));
@@ -72,9 +71,9 @@ public class RaycastFix {
                 int p = Mth.sign(m);
                 int q = Mth.sign(n);
                 int r = Mth.sign(o);
-                double s = p == 0 ? 1.7976931348623157E308D : (double)p / m;
-                double t = q == 0 ? 1.7976931348623157E308D : (double)q / n;
-                double u = r == 0 ? 1.7976931348623157E308D : (double)r / o;
+                double s = p == 0 ? 1.7976931348623157E308D : (double) p / m;
+                double t = q == 0 ? 1.7976931348623157E308D : (double) q / n;
+                double u = r == 0 ? 1.7976931348623157E308D : (double) r / o;
                 double v = s * (p > 0 ? 1.0D - Mth.frac(g) : Mth.frac(g));
                 double w = t * (q > 0 ? 1.0D - Mth.frac(h) : Mth.frac(h));
                 double x = u * (r > 0 ? 1.0D - Mth.frac(i) : Mth.frac(i));
@@ -102,7 +101,7 @@ public class RaycastFix {
                     }
 
                     object2 = blockHitFactory.apply(mutable.set(j, k, l));
-                } while(object2 == null);
+                } while (object2 == null);
 
                 return object2;
             }

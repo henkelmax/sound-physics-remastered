@@ -1,0 +1,37 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenLocal()
+    }
+}
+
+plugins {
+    id "java"
+    id "org.spongepowered.gradle.vanilla" version "0.2"
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven { url "https://maven.shedaniel.me/" }
+    mavenLocal()
+}
+
+minecraft {
+    version(minecraft_version)
+    runs {
+        server()
+        client()
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'org.spongepowered:mixin:0.8.4'
+
+    implementation("me.shedaniel.cloth:cloth-config:5.0.38"){
+        exclude(group: 'net.fabricmc:fabric-loader')
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+}

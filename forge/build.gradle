@@ -1,0 +1,158 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.maxhenkel.de/repository/public' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenLocal()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+    }
+}
+
+plugins {
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'forge-update'
+apply plugin: 'org.spongepowered.mixin'
+
+archivesBaseName = project.archives_base_name
+version = mod_version
+group = maven_group
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            source sourceSets.main
+            source project(":common").sourceSets.main
+            mods {
+                soundphysics {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file('run/server').canonicalPath
+            property 'forge.logging.console.level', 'debug'
+            arg "--nogui"
+            source sourceSets.main
+            source project(":common").sourceSets.main
+            mods {
+                soundphysics {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    mavenLocal()
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    implementation(project(':common'))
+
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"))
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    implementation 'org.spongepowered:mixin:0.8.4'
+}
+
+mixin {
+    add sourceSets.main, "soundphysics.refmap.json"
+}
+
+processResources {
+    filesMatching("**/*.toml") {
+        expand 'mod_id': mod_id,
+                'mod_version': mod_version,
+                'mod_name': mod_name,
+                'mod_forge_version': mod_forge_version,
+                'minecraft_version': minecraft_version,
+                'cloth_config_version': cloth_config_version
+    }
+    from("${project(':common').projectDir}/src/main/resources")
+}
+
+tasks.withType(JavaCompile) {
+    source(project(':common').sourceSets.main.allSource)
+}
+
+task prepareWorkspace {
+
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(["Specification-Title"     : mod_name,
+                    "Specification-Vendor"    : mod_vendor,
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : mod_name,
+                    "Implementation-Version"  : mod_version,
+                    "Implementation-Vendor"   : mod_vendor,
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    "MixinConnector"          : "com.sonicether.soundphysics.MixinConnector"
+        ])
+    }
+}
+
+curseforge {
+    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
+    project {
+        id = curse_id
+        changelogType = 'markdown'
+        changelog = file("changelog.md")
+        releaseType = curse_release_type
+        addGameVersion curseforge_minecraft_version
+        addGameVersion 'Forge'
+        addGameVersion 'Java 16'
+        mainArtifact(jar) {
+            displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
+        }
+    }
+}
+
+forgeUpdate {
+    def messages = []
+    file("changelog.md").eachLine { String line ->
+        if (line.trim().startsWith('-')) {
+            messages.add(line.replaceFirst('-', '').trim())
+        }
+    }
+
+    serverURL = 'https://update.maxhenkel.de/'
+    apiKey = file("${rootDir}/forge_update_api_key.txt").exists() ? file("${rootDir}/forge_update_api_key.txt").text : ''
+    modID = mod_id
+    gameVersion = minecraft_version
+    modVersion = mod_version
+    updateMessages = messages
+    releaseType = curse_release_type
+    tags = recommended == 'true' ? ['recommended'] : []
+}
+
+jar.finalizedBy('reobfJar')

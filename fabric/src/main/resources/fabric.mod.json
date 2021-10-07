@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "Sound Physics",
+  "description": "Provides realistic sound attenuation, reverberation, and absorption through blocks.",
+  "authors": ["Sonic Ether","vlad2305m", "Max Henkel"],
+  "contact": {
+
+  },
+  "license": "GPL",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.sonicether.soundphysics.FabricSoundPhysicsMod"
+    ],
+    "modmenu": [
+      "com.sonicether.soundphysics.integration.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "soundphysics.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": ">=${fabric_version}",
+    "minecraft": "${minecraft_version}",
+    "java": ">=16",
+    "cloth-config2": ">=${cloth_config_version}"
+  },
+  "suggests": {
+    "modmenu": "*"
+  }
+}

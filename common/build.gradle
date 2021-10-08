@@ -7,14 +7,14 @@ buildscript {
 }
 
 plugins {
-    id "java"
-    id "org.spongepowered.gradle.vanilla" version "0.2"
+    id 'java'
+    id 'org.spongepowered.gradle.vanilla' version '0.2'
 }
 
 repositories {
     mavenCentral()
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-    maven { url "https://maven.shedaniel.me/" }
+    maven { url 'https://maven.shedaniel.me/' }
     mavenLocal()
 }
 
@@ -30,8 +30,8 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.spongepowered:mixin:0.8.4'
 
-    implementation("me.shedaniel.cloth:cloth-config:5.0.38"){
+    implementation("me.shedaniel.cloth:cloth-config:${cloth_config_version}"){
         exclude(group: 'net.fabricmc:fabric-loader')
-        exclude(group: "net.fabricmc.fabric-api")
+        exclude(group: 'net.fabricmc.fabric-api')
     }
 }

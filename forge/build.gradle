@@ -15,6 +15,7 @@ buildscript {
 
 plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -31,6 +32,11 @@ minecraft {
     mappings channel: 'official', version: minecraft_version
 
     runs {
+        all {
+            lazyToken('minecraft_classpath') {
+                configurations.shadow.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
+            }
+        }
         client {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'debug'
@@ -80,6 +86,9 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation 'org.spongepowered:mixin:0.8.4'
+
+    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 }
 
 mixin {
@@ -156,3 +165,13 @@ forgeUpdate {
 }
 
 jar.finalizedBy('reobfJar')
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    classifier ''
+    relocate 'de.maxhenkel.configbuilder', "com.sonicether.${mod_id}.configbuilder"
+}
+
+reobf {
+    shadowJar {}
+}

@@ -26,7 +26,7 @@ description='''Provides realistic sound attenuation, reverberation, and absorpti
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="cloth_config"
-    mandatory=true
+    mandatory=false
     versionRange="[${cloth_config_version},)"
     ordering="AFTER"
     side="BOTH"

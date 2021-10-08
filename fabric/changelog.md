@@ -1,0 +1,5 @@
+- Improve configuration UI
+- Made Cloth Config optional
+- Tweak default config values
+- Fixed unmapped field names in the config
+- Added reflectivity to the config GUI

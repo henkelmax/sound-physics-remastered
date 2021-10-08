@@ -1,9 +1,10 @@
 package com.sonicether.soundphysics.mixin;
 
-import com.sonicether.soundphysics.config.ConfigManager;
-import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.audio.Channel;
 import com.sonicether.soundphysics.SoundPhysics;
+import com.sonicether.soundphysics.SoundPhysicsMod;
+import net.minecraft.world.phys.Vec3;
+import org.lwjgl.openal.AL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,20 +23,25 @@ public class SourceMixin {
     private Vec3 pos;
 
     @Inject(method = "setSelfPosition", at = @At("HEAD"))
-    private void SoundPosStealer(Vec3 poss, CallbackInfo ci) {
+    private void setSelfPosition(Vec3 poss, CallbackInfo ci) {
         this.pos = poss;
     }
 
     @Inject(method = "play", at = @At("HEAD"))
-    private void OnPlaySoundInjector(CallbackInfo ci) {
+    private void play(CallbackInfo ci) {
         SoundPhysics.onPlaySound(pos.x, pos.y, pos.z, source);
-        SoundPhysics.logALError("onplayinjector");
+        SoundPhysics.logALError("Sound play injector");
     }
 
     @ModifyArg(method = "linearAttenuation", at = @At(value = "INVOKE", target = "org/lwjgl/openal/AL10.alSourcef(IIF)V", ordinal = 0, remap = false), index = 2)
-    private float AttenuationHijack(int pointer2, int param_id, float attenuation) {
-        if (param_id != 4131) throw new IllegalArgumentException("Tried modifying wrong field. No attenuation here.");
-        return attenuation / (float) (ConfigManager.getConfig().General.attenuationFactor);
+    private float linearAttenuation(int pointer2, int param_id, float attenuation) {
+        if (!SoundPhysicsMod.CONFIG.enabled.get()) {
+            return attenuation;
+        }
+        if (param_id != AL11.AL_MAX_DISTANCE) {
+            throw new IllegalArgumentException("Tried modifying wrong field. No attenuation here.");
+        }
+        return attenuation / SoundPhysicsMod.CONFIG.attenuationFactor.get().floatValue();
     }
 
 }

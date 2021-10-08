@@ -13,6 +13,7 @@ plugins {
     id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 apply plugin: 'forge-update'
@@ -48,6 +49,9 @@ dependencies {
     }
 
     modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
+
+    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 }
 
 processResources {
@@ -127,4 +131,15 @@ forgeUpdate {
     updateMessages = messages
     releaseType = curse_release_type
     tags = recommended == 'true' ? ['recommended'] : []
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    classifier 'shadow-dev'
+    relocate 'de.maxhenkel.configbuilder', "com.sonicether.${mod_id}.configbuilder"
+}
+
+remapJar {
+    dependsOn shadowJar
+    input.set shadowJar.archiveFile.get()
 }

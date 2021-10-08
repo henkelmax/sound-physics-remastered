@@ -1,121 +1,84 @@
 package com.sonicether.soundphysics.config;
 
-import com.sonicether.soundphysics.SoundPhysicsMod;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import com.sonicether.soundphysics.SoundPhysics;
+import de.maxhenkel.configbuilder.ConfigBuilder;
+import de.maxhenkel.configbuilder.ConfigEntry;
 
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
-@Config(name = "sound_physics")
-@Config.Gui.Background("minecraft:textures/block/note_block.png")
-public class SoundPhysicsConfig implements ConfigData {
+public class SoundPhysicsConfig {
 
-    @Comment("Enable reverb?")
-    public boolean enabled = true;
+    public final ConfigEntry<Boolean> enabled;
 
-    @Comment("Don't forget to make this true when you change the config")
-    public boolean reloadReverb = true;
+    public final ConfigEntry<Double> attenuationFactor;
+    public final ConfigEntry<Double> reverbGain;
+    public final ConfigEntry<Double> reverbBrightness;
+    public final ConfigEntry<Double> blockAbsorption;
+    public final ConfigEntry<Double> blockReflectivityFactor;
+    public final ConfigEntry<Double> defaultBlockReflectivity;
+    public final ConfigEntry<Double> soundDistanceAllowance;
+    public final ConfigEntry<Double> airAbsorption;
+    public final ConfigEntry<Double> underwaterFilter;
+    public final ConfigEntry<String> soundBlacklistRegex;
 
-    @ConfigEntry.Gui.CollapsibleObject
-    public General General = new General();
+    public final ConfigEntry<Integer> environmentEvaluationRayCount;
+    public final ConfigEntry<Integer> environmentEvaluationRayBounces;
+    public final ConfigEntry<Boolean> simplerSharedAirspaceSimulation;
+    public final ConfigEntry<Double> nonFullBlockOcclusionFactor;
+    public final ConfigEntry<Double> maxOcclusion;
+    public final ConfigEntry<Boolean> strictOcclusion;
+    public final ConfigEntry<Boolean> soundDirectionEvaluation;
+    public final ConfigEntry<Boolean> redirectNonOccludedSounds;
+    public final ConfigEntry<Double> maxDirectionVariance;
 
-    @ConfigEntry.Gui.CollapsibleObject
-    public Performance Performance = new Performance();
+    public final ConfigEntry<Boolean> debugLogging;
+    public final ConfigEntry<Boolean> occlusionLogging;
+    public final ConfigEntry<Boolean> environmentLogging;
+    public final ConfigEntry<Boolean> performanceLogging;
 
-    @ConfigEntry.Gui.CollapsibleObject
-    public Material_Properties Material_Properties = new Material_Properties();
+    public Pattern soundBlacklist;
 
-    @ConfigEntry.Gui.CollapsibleObject
-    public Vlads_Tweaks Vlads_Tweaks = new Vlads_Tweaks();
+    public SoundPhysicsConfig(ConfigBuilder builder) {
+        enabled = builder.booleanEntry("enabled", true);
 
-    @ConfigEntry.Gui.CollapsibleObject
-    public Misc Misc = new Misc();
+        attenuationFactor = builder.doubleEntry("attenuation_factor", 1D, 0.1D, 1D);
+        reverbGain = builder.doubleEntry("reverb_gain", 1D, 0.1D, 2D);
+        reverbBrightness = builder.doubleEntry("reverb_brightness", 1D, 0.1D, 2D);
+        blockAbsorption = builder.doubleEntry("block_absorption", 1D, 0.1D, 4D);
+        blockReflectivityFactor = builder.doubleEntry("block_reflectivity_factor", 1D, 0.1D, 4D);
+        defaultBlockReflectivity = builder.doubleEntry("default_block_reflectivity", 0.5D, 0.1D, 4D);
+        soundDistanceAllowance = builder.doubleEntry("sound_distance_allowance", 4D, 1D, 6D);
+        airAbsorption = builder.doubleEntry("air_absorption", 1D, 0D, 5D);
+        underwaterFilter = builder.doubleEntry("underwater_filter", 1D, 0D, 1D);
+        soundBlacklistRegex = builder.stringEntry("sound_blacklist_regex", ".*rain.*");
 
-    public static class General{
-        @Comment("Affects how quiet a sound gets based on distance. Lower values mean distant sounds are louder. 1.0 is the physically correct value.\n0.2 - 1.0 or just don't set it to 0")
-        public double attenuationFactor = 1.0;
-        @Comment("The global volume of simulated reverberations.\n0.1 - 2.0")
-        public double globalReverbGain = 1.0;
-        @Comment("The brightness of reverberation. Higher values result in more high frequencies in reverberation. Lower values give a more muffled sound to the reverb.\n0.1 - 2.0")
-        public double globalReverbBrightness = 1.0;
-        @Comment("The global amount of sound that will be absorbed when traveling through blocks.\n 0.1 - 4.0")
-        public double globalBlockAbsorption = 1.0;
-        @Comment("The global amount of sound reflectance energy of all blocks. Lower values result in more conservative reverb simulation with shorter reverb tails. Higher values result in more generous reverb simulation with higher reverb tails.\n0.1 - 4.0")
-        public double globalBlockReflectance = 1.0;
-        @Comment("Minecraft won't allow sounds to play past a certain distance. This parameter is a multiplier for how far away a sound source is allowed to be in order for it to actually play. Values too high can cause polyphony issues.\n1.0 - 6.0")
-        public double soundDistanceAllowance = 4.0;
-        @Comment("A value controlling the amount that air absorbs high frequencies with distance. A value of 1.0 is physically correct for air with normal humidity and temperature. Higher values mean air will absorb more high frequencies with distance. 0 disables this effect.\n0.0 - 5.0")
-        public double airAbsorption = 1.0;
-        @Comment("How much sound is filtered when the player is underwater. 0.0 means no filter. 1.0 means fully filtered.\n0.0 - 1.0")
-        public double underwaterFilter = 0.8;
+        environmentEvaluationRayCount = builder.integerEntry("environment_evaluation_ray_count", 32, 8, 64);
+        environmentEvaluationRayBounces = builder.integerEntry("environment_evaluation_ray_bounces", 4, 2, 64);
+        simplerSharedAirspaceSimulation = builder.booleanEntry("simpler_shared_airspace_simulation", false);
+        nonFullBlockOcclusionFactor = builder.doubleEntry("non_full_block_occlusion_factor", 0.25D, 0D, 1D);
+        maxOcclusion = builder.doubleEntry("max_occlusion", 10D, 0D, 100D);
+        strictOcclusion = builder.booleanEntry("strict_occlusion", false);
+        soundDirectionEvaluation = builder.booleanEntry("sound_direction_evaluation", true);
+        redirectNonOccludedSounds = builder.booleanEntry("redirect_non_occluded_sounds", true);
+        maxDirectionVariance = builder.doubleEntry("max_direction_variance", 0.5D, 0D, 1D);
+
+        debugLogging = builder.booleanEntry("debug_logging", false);
+        occlusionLogging = builder.booleanEntry("occlusion_logging", false);
+        environmentLogging = builder.booleanEntry("environment_logging", false);
+        performanceLogging = builder.booleanEntry("performance_logging", false);
     }
 
-    public static class Performance{
-        @Comment("If true, rain sound sources won't trace for sound occlusion. This can help performance during rain.")
-        public boolean skipRainOcclusionTracing = true;
-        @Comment("The number of rays to trace to determine reverberation for each sound source. More rays provides more consistent tracing results but takes more time to calculate. Decrease this value if you experience lag spikes when sounds play.\n8 - 64")
-        public int environmentEvaluationRays = 32;
-        @Comment("The number of rays bounces to trace to determine reverberation for each sound source. More bounces provides more echo and sound ducting but takes more time to calculate. Decrease this value if you experience lag spikes when sounds play. Capped by max distance.\n4 - ?")
-        public int environmentEvaluationRayBounces = 4;
-        @Comment("If true, enables a simpler technique for determining when the player and a sound source share airspace. Might sometimes miss recognizing shared airspace, but it's faster to calculate.")
-        public boolean simplerSharedAirspaceSimulation = false;
-    }
-
-    public static class Material_Properties {
-        @Comment("Sound reflectivity for blocks.\n0.0 - 1.0")
-        @ConfigEntry.Gui.CollapsibleObject
-        public Map<String, Double> reflectivityMap;
-        {
-            Map<String, Double> map =
-                        SoundPhysicsMod.blockSoundGroups.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getValue, (a) -> 0.5));
-            map.put("STONE", 1.0);
-            map.put("WOOD", 0.4);
-            map.put("GRAVEL", 0.3);
-            map.put("GRASS", 0.5);
-            map.put("METAL", 1.0);
-            map.put("GLASS", 0.5);
-            map.put("WOOL", 0.05);
-            map.put("SAND", 0.2);
-            map.put("SNOW", 0.2);
-            map.put("LADDER", 0.4);
-            map.put("ANVIL", 1.0);
-            map.put(".DEFAULT", 0.5); // TODO more
-            reflectivityMap = map;
+    public void reload() {
+        SoundPhysics.LOGGER.info("Reloading config");
+        try {
+            soundBlacklist = Pattern.compile(soundBlacklistRegex.get());
+        } catch (PatternSyntaxException e) {
+            SoundPhysics.LOGGER.warn("Failed to parse sound blacklist regex '{}'", soundBlacklistRegex.get());
+            soundBlacklist = Pattern.compile(soundBlacklistRegex.getDefault());
         }
+        SoundPhysics.LOGGER.info("Reloading reverb parameters");
+        SoundPhysics.syncReverbParams();
     }
-
-    public static class Vlads_Tweaks {
-        @Comment("If sound hits non-full-square side, direct block occlusion is multiplied by this.\n0.0 - ")
-        public double leakyBlocksOcclusionMultiplier = 0.15;
-        @Comment("The amount at which this is capped. 10 * block_occlusion is the theoretical limit")
-        public double maxDirectOcclusionFromBlocks = 10;
-        @Comment("Calculate direct occlusion as the minimum of 9 rays from vertices of a block")
-        public boolean _9RayDirectOcclusion = true;
-        @Comment("Whether to try calculating where the sound should come from based on reflections")
-        public boolean soundDirectionEvaluation = true;
-        @Comment("Maximum direction variance of incoming reflections allowed to redirect sound\n0.0-1.0")
-        public double maxDirVariance = 0.5;
-        @Comment("Skip redirecting non-occluded sounds (the ones you can see directly)")
-        public boolean notOccludedNoRedirect = true;
-    }
-
-    public static class Misc {
-        @Comment("General debug logging")
-        public boolean debugLogging = false;
-        @Comment("Occlusion tracing information logging")
-        public boolean occlusionLogging = false;
-        @Comment("Environment evaluation information logging")
-        public boolean environmentLogging = false;
-        @Comment("Performance information logging")
-        public boolean performanceLogging = false;
-    }
-
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
-    @Comment("Soft presets (preserve some settings). Press reloadReverb to apply. Presets: [DEFAULT, RESET_MATERIALS, SP1_0_SOUND_OCCLUSION]. (LOAD_SUCCESS = null)")
-    public ConfigPresets preset = ConfigPresets.LOAD_SUCCESS;
 
 }

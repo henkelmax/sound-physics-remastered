@@ -1,7 +1,8 @@
 package com.sonicether.soundphysics;
 
 import com.sonicether.soundphysics.config.ReverbParams;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import com.sonicether.soundphysics.debug.RaycastRenderer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,9 +19,7 @@ import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.sonicether.soundphysics.RaycastFix.fixedRaycast;
@@ -183,16 +182,7 @@ public class SoundPhysics {
             return;
         }
 
-        long timeT = mc.level.getGameTime();
-        if (RaycastFix.lastUpd != timeT) {
-            if (timeT % 1024 == 0) {
-                // just in case something gets corrupted
-                RaycastFix.shapeCache = new Long2ObjectOpenHashMap<>(65536, 0.75F);
-            } else {
-                RaycastFix.shapeCache.clear();
-            }
-            RaycastFix.lastUpd = timeT;
-        }
+        RaycastFix.updateCache();
 
         float directCutoff;
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
@@ -271,6 +261,8 @@ public class SoundPhysics {
 
                 float totalRayDistance = (float) rayLength;
 
+                RaycastRenderer.addRay(soundPos, rayHit.getLocation(), ChatFormatting.GREEN);
+
                 // Secondary ray bounces
                 for (int j = 0; j < rayBounces; j++) {
                     Vec3 newRayDir = reflect(lastRayDir, lastHitNormal);
@@ -284,8 +276,13 @@ public class SoundPhysics {
 
                     if (newRayHit.getType() == HitResult.Type.MISS) {
                         totalRayDistance += lastHitPos.distanceTo(playerPos);
+
+                        RaycastRenderer.addRay(newRayStart, newRayEnd, ChatFormatting.RED);
                     } else {
-                        Vec3 newRayHitPos = rayHit.getLocation();
+                        Vec3 newRayHitPos = newRayHit.getLocation();
+
+                        RaycastRenderer.addRay(newRayStart, newRayHitPos, ChatFormatting.BLUE);
+
                         double newRayLength = lastHitPos.distanceTo(newRayHitPos);
 
                         bounceReflectivityRatio[j] += blockReflectivity;

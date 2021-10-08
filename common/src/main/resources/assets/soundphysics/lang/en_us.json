@@ -4,7 +4,7 @@
   "cloth_config.soundphysics.category.general": "General",
   "cloth_config.soundphysics.category.performance": "Performance",
   "cloth_config.soundphysics.category.reflectivity": "Block Reflectivities",
-  "cloth_config.soundphysics.category.logging": "Logging",
+  "cloth_config.soundphysics.category.debug": "Debug",
 
   "cloth_config.soundphysics.enabled": "Enable Sound Physics",
   "cloth_config.soundphysics.attenuation_factor": "Attenuation factor",
@@ -31,5 +31,6 @@
   "cloth_config.soundphysics.debug_logging": "Debug logging",
   "cloth_config.soundphysics.occlusion_logging": "Occlusion logging",
   "cloth_config.soundphysics.environment_logging": "Environment logging",
-  "cloth_config.soundphysics.performance_logging": "Performance logging"
+  "cloth_config.soundphysics.performance_logging": "Performance logging",
+  "cloth_config.soundphysics.render_sound_bounces": "Render sound bounces"
 }

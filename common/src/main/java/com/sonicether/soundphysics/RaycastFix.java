@@ -1,11 +1,7 @@
 package com.sonicether.soundphysics;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockGetter;
@@ -17,16 +13,31 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class RaycastFix {
 
-    public static long lastUpd = 0;
-    public static Map<Long, VoxelShape> shapeCache = new Long2ObjectOpenHashMap<>(65536, 0.75F); // reset every tick, usually up to 22000
+    private static long lastUpdate = 0L;
+    private static final Map<Long, VoxelShape> shapeCache = new Long2ObjectOpenHashMap<>(65536, 0.75F);
+
+    public static void updateCache() {
+        long gameTime = Minecraft.getInstance().level.getGameTime();
+        // Reset shape cache every tick, usually up to 22000
+        if (lastUpdate != gameTime) {
+            if (!shapeCache.isEmpty() && SoundPhysicsMod.CONFIG.performanceLogging.get()) {
+                SoundPhysics.LOGGER.info("Clearing {} raycasting block cache entries", shapeCache.size());
+            }
+            shapeCache.clear();
+            lastUpdate = gameTime;
+        }
+    }
 
     public static BlockHitResult fixedRaycast(ClipContext context, BlockGetter world, @Nullable BlockPos ignore) {
         final Vec3 start = context.getFrom();
         final Vec3 end = context.getTo();
-        return raycast(context.getFrom(), context.getTo(), context, (pos) -> {
+        return traverseBlocks(context.getFrom(), context.getTo(), context, (c, pos) -> {
             if (new BlockPos(pos).equals(ignore)) {
                 return null;
             }
@@ -34,76 +45,78 @@ public class RaycastFix {
             BlockState blockState = world.getBlockState(pos);
             FluidState fluidState = world.getFluidState(pos);
 
-            VoxelShape voxelShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> blockState.getCollisionShape(world, pos));
-            BlockHitResult blockHitResult = world.clipWithInteractionOverride(start, end, pos, voxelShape, blockState);
-            VoxelShape voxelShape2 = shapeCache.computeIfAbsent(pos.asLong(), (key) -> context.getFluidShape(fluidState, world, pos));
-            BlockHitResult blockHitResult2 = voxelShape2.clip(start, end, pos);
+            VoxelShape blockShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> blockState.getCollisionShape(world, pos));
+            BlockHitResult blockHit = world.clipWithInteractionOverride(start, end, pos, blockShape, blockState);
+            VoxelShape fluidShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> context.getFluidShape(fluidState, world, pos));
+            BlockHitResult fluidHit = fluidShape.clip(start, end, pos);
 
-            if (blockHitResult2 == null) return blockHitResult;
-            if (blockHitResult == null) return blockHitResult2;
-            double d = start.distanceToSqr(blockHitResult.getLocation());
-            double e = start.distanceToSqr(blockHitResult2.getLocation());
-            return d <= e ? blockHitResult : blockHitResult2;
-        }, () -> BlockHitResult.miss(context.getTo(), null, new BlockPos(context.getTo())));
+            if (fluidHit == null) {
+                return blockHit;
+            }
+            if (blockHit == null) {
+                return fluidHit;
+            }
+            double blockLocation = start.distanceToSqr(blockHit.getLocation());
+            double fluidLocation = start.distanceToSqr(fluidHit.getLocation());
+            return blockLocation <= fluidLocation ? blockHit : fluidHit;
+        }, c -> BlockHitResult.miss(context.getTo(), null, new BlockPos(context.getTo())));
     }
 
-    static BlockHitResult raycast(Vec3 start, Vec3 end, ClipContext context, Function<BlockPos, BlockHitResult> blockHitFactory, Supplier<BlockHitResult> missFactory) {
+    private static <T, C> T traverseBlocks(Vec3 start, Vec3 end, C context, BiFunction<C, BlockPos, T> blockHitFactory, Function<C, T> missFactory) {
         if (start.equals(end)) {
-            return missFactory.get();
+            return missFactory.apply(context);
         } else {
-            double d = Mth.lerp(-1.0E-7D, end.x, start.x);
-            double e = Mth.lerp(-1.0E-7D, end.y, start.y);
-            double f = Mth.lerp(-1.0E-7D, end.z, start.z);
-            double g = Mth.lerp(-1.0E-7D, start.x, end.x);
-            double h = Mth.lerp(-1.0E-7D, start.y, end.y);
-            double i = Mth.lerp(-1.0E-7D, start.z, end.z);
-            int j = Mth.floor(g);
-            int k = Mth.floor(h);
-            int l = Mth.floor(i);
-            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(j, k, l);
-            BlockHitResult object = blockHitFactory.apply(mutable);
-            if (object != null) {
-                return object;
+            double d0 = Mth.lerp(-1.0E-7D, end.x, start.x);
+            double d1 = Mth.lerp(-1.0E-7D, end.y, start.y);
+            double d2 = Mth.lerp(-1.0E-7D, end.z, start.z);
+            double d3 = Mth.lerp(-1.0E-7D, start.x, end.x);
+            double d4 = Mth.lerp(-1.0E-7D, start.y, end.y);
+            double d5 = Mth.lerp(-1.0E-7D, start.z, end.z);
+            int i = Mth.floor(d3);
+            int j = Mth.floor(d4);
+            int k = Mth.floor(d5);
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(i, j, k);
+            T t = blockHitFactory.apply(context, pos);
+            if (t != null) {
+                return t;
             } else {
-                double m = d - g;
-                double n = e - h;
-                double o = f - i;
-                int p = Mth.sign(m);
-                int q = Mth.sign(n);
-                int r = Mth.sign(o);
-                double s = p == 0 ? 1.7976931348623157E308D : (double) p / m;
-                double t = q == 0 ? 1.7976931348623157E308D : (double) q / n;
-                double u = r == 0 ? 1.7976931348623157E308D : (double) r / o;
-                double v = s * (p > 0 ? 1.0D - Mth.frac(g) : Mth.frac(g));
-                double w = t * (q > 0 ? 1.0D - Mth.frac(h) : Mth.frac(h));
-                double x = u * (r > 0 ? 1.0D - Mth.frac(i) : Mth.frac(i));
+                double d6 = d0 - d3;
+                double d7 = d1 - d4;
+                double d8 = d2 - d5;
+                int l = Mth.sign(d6);
+                int i1 = Mth.sign(d7);
+                int j1 = Mth.sign(d8);
+                double d9 = l == 0 ? Double.MAX_VALUE : (double) l / d6;
+                double d10 = i1 == 0 ? Double.MAX_VALUE : (double) i1 / d7;
+                double d11 = j1 == 0 ? Double.MAX_VALUE : (double) j1 / d8;
+                double d12 = d9 * (l > 0 ? 1.0D - Mth.frac(d3) : Mth.frac(d3));
+                double d13 = d10 * (i1 > 0 ? 1.0D - Mth.frac(d4) : Mth.frac(d4));
+                double d14 = d11 * (j1 > 0 ? 1.0D - Mth.frac(d5) : Mth.frac(d5));
 
-                BlockHitResult object2;
-                do {
-                    if (!(v <= 1.0D) && !(w <= 1.0D) && !(x <= 1.0D)) {
-                        return missFactory.get();
-                    }
-
-                    if (v < w) {
-                        if (v < x) {
-                            j += p;
-                            v += s;
+                while (d12 <= 1.0D || d13 <= 1.0D || d14 <= 1.0D) {
+                    if (d12 < d13) {
+                        if (d12 < d14) {
+                            i += l;
+                            d12 += d9;
                         } else {
-                            l += r;
-                            x += u;
+                            k += j1;
+                            d14 += d11;
                         }
-                    } else if (w < x) {
-                        k += q;
-                        w += t;
+                    } else if (d13 < d14) {
+                        j += i1;
+                        d13 += d10;
                     } else {
-                        l += r;
-                        x += u;
+                        k += j1;
+                        d14 += d11;
                     }
 
-                    object2 = blockHitFactory.apply(mutable.set(j, k, l));
-                } while (object2 == null);
+                    T t1 = blockHitFactory.apply(context, pos.set(i, j, k));
+                    if (t1 != null) {
+                        return t1;
+                    }
+                }
 
-                return object2;
+                return missFactory.apply(context);
             }
         }
     }

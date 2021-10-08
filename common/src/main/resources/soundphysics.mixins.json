@@ -9,7 +9,8 @@
   ],
   "client": [
     "SoundSystemMixin",
-    "SourceMixin"
+    "SourceMixin",
+    "DebugRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

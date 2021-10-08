@@ -66,12 +66,13 @@ public class ClothConfigIntegration {
             reflectivity.addEntry(e);
         }
 
-        ConfigCategory logging = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.logging"));
+        ConfigCategory logging = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.debug"));
 
         logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.debug_logging"), SoundPhysicsMod.CONFIG.debugLogging));
         logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.occlusion_logging"), SoundPhysicsMod.CONFIG.occlusionLogging));
         logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_logging"), SoundPhysicsMod.CONFIG.environmentLogging));
         logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.performance_logging"), SoundPhysicsMod.CONFIG.performanceLogging));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.render_sound_bounces"), SoundPhysicsMod.CONFIG.renderSoundBounces));
 
         return builder.build();
     }

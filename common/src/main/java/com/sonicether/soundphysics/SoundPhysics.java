@@ -261,7 +261,7 @@ public class SoundPhysics {
 
                 float totalRayDistance = (float) rayLength;
 
-                RaycastRenderer.addRay(soundPos, rayHit.getLocation(), ChatFormatting.GREEN);
+                RaycastRenderer.addSoundBounceRay(soundPos, rayHit.getLocation(), ChatFormatting.GREEN.getColor());
 
                 Vec3 firstSharedAirspaceVector = getSharedAirspace(rayHit, playerPos);
                 if (firstSharedAirspaceVector != null) {
@@ -282,11 +282,11 @@ public class SoundPhysics {
                     if (newRayHit.getType() == HitResult.Type.MISS) {
                         totalRayDistance += lastHitPos.distanceTo(playerPos);
 
-                        RaycastRenderer.addRay(newRayStart, newRayEnd, ChatFormatting.RED);
+                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayEnd, ChatFormatting.RED.getColor());
                     } else {
                         Vec3 newRayHitPos = newRayHit.getLocation();
 
-                        RaycastRenderer.addRay(newRayStart, newRayHitPos, ChatFormatting.BLUE);
+                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayHitPos, ChatFormatting.BLUE.getColor());
 
                         double newRayLength = lastHitPos.distanceTo(newRayHitPos);
 
@@ -408,8 +408,10 @@ public class SoundPhysics {
             lastBlockPos = rayHit.getBlockPos();
 
             if (rayHit.getType() == HitResult.Type.MISS) {
+                RaycastRenderer.addOcclusionRay(rayOrigin, playerPos.add(0D, -0.1D, 0D), Mth.hsvToRgb(1F / 3F * (1F - i / 9F), 1F, 1F));
                 break;
             }
+            RaycastRenderer.addOcclusionRay(rayOrigin, rayHit.getLocation(), Mth.hsvToRgb(1F / 3F * (1F - i / 9F), 1F, 1F));
 
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
@@ -460,7 +462,7 @@ public class SoundPhysics {
     private static Vec3 getSharedAirspace(Vec3 soundPosition, Vec3 listenerPosition) {
         BlockHitResult finalRayHit = fixedRaycast(soundPosition, listenerPosition, null);
         if (finalRayHit.getType() == HitResult.Type.MISS) {
-            RaycastRenderer.addRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), ChatFormatting.WHITE);
+            RaycastRenderer.addSoundBounceRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), ChatFormatting.WHITE.getColor());
             return soundPosition.subtract(listenerPosition);
         }
         return null;

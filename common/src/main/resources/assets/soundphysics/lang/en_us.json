@@ -30,5 +30,6 @@
   "cloth_config.soundphysics.occlusion_logging": "Occlusion logging",
   "cloth_config.soundphysics.environment_logging": "Environment logging",
   "cloth_config.soundphysics.performance_logging": "Performance logging",
-  "cloth_config.soundphysics.render_sound_bounces": "Render sound bounces"
+  "cloth_config.soundphysics.render_sound_bounces": "Render sound bounces",
+  "cloth_config.soundphysics.render_occlusion": "Render occlusion"
 }

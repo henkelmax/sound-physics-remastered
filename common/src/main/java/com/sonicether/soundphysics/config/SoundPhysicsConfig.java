@@ -35,6 +35,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Boolean> environmentLogging;
     public final ConfigEntry<Boolean> performanceLogging;
     public final ConfigEntry<Boolean> renderSoundBounces;
+    public final ConfigEntry<Boolean> renderOcclusion;
 
     public Pattern soundBlacklist;
 
@@ -65,6 +66,7 @@ public class SoundPhysicsConfig {
         environmentLogging = builder.booleanEntry("environment_logging", false);
         performanceLogging = builder.booleanEntry("performance_logging", false);
         renderSoundBounces = builder.booleanEntry("render_sound_bounces", false);
+        renderOcclusion = builder.booleanEntry("render_occlusion", false);
     }
 
     public void reload() {

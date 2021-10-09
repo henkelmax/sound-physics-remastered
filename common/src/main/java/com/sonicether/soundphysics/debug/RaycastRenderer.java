@@ -1,9 +1,11 @@
 package com.sonicether.soundphysics.debug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.sonicether.soundphysics.SoundPhysicsMod;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.phys.Vec3;
@@ -21,7 +23,7 @@ public class RaycastRenderer {
         if (mc.level == null) {
             return;
         }
-        if (!SoundPhysicsMod.CONFIG.renderSoundBounces.get()) {
+        if (!(SoundPhysicsMod.CONFIG.renderSoundBounces.get() || SoundPhysicsMod.CONFIG.renderOcclusion.get())) {
             synchronized (rays) {
                 rays.clear();
             }
@@ -36,41 +38,45 @@ public class RaycastRenderer {
         }
     }
 
-    public static void addRay(Vec3 start, Vec3 end, ChatFormatting color) {
-        addRay(start, end, color, 2);
-    }
-
-    public static void addRay(Vec3 start, Vec3 end, ChatFormatting color, int thickness) {
+    public static void addSoundBounceRay(Vec3 start, Vec3 end, int color) {
         if (!SoundPhysicsMod.CONFIG.renderSoundBounces.get()) {
             return;
         }
+        addRay(start, end, color, false);
+    }
+
+    public static void addOcclusionRay(Vec3 start, Vec3 end, int color) {
+        if (!SoundPhysicsMod.CONFIG.renderOcclusion.get()) {
+            return;
+        }
+        addRay(start, end, color, true);
+    }
+
+    public static void addRay(Vec3 start, Vec3 end, int color, boolean throughWalls) {
         synchronized (rays) {
-            rays.add(new Ray(start, end, color, thickness));
+            rays.add(new Ray(start, end, color, throughWalls));
         }
     }
 
     public static void renderRay(Ray ray, double x, double y, double z) {
-        Integer col = ray.color.getColor();
-        if (col == null) {
-            return;
-        }
-        int red = getRed(col);
-        int green = getGreen(col);
-        int blue = getBlue(col);
+        int red = getRed(ray.color);
+        int green = getGreen(ray.color);
+        int blue = getBlue(ray.color);
 
-        RenderSystem.enableDepthTest();
+        if (!ray.throughWalls) {
+            RenderSystem.enableDepthTest();
+        }
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tesselator.getBuilder();
         RenderSystem.disableTexture();
         RenderSystem.disableBlend();
-        RenderSystem.lineWidth(ray.thickness);
-        bufferBuilder.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+        RenderSystem.lineWidth(1F);
 
-        bufferBuilder.vertex(ray.start.x - x, ray.start.y - y, ray.start.z - z).color(red, green, blue, 0).endVertex();
+        bufferBuilder.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+
         bufferBuilder.vertex(ray.start.x - x, ray.start.y - y, ray.start.z - z).color(red, green, blue, 255).endVertex();
         bufferBuilder.vertex(ray.end.x - x, ray.end.y - y, ray.end.z - z).color(red, green, blue, 255).endVertex();
-        bufferBuilder.vertex(ray.end.x - x, ray.end.y - y, ray.end.z - z).color(red, green, blue, 0).endVertex();
 
         tesselator.end();
         RenderSystem.lineWidth(1F);
@@ -93,22 +99,18 @@ public class RaycastRenderer {
     private static class Ray {
         private final Vec3 start;
         private final Vec3 end;
-        private final int thickness;
-        private final ChatFormatting color;
+        private final int color;
         private final long tickCreated;
         private final long lifespan;
+        private final boolean throughWalls;
 
-        public Ray(Vec3 start, Vec3 end, ChatFormatting color, int thickness) {
+        public Ray(Vec3 start, Vec3 end, int color, boolean throughWalls) {
             this.start = start;
             this.end = end;
-            this.thickness = thickness;
             this.color = color;
+            this.throughWalls = throughWalls;
             this.tickCreated = mc.level.getGameTime();
             this.lifespan = 20 * 2;
-        }
-
-        public Ray(Vec3 start, Vec3 end, ChatFormatting color) {
-            this(start, end, color, 2);
         }
     }
 

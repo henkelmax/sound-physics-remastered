@@ -71,6 +71,7 @@ public class ClothConfigIntegration {
         logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_logging"), SoundPhysicsMod.CONFIG.environmentLogging));
         logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.performance_logging"), SoundPhysicsMod.CONFIG.performanceLogging));
         logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.render_sound_bounces"), SoundPhysicsMod.CONFIG.renderSoundBounces));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.render_occlusion"), SoundPhysicsMod.CONFIG.renderOcclusion));
 
         return builder.build();
     }

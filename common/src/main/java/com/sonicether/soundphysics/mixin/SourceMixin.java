@@ -34,11 +34,11 @@ public class SourceMixin {
     }
 
     @ModifyArg(method = "linearAttenuation", at = @At(value = "INVOKE", target = "org/lwjgl/openal/AL10.alSourcef(IIF)V", ordinal = 0, remap = false), index = 2)
-    private float linearAttenuation(int pointer2, int param_id, float attenuation) {
+    private float linearAttenuation(int pointer, int param, float attenuation) {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return attenuation;
         }
-        if (param_id != AL11.AL_MAX_DISTANCE) {
+        if (param != AL11.AL_MAX_DISTANCE) {
             throw new IllegalArgumentException("Tried modifying wrong field. No attenuation here.");
         }
         return attenuation / SoundPhysicsMod.CONFIG.attenuationFactor.get().floatValue();

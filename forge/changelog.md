@@ -10,3 +10,4 @@
 - Fixed direction evaluation not taking sound source and primary bounces into account
 - Added debug sound occlusion rendering
 - Added occlusion variation
+- Fixed sound allowance not working for playsound command

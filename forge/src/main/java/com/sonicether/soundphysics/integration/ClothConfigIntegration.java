@@ -43,13 +43,11 @@ public class ClothConfigIntegration {
 
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_evaluation_ray_count"), SoundPhysicsMod.CONFIG.environmentEvaluationRayCount));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_evaluation_ray_bounces"), SoundPhysicsMod.CONFIG.environmentEvaluationRayBounces));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.simpler_shared_airspace_simulation"), SoundPhysicsMod.CONFIG.simplerSharedAirspaceSimulation));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.non_full_block_occlusion_factor"), SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.max_occlusion"), SoundPhysicsMod.CONFIG.maxOcclusion));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.strict_occlusion"), SoundPhysicsMod.CONFIG.strictOcclusion));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.sound_direction_evaluation"), SoundPhysicsMod.CONFIG.soundDirectionEvaluation));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.redirect_non_occluded_sounds"), SoundPhysicsMod.CONFIG.redirectNonOccludedSounds));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.max_direction_variance"), SoundPhysicsMod.CONFIG.maxDirectionVariance));
 
 
         ConfigCategory reflectivity = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.reflectivity"));

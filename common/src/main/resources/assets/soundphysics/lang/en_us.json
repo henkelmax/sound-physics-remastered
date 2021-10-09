@@ -20,13 +20,11 @@
 
   "cloth_config.soundphysics.environment_evaluation_ray_count": "Environment evaluation ray count",
   "cloth_config.soundphysics.environment_evaluation_ray_bounces": "Environment evaluation ray bounces",
-  "cloth_config.soundphysics.simpler_shared_airspace_simulation": "Simpler shared airspace simulation",
   "cloth_config.soundphysics.non_full_block_occlusion_factor": "Non full block occlusion factor",
   "cloth_config.soundphysics.max_occlusion": "Maximum occlusion",
   "cloth_config.soundphysics.strict_occlusion": "Strict occlusion",
   "cloth_config.soundphysics.sound_direction_evaluation": "Sound direction evaluation",
   "cloth_config.soundphysics.redirect_non_occluded_sounds": "Redirect non occluded sounds",
-  "cloth_config.soundphysics.max_direction_variance": "Maximum direction variance",
 
   "cloth_config.soundphysics.debug_logging": "Debug logging",
   "cloth_config.soundphysics.occlusion_logging": "Occlusion logging",

@@ -21,6 +21,8 @@ public class RaycastFix {
 
     private static long lastUpdate = 0L;
     private static final Map<Long, VoxelShape> shapeCache = new Long2ObjectOpenHashMap<>(65536, 0.75F);
+    private static final Minecraft mc = Minecraft.getInstance();
+
 
     public static void updateCache() {
         long gameTime = Minecraft.getInstance().level.getGameTime();
@@ -34,20 +36,19 @@ public class RaycastFix {
         }
     }
 
-    public static BlockHitResult fixedRaycast(ClipContext context, BlockGetter world, @Nullable BlockPos ignore) {
-        final Vec3 start = context.getFrom();
-        final Vec3 end = context.getTo();
+    public static BlockHitResult fixedRaycast(Vec3 start, Vec3 end, @Nullable BlockPos ignore) {
+        ClipContext context = new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player);
         return traverseBlocks(context.getFrom(), context.getTo(), context, (c, pos) -> {
             if (new BlockPos(pos).equals(ignore)) {
                 return null;
             }
 
-            BlockState blockState = world.getBlockState(pos);
-            FluidState fluidState = world.getFluidState(pos);
+            BlockState blockState = mc.level.getBlockState(pos);
+            FluidState fluidState = mc.level.getFluidState(pos);
 
-            VoxelShape blockShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> blockState.getCollisionShape(world, pos));
-            BlockHitResult blockHit = world.clipWithInteractionOverride(start, end, pos, blockShape, blockState);
-            VoxelShape fluidShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> context.getFluidShape(fluidState, world, pos));
+            VoxelShape blockShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> blockState.getCollisionShape(mc.level, pos));
+            BlockHitResult blockHit = mc.level.clipWithInteractionOverride(start, end, pos, blockShape, blockState);
+            VoxelShape fluidShape = shapeCache.computeIfAbsent(pos.asLong(), (key) -> context.getFluidShape(fluidState, mc.level, pos));
             BlockHitResult fluidHit = fluidShape.clip(start, end, pos);
 
             if (fluidHit == null) {

@@ -7,3 +7,4 @@
 - Added debug sound bounce rendering
 - Make sound actually bounce more than once
 - Improved sound processing performance by a factor of 10
+- Fixed direction evaluation not taking sound source and primary bounces into account

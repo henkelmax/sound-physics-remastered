@@ -31,22 +31,26 @@ public class RaycastRenderer {
         synchronized (rays) {
             rays.removeIf(ray -> (gameTime - ray.tickCreated) > ray.lifespan || (gameTime - ray.tickCreated) < 0L);
             for (Ray ray : rays) {
-                renderRay(ray.start, ray.end, ray.color, x, y, z);
+                renderRay(ray, x, y, z);
             }
         }
     }
 
     public static void addRay(Vec3 start, Vec3 end, ChatFormatting color) {
+        addRay(start, end, color, 2);
+    }
+
+    public static void addRay(Vec3 start, Vec3 end, ChatFormatting color, int thickness) {
         if (!SoundPhysicsMod.CONFIG.renderSoundBounces.get()) {
             return;
         }
         synchronized (rays) {
-            rays.add(new Ray(start, end, color, mc.level.getGameTime()));
+            rays.add(new Ray(start, end, color, thickness));
         }
     }
 
-    public static void renderRay(Vec3 start, Vec3 end, ChatFormatting color, double x, double y, double z) {
-        Integer col = color.getColor();
+    public static void renderRay(Ray ray, double x, double y, double z) {
+        Integer col = ray.color.getColor();
         if (col == null) {
             return;
         }
@@ -60,13 +64,13 @@ public class RaycastRenderer {
         BufferBuilder bufferBuilder = tesselator.getBuilder();
         RenderSystem.disableTexture();
         RenderSystem.disableBlend();
-        RenderSystem.lineWidth(2F);
+        RenderSystem.lineWidth(ray.thickness);
         bufferBuilder.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
-        bufferBuilder.vertex(start.x - x, start.y - y, start.z - z).color(red, green, blue, 0).endVertex();
-        bufferBuilder.vertex(start.x - x, start.y - y, start.z - z).color(red, green, blue, 255).endVertex();
-        bufferBuilder.vertex(end.x - x, end.y - y, end.z - z).color(red, green, blue, 255).endVertex();
-        bufferBuilder.vertex(end.x - x, end.y - y, end.z - z).color(red, green, blue, 0).endVertex();
+        bufferBuilder.vertex(ray.start.x - x, ray.start.y - y, ray.start.z - z).color(red, green, blue, 0).endVertex();
+        bufferBuilder.vertex(ray.start.x - x, ray.start.y - y, ray.start.z - z).color(red, green, blue, 255).endVertex();
+        bufferBuilder.vertex(ray.end.x - x, ray.end.y - y, ray.end.z - z).color(red, green, blue, 255).endVertex();
+        bufferBuilder.vertex(ray.end.x - x, ray.end.y - y, ray.end.z - z).color(red, green, blue, 0).endVertex();
 
         tesselator.end();
         RenderSystem.lineWidth(1F);
@@ -89,16 +93,22 @@ public class RaycastRenderer {
     private static class Ray {
         private final Vec3 start;
         private final Vec3 end;
+        private final int thickness;
         private final ChatFormatting color;
         private final long tickCreated;
         private final long lifespan;
 
-        public Ray(Vec3 start, Vec3 end, ChatFormatting color, long tickCreated) {
+        public Ray(Vec3 start, Vec3 end, ChatFormatting color, int thickness) {
             this.start = start;
             this.end = end;
+            this.thickness = thickness;
             this.color = color;
-            this.tickCreated = tickCreated;
+            this.tickCreated = mc.level.getGameTime();
             this.lifespan = 20 * 2;
+        }
+
+        public Ray(Vec3 start, Vec3 end, ChatFormatting color) {
+            this(start, end, color, 2);
         }
     }
 

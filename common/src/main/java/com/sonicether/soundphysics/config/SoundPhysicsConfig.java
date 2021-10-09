@@ -24,13 +24,11 @@ public class SoundPhysicsConfig {
 
     public final ConfigEntry<Integer> environmentEvaluationRayCount;
     public final ConfigEntry<Integer> environmentEvaluationRayBounces;
-    public final ConfigEntry<Boolean> simplerSharedAirspaceSimulation;
     public final ConfigEntry<Double> nonFullBlockOcclusionFactor;
     public final ConfigEntry<Double> maxOcclusion;
     public final ConfigEntry<Boolean> strictOcclusion;
     public final ConfigEntry<Boolean> soundDirectionEvaluation;
     public final ConfigEntry<Boolean> redirectNonOccludedSounds;
-    public final ConfigEntry<Double> maxDirectionVariance;
 
     public final ConfigEntry<Boolean> debugLogging;
     public final ConfigEntry<Boolean> occlusionLogging;
@@ -56,13 +54,11 @@ public class SoundPhysicsConfig {
 
         environmentEvaluationRayCount = builder.integerEntry("environment_evaluation_ray_count", 32, 8, 64);
         environmentEvaluationRayBounces = builder.integerEntry("environment_evaluation_ray_bounces", 4, 2, 64);
-        simplerSharedAirspaceSimulation = builder.booleanEntry("simpler_shared_airspace_simulation", false);
         nonFullBlockOcclusionFactor = builder.doubleEntry("non_full_block_occlusion_factor", 0.25D, 0D, 1D);
         maxOcclusion = builder.doubleEntry("max_occlusion", 10D, 0D, 100D);
         strictOcclusion = builder.booleanEntry("strict_occlusion", false);
         soundDirectionEvaluation = builder.booleanEntry("sound_direction_evaluation", true);
         redirectNonOccludedSounds = builder.booleanEntry("redirect_non_occluded_sounds", true);
-        maxDirectionVariance = builder.doubleEntry("max_direction_variance", 0.5D, 0D, 1D);
 
         debugLogging = builder.booleanEntry("debug_logging", false);
         occlusionLogging = builder.booleanEntry("occlusion_logging", false);

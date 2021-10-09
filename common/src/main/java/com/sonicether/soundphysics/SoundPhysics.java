@@ -1,5 +1,6 @@
 package com.sonicether.soundphysics;
 
+import com.mojang.math.Vector3f;
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
 import net.minecraft.ChatFormatting;
@@ -8,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -19,7 +19,7 @@ import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;
 
-import java.util.*;
+import javax.annotation.Nullable;
 import java.util.regex.Pattern;
 
 import static com.sonicether.soundphysics.RaycastFix.fixedRaycast;
@@ -31,6 +31,8 @@ public class SoundPhysics {
     public static final Logger OCCLUSION_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Occlusion"));
     public static final Logger ENVIRONMENT_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Environment"));
     public static final Logger DEBUG_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Debug"));
+
+    public static final float PHI = 1.618033988F;
 
     private static final Pattern blockPattern = Pattern.compile(".*block..*");
 
@@ -188,8 +190,7 @@ public class SoundPhysics {
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
         //Direct sound occlusion
-        Vec3 playerPos = mc.player.position();
-        playerPos = new Vec3(playerPos.x, playerPos.y + mc.player.getEyeHeight(mc.player.getPose()), playerPos.z);
+        Vec3 playerPos = mc.player.getEyePosition(); //TODO Use actual camera location
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
@@ -220,24 +221,23 @@ public class SoundPhysics {
         }
 
         // Shoot rays around sound
-
         float maxDistance = 256F;
 
         int numRays = SoundPhysicsMod.CONFIG.environmentEvaluationRayCount.get();
         int rayBounces = SoundPhysicsMod.CONFIG.environmentEvaluationRayBounces.get();
 
-        List<Map.Entry<Vec3, Double>> directions = new Vector<>(10, 10);
-        boolean doDirEval = SoundPhysicsMod.CONFIG.soundDirectionEvaluation.get() && (occlusionAccumulation > 0 || !SoundPhysicsMod.CONFIG.redirectNonOccludedSounds.get());
+        ReflectedAudio audioDirection = new ReflectedAudio(occlusionAccumulation);
 
         float[] bounceReflectivityRatio = new float[rayBounces];
 
-        float sharedAirspace = 0F;
-
         float rcpTotalRays = 1F / (numRays * rayBounces);
-        float rcpPrimaryRays = 1F / (numRays);
 
-        float phi = 1.618033988F;
-        float gAngle = phi * (float) Math.PI * 2F;
+        float gAngle = PHI * (float) Math.PI * 2F;
+
+        Vec3 directSharedAirspaceVector = getSharedAirspace(soundPos, playerPos);
+        if (directSharedAirspaceVector != null) {
+            audioDirection.addDirectAirspace(directSharedAirspaceVector);
+        }
 
         for (int i = 0; i < numRays; i++) {
             float fiN = (float) i / numRays;
@@ -248,7 +248,7 @@ public class SoundPhysics {
 
             Vec3 rayEnd = new Vec3(soundPos.x + rayDir.x * maxDistance, soundPos.y + rayDir.y * maxDistance, soundPos.z + rayDir.z * maxDistance);
 
-            BlockHitResult rayHit = fixedRaycast(new ClipContext(soundPos, rayEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player), mc.level, soundBlockPos);
+            BlockHitResult rayHit = fixedRaycast(soundPos, rayEnd, soundBlockPos);
 
             if (rayHit.getType() == HitResult.Type.BLOCK) {
                 double rayLength = soundPos.distanceTo(rayHit.getLocation());
@@ -263,13 +263,18 @@ public class SoundPhysics {
 
                 RaycastRenderer.addRay(soundPos, rayHit.getLocation(), ChatFormatting.GREEN);
 
+                Vec3 firstSharedAirspaceVector = getSharedAirspace(rayHit, playerPos);
+                if (firstSharedAirspaceVector != null) {
+                    audioDirection.addSharedAirspace(firstSharedAirspaceVector, totalRayDistance);
+                }
+
                 // Secondary ray bounces
                 for (int j = 0; j < rayBounces; j++) {
                     Vec3 newRayDir = reflect(lastRayDir, lastHitNormal);
                     Vec3 newRayStart = lastHitPos;
                     Vec3 newRayEnd = new Vec3(newRayStart.x + newRayDir.x * maxDistance, newRayStart.y + newRayDir.y * maxDistance, newRayStart.z + newRayDir.z * maxDistance);
 
-                    BlockHitResult newRayHit = fixedRaycast(new ClipContext(newRayStart, newRayEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player), mc.level, lastHitBlock);
+                    BlockHitResult newRayHit = fixedRaycast(newRayStart, newRayEnd, lastHitBlock);
 
                     float blockReflectivity = getBlockReflectivity(lastHitBlock);
                     float energyTowardsPlayer = 0.25F * (blockReflectivity * 0.75F + 0.25F);
@@ -294,18 +299,9 @@ public class SoundPhysics {
                         lastRayDir = newRayDir;
                         lastHitBlock = newRayHit.getBlockPos();
 
-                        // Cast one final ray towards the player. If it's unobstructed, then the sound source and the player share airspace.
-                        if (SoundPhysicsMod.CONFIG.simplerSharedAirspaceSimulation.get() && j == rayBounces - 1 || !SoundPhysicsMod.CONFIG.simplerSharedAirspaceSimulation.get()) {
-                            Vec3 finalRayStart = new Vec3(lastHitPos.x + lastHitNormal.x * 0.001D, lastHitPos.y + lastHitNormal.y * 0.001D, lastHitPos.z + lastHitNormal.z * 0.001D);
-
-                            BlockHitResult finalRayHit = fixedRaycast(new ClipContext(finalRayStart, playerPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player), mc.level, null);
-
-                            if (finalRayHit.getType() == HitResult.Type.MISS) {
-                                if (doDirEval) {
-                                    directions.add(Map.entry(finalRayStart.subtract(playerPos), totalRayDistance + finalRayStart.distanceTo(playerPos)));
-                                }
-                                sharedAirspace += 1F;
-                            }
+                        Vec3 sharedAirspaceVector = getSharedAirspace(newRayHit, playerPos);
+                        if (sharedAirspaceVector != null) {
+                            audioDirection.addSharedAirspace(sharedAirspaceVector, totalRayDistance);
                         }
                     }
 
@@ -332,40 +328,14 @@ public class SoundPhysics {
             bounceReflectivityRatio[i] = bounceReflectivityRatio[i] / numRays;
         }
 
-        // Take weighted (on squared distance) average of the directions sound reflection came from
-        dirEval:
-        {
-            if (directions.isEmpty()) {
-                break dirEval;
-            }
-            if (SoundPhysicsMod.CONFIG.performanceLogging.get()) {
-                LOGGER.info("Evaluating direction from {} entries", sharedAirspace);
-            }
-            Vec3 sum = new Vec3(0D, 0D, 0D);
-            double weight = 0D;
-
-            for (Map.Entry<Vec3, Double> direction : directions) {
-                double val = direction.getValue();
-                if (val <= 0D) {
-                    break dirEval;
-                }
-                double w = 1 / (val * val);
-                weight += w;
-                sum = sum.add(direction.getKey().normalize().scale(w));
-            }
-            sum = sum.scale(1 / weight);
-            if (sum.lengthSqr() >= SoundPhysicsMod.CONFIG.maxDirectionVariance.get()) {
-                setSoundPos(sourceID, sum.normalize().scale(soundPos.distanceTo(playerPos)).add(playerPos));
-            }
+        Vec3 newSoundPos = audioDirection.evaluateSoundPosition(soundPos, playerPos);
+        if (newSoundPos != null) {
+            setSoundPos(sourceID, newSoundPos);
         }
 
-        sharedAirspace *= 64F;
+        float sharedAirspace = audioDirection.getSharedAirspaces() * 64F * rcpTotalRays;
 
-        if (SoundPhysicsMod.CONFIG.simplerSharedAirspaceSimulation.get()) {
-            sharedAirspace *= rcpPrimaryRays;
-        } else {
-            sharedAirspace *= rcpTotalRays;
-        }
+        logEnvironment("Shared airspace: {} ({})", sharedAirspace, audioDirection.getSharedAirspaces());
 
         float sharedAirspaceWeight0 = Mth.clamp(sharedAirspace / 20F, 0F, 1F);
         float sharedAirspaceWeight1 = Mth.clamp(sharedAirspace / 15F, 0F, 1F);
@@ -433,7 +403,7 @@ public class SoundPhysics {
         Vec3 rayOrigin = soundPos;
         BlockPos lastBlockPos = new BlockPos(soundPos.x, soundPos.y, soundPos.z);
         for (int i = 0; i < 10; i++) {
-            BlockHitResult rayHit = fixedRaycast(new ClipContext(rayOrigin, playerPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player), mc.level, lastBlockPos);
+            BlockHitResult rayHit = fixedRaycast(rayOrigin, playerPos, lastBlockPos);
 
             lastBlockPos = rayHit.getBlockPos();
 
@@ -463,6 +433,37 @@ public class SoundPhysics {
         }
 
         return occlusionAccumulation;
+    }
+
+    /**
+     * Checks if the hit shares the same airspace with the listener
+     *
+     * @param hit              the hit position
+     * @param listenerPosition the position of the listener
+     * @return the vector between the hit and the listener or null if there is no shared airspace
+     */
+    @Nullable
+    private static Vec3 getSharedAirspace(BlockHitResult hit, Vec3 listenerPosition) {
+        Vector3f hitNormal = hit.getDirection().step();
+        Vec3 rayStart = new Vec3(hit.getLocation().x + hitNormal.x() * 0.001D, hit.getLocation().y + hitNormal.y() * 0.001D, hit.getLocation().z + hitNormal.z() * 0.001D);
+        return getSharedAirspace(rayStart, listenerPosition);
+    }
+
+    /**
+     * Checks if the hit shares the same airspace with the listener
+     *
+     * @param soundPosition    the sound position
+     * @param listenerPosition the position of the listener
+     * @return the vector between the hit and the listener or null if there is no shared airspace
+     */
+    @Nullable
+    private static Vec3 getSharedAirspace(Vec3 soundPosition, Vec3 listenerPosition) {
+        BlockHitResult finalRayHit = fixedRaycast(soundPosition, listenerPosition, null);
+        if (finalRayHit.getType() == HitResult.Type.MISS) {
+            RaycastRenderer.addRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), ChatFormatting.WHITE);
+            return soundPosition.subtract(listenerPosition);
+        }
+        return null;
     }
 
     public static void setDefaultEnvironment(int sourceID) {

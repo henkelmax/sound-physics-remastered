@@ -53,6 +53,9 @@ public class RaycastRenderer {
     }
 
     public static void addRay(Vec3 start, Vec3 end, int color, boolean throughWalls) {
+        if (mc.player.position().distanceTo(start) > 32D && mc.player.position().distanceTo(end) > 32D) {
+            return;
+        }
         synchronized (rays) {
             rays.add(new Ray(start, end, color, throughWalls));
         }

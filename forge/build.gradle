@@ -143,6 +143,9 @@ curseforge {
         addGameVersion 'Java 16'
         mainArtifact(jar) {
             displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
+            relations {
+                optionalDependency 'cloth-config-forge'
+            }
         }
     }
 }

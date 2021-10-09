@@ -39,7 +39,6 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings minecraft.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
@@ -101,8 +100,7 @@ curseforge {
         mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
-                requiredDependency 'fabric-api'
-                requiredDependency 'cloth-config'
+                optionalDependency 'cloth-config'
                 optionalDependency 'modmenu'
             }
         }

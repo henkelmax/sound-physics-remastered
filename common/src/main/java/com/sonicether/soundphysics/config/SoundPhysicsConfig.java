@@ -43,7 +43,7 @@ public class SoundPhysicsConfig {
     public SoundPhysicsConfig(ConfigBuilder builder) {
         enabled = builder.booleanEntry("enabled", true);
 
-        attenuationFactor = builder.doubleEntry("attenuation_factor", 1D, 0.1D, 1D);
+        attenuationFactor = builder.doubleEntry("attenuation_factor", 0.5D, 0.1D, 1D);
         reverbGain = builder.doubleEntry("reverb_gain", 1D, 0.1D, 2D);
         reverbBrightness = builder.doubleEntry("reverb_brightness", 1D, 0.1D, 2D);
         blockAbsorption = builder.doubleEntry("block_absorption", 1D, 0.1D, 4D);

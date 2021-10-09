@@ -1,7 +1,7 @@
 package com.sonicether.soundphysics.integration;
 
 import com.sonicether.soundphysics.SoundPhysicsMod;
-import com.sonicether.soundphysics.config.ReflectivityConfig;
+import com.sonicether.soundphysics.config.SoundTypes;
 import de.maxhenkel.configbuilder.ConfigEntry;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -33,8 +33,8 @@ public class ClothConfigIntegration {
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.reverb_brightness"), SoundPhysicsMod.CONFIG.reverbBrightness));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.block_absorption"), SoundPhysicsMod.CONFIG.blockAbsorption));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.occlusion_variation"), SoundPhysicsMod.CONFIG.occlusionVariation));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.block_reflectivity_factor"), SoundPhysicsMod.CONFIG.blockReflectivityFactor));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.default_block_reflectivity"), SoundPhysicsMod.CONFIG.defaultBlockReflectivity));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.default_block_occlusion_factor"), SoundPhysicsMod.CONFIG.defaultBlockOcclusionFactor));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.sound_distance_allowance"), SoundPhysicsMod.CONFIG.soundDistanceAllowance));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.air_absorption"), SoundPhysicsMod.CONFIG.airAbsorption));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.underwater_filter"), SoundPhysicsMod.CONFIG.underwaterFilter));
@@ -45,6 +45,7 @@ public class ClothConfigIntegration {
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_evaluation_ray_count"), SoundPhysicsMod.CONFIG.environmentEvaluationRayCount));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_evaluation_ray_bounces"), SoundPhysicsMod.CONFIG.environmentEvaluationRayBounces));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.non_full_block_occlusion_factor"), SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.max_occlusion_rays"), SoundPhysicsMod.CONFIG.maxOcclusionRays));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.max_occlusion"), SoundPhysicsMod.CONFIG.maxOcclusion));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.strict_occlusion"), SoundPhysicsMod.CONFIG.strictOcclusion));
         performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.sound_direction_evaluation"), SoundPhysicsMod.CONFIG.soundDirectionEvaluation));
@@ -53,16 +54,30 @@ public class ClothConfigIntegration {
 
         ConfigCategory reflectivity = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.reflectivity"));
 
-        Map<SoundType, Double> defaultMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
+        Map<SoundType, Double> defaultReflectivityMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
 
         for (Map.Entry<SoundType, Double> entry : SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivities().entrySet()) {
             DoubleListEntry e = entryBuilder
-                    .startDoubleField(ReflectivityConfig.getNameComponent(entry.getKey()), entry.getValue())
+                    .startDoubleField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
                     .setMin(0.01F)
                     .setMax(10F)
-                    .setDefaultValue(defaultMap.getOrDefault(entry.getKey(), SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get()))
+                    .setDefaultValue(defaultReflectivityMap.getOrDefault(entry.getKey(), SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get()))
                     .setSaveConsumer(value -> SoundPhysicsMod.REFLECTIVITY_CONFIG.setReflectivity(entry.getKey(), value).save()).build();
             reflectivity.addEntry(e);
+        }
+
+        ConfigCategory occlusion = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.occlusion"));
+
+        Map<SoundType, Double> defaultOcclusionMap = SoundPhysicsMod.OCCLUSION_CONFIG.createDefaultMap();
+
+        for (Map.Entry<SoundType, Double> entry : SoundPhysicsMod.OCCLUSION_CONFIG.getOcclusionFactors().entrySet()) {
+            DoubleListEntry e = entryBuilder
+                    .startDoubleField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
+                    .setMin(0F)
+                    .setMax(10F)
+                    .setDefaultValue(defaultOcclusionMap.getOrDefault(entry.getKey(), SoundPhysicsMod.CONFIG.defaultBlockOcclusionFactor.get()))
+                    .setSaveConsumer(value -> SoundPhysicsMod.OCCLUSION_CONFIG.setOcclusionFactor(entry.getKey(), value).save()).build();
+            occlusion.addEntry(e);
         }
 
         ConfigCategory logging = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.debug"));

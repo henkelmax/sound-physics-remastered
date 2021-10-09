@@ -16,8 +16,8 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Double> reverbBrightness;
     public final ConfigEntry<Double> blockAbsorption;
     public final ConfigEntry<Double> occlusionVariation;
-    public final ConfigEntry<Double> blockReflectivityFactor;
     public final ConfigEntry<Double> defaultBlockReflectivity;
+    public final ConfigEntry<Double> defaultBlockOcclusionFactor;
     public final ConfigEntry<Double> soundDistanceAllowance;
     public final ConfigEntry<Double> airAbsorption;
     public final ConfigEntry<Double> underwaterFilter;
@@ -26,6 +26,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Integer> environmentEvaluationRayCount;
     public final ConfigEntry<Integer> environmentEvaluationRayBounces;
     public final ConfigEntry<Double> nonFullBlockOcclusionFactor;
+    public final ConfigEntry<Integer> maxOcclusionRays;
     public final ConfigEntry<Double> maxOcclusion;
     public final ConfigEntry<Boolean> strictOcclusion;
     public final ConfigEntry<Boolean> soundDirectionEvaluation;
@@ -48,8 +49,8 @@ public class SoundPhysicsConfig {
         reverbBrightness = builder.doubleEntry("reverb_brightness", 1D, 0.1D, 2D);
         blockAbsorption = builder.doubleEntry("block_absorption", 1D, 0.1D, 4D);
         occlusionVariation = builder.doubleEntry("occlusion_variation", 0.35D, 0D, 16D);
-        blockReflectivityFactor = builder.doubleEntry("block_reflectivity_factor", 1D, 0.1D, 4D);
         defaultBlockReflectivity = builder.doubleEntry("default_block_reflectivity", 0.5D, 0.1D, 4D);
+        defaultBlockOcclusionFactor = builder.doubleEntry("default_block_occlusion_factor", 1D, 0D, 10D);
         soundDistanceAllowance = builder.doubleEntry("sound_distance_allowance", 4D, 1D, 6D);
         airAbsorption = builder.doubleEntry("air_absorption", 1D, 0D, 5D);
         underwaterFilter = builder.doubleEntry("underwater_filter", 1D, 0D, 1D);
@@ -58,6 +59,7 @@ public class SoundPhysicsConfig {
         environmentEvaluationRayCount = builder.integerEntry("environment_evaluation_ray_count", 32, 8, 64);
         environmentEvaluationRayBounces = builder.integerEntry("environment_evaluation_ray_bounces", 4, 2, 64);
         nonFullBlockOcclusionFactor = builder.doubleEntry("non_full_block_occlusion_factor", 0.25D, 0D, 1D);
+        maxOcclusionRays = builder.integerEntry("max_occlusion_rays", 16, 1, 128);
         maxOcclusion = builder.doubleEntry("max_occlusion", 10D, 0D, 100D);
         strictOcclusion = builder.booleanEntry("strict_occlusion", false);
         soundDirectionEvaluation = builder.booleanEntry("sound_direction_evaluation", true);

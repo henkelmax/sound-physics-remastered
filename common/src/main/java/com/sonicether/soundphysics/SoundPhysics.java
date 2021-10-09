@@ -157,9 +157,8 @@ public class SoundPhysics {
     }
 
     private static float getBlockReflectivity(BlockPos blockPos) {
-        assert mc.level != null;
         BlockState blockState = mc.level.getBlockState(blockPos);
-        return (float) SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivity(blockState.getSoundType()) * SoundPhysicsMod.CONFIG.blockReflectivityFactor.get().floatValue();
+        return (float) SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivity(blockState.getSoundType());
     }
 
     private static Vec3 reflect(Vec3 dir, Vec3 normal) {
@@ -411,21 +410,21 @@ public class SoundPhysics {
         double occlusionAccumulation = 0D;
         Vec3 rayOrigin = soundPos;
         BlockPos lastBlockPos = new BlockPos(soundPos.x, soundPos.y, soundPos.z);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < SoundPhysicsMod.CONFIG.maxOcclusionRays.get(); i++) {
             BlockHitResult rayHit = fixedRaycast(rayOrigin, playerPos, lastBlockPos);
 
             lastBlockPos = rayHit.getBlockPos();
 
             if (rayHit.getType() == HitResult.Type.MISS) {
-                RaycastRenderer.addOcclusionRay(rayOrigin, playerPos.add(0D, -0.1D, 0D), Mth.hsvToRgb(1F / 3F * (1F - i / 9F), 1F, 1F));
+                RaycastRenderer.addOcclusionRay(rayOrigin, playerPos.add(0D, -0.1D, 0D), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / SoundPhysicsMod.CONFIG.maxOcclusion.get().floatValue())), 1F, 1F));
                 break;
             }
-            RaycastRenderer.addOcclusionRay(rayOrigin, rayHit.getLocation(), Mth.hsvToRgb(1F / 3F * (1F - i / 9F), 1F, 1F));
+            RaycastRenderer.addOcclusionRay(rayOrigin, rayHit.getLocation(), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / SoundPhysicsMod.CONFIG.maxOcclusion.get().floatValue())), 1F, 1F));
 
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
             BlockState blockHit = mc.level.getBlockState(blockHitPos);
-            float blockOcclusion = 1F;
+            float blockOcclusion = (float) SoundPhysicsMod.OCCLUSION_CONFIG.getOcclusionFactor(blockHit.getSoundType());
 
             // Regardless to whether we hit from inside or outside
             Vec3 dirVec = rayOrigin.subtract(blockHitPos.getX() + 0.5D, blockHitPos.getY() + 0.5D, blockHitPos.getZ() + 0.5D);

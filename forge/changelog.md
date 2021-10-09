@@ -11,3 +11,4 @@
 - Added debug sound occlusion rendering
 - Added occlusion variation
 - Fixed sound allowance not working for playsound command
+- Added block occlusion factor config

@@ -15,6 +15,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Double> reverbGain;
     public final ConfigEntry<Double> reverbBrightness;
     public final ConfigEntry<Double> blockAbsorption;
+    public final ConfigEntry<Double> occlusionVariation;
     public final ConfigEntry<Double> blockReflectivityFactor;
     public final ConfigEntry<Double> defaultBlockReflectivity;
     public final ConfigEntry<Double> soundDistanceAllowance;
@@ -46,6 +47,7 @@ public class SoundPhysicsConfig {
         reverbGain = builder.doubleEntry("reverb_gain", 1D, 0.1D, 2D);
         reverbBrightness = builder.doubleEntry("reverb_brightness", 1D, 0.1D, 2D);
         blockAbsorption = builder.doubleEntry("block_absorption", 1D, 0.1D, 4D);
+        occlusionVariation = builder.doubleEntry("occlusion_variation", 0.35D, 0D, 16D);
         blockReflectivityFactor = builder.doubleEntry("block_reflectivity_factor", 1D, 0.1D, 4D);
         defaultBlockReflectivity = builder.doubleEntry("default_block_reflectivity", 0.5D, 0.1D, 4D);
         soundDistanceAllowance = builder.doubleEntry("sound_distance_allowance", 4D, 1D, 6D);

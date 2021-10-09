@@ -32,6 +32,7 @@ public class ClothConfigIntegration {
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.reverb_gain"), SoundPhysicsMod.CONFIG.reverbGain));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.reverb_brightness"), SoundPhysicsMod.CONFIG.reverbBrightness));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.block_absorption"), SoundPhysicsMod.CONFIG.blockAbsorption));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.occlusion_variation"), SoundPhysicsMod.CONFIG.occlusionVariation));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.block_reflectivity_factor"), SoundPhysicsMod.CONFIG.blockReflectivityFactor));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.default_block_reflectivity"), SoundPhysicsMod.CONFIG.defaultBlockReflectivity));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.sound_distance_allowance"), SoundPhysicsMod.CONFIG.soundDistanceAllowance));

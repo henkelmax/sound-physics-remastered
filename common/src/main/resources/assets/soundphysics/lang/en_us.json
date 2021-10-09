@@ -11,6 +11,7 @@
   "cloth_config.soundphysics.reverb_gain": "Reverb gain",
   "cloth_config.soundphysics.reverb_brightness": "Reverb brightness",
   "cloth_config.soundphysics.block_absorption": "Block absorption",
+  "cloth_config.soundphysics.occlusion_variation": "Occlusion variation",
   "cloth_config.soundphysics.block_reflectivity_factor": "Block reflectivity factor",
   "cloth_config.soundphysics.default_block_reflectivity": "Default block reflectivity",
   "cloth_config.soundphysics.sound_distance_allowance": "Sound distance allowance",

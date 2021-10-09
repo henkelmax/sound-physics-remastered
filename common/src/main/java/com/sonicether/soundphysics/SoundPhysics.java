@@ -382,19 +382,28 @@ public class SoundPhysics {
     }
 
     private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos) {
-        BlockPos soundBlockPos = new BlockPos(soundPos.x, soundPos.y, soundPos.z);
-        boolean nineRay = !SoundPhysicsMod.CONFIG.strictOcclusion.get() && (lastSoundCategory == SoundSource.BLOCKS || blockPattern.matcher(lastSoundName).matches());
-        int rayCount = nineRay ? 9 : 1;
-        double occlusionAccMin = Double.MAX_VALUE;
-        for (int j = 0; j < rayCount; j++) {
-            Vec3 rayOrigin = soundPos;
-            if (j > 0) {
-                int jj = j - 1;
-                rayOrigin = new Vec3(soundBlockPos.getX() + 0.001D + 0.998D * (jj % 2), soundBlockPos.getY() + 0.001D + 0.998D * ((jj >> 1) % 2), soundBlockPos.getZ() + 0.001D + 0.998D * ((jj >> 2) % 2));
-            }
-
-            occlusionAccMin = Math.min(occlusionAccMin, runOcclusion(rayOrigin, playerPos));
+        if (SoundPhysicsMod.CONFIG.strictOcclusion.get()) {
+            return Math.min(runOcclusion(soundPos, playerPos), SoundPhysicsMod.CONFIG.maxOcclusion.get());
         }
+        boolean isBlock = lastSoundCategory == SoundSource.BLOCKS || blockPattern.matcher(lastSoundName).matches();
+        double variationFactor = SoundPhysicsMod.CONFIG.occlusionVariation.get();
+        if (isBlock) {
+            variationFactor = Math.max(variationFactor, 0.501D);
+        }
+        double occlusionAccMin = Double.MAX_VALUE;
+
+        occlusionAccMin = Math.min(occlusionAccMin, runOcclusion(soundPos, playerPos));
+        if (variationFactor > 0D) {
+            for (int x = -1; x <= 1; x += 2) {
+                for (int y = -1; y <= 1; y += 2) {
+                    for (int z = -1; z <= 1; z += 2) {
+                        Vec3 offset = new Vec3(x, y, z).scale(variationFactor);
+                        occlusionAccMin = Math.min(occlusionAccMin, runOcclusion(soundPos.add(offset), playerPos.add(offset)));
+                    }
+                }
+            }
+        }
+
         return Math.min(occlusionAccMin, SoundPhysicsMod.CONFIG.maxOcclusion.get());
     }
 

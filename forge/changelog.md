@@ -9,3 +9,4 @@
 - Improved sound processing performance by a factor of 10
 - Fixed direction evaluation not taking sound source and primary bounces into account
 - Added debug sound occlusion rendering
+- Added occlusion variation

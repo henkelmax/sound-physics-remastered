@@ -189,7 +189,7 @@ public class SoundPhysics {
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
         //Direct sound occlusion
-        Vec3 playerPos = mc.player.getEyePosition(); //TODO Use actual camera location
+        Vec3 playerPos = mc.gameRenderer.getMainCamera().getPosition();
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 

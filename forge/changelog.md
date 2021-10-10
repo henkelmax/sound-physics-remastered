@@ -12,3 +12,4 @@
 - Added occlusion variation
 - Fixed sound allowance not working for playsound command
 - Added block occlusion factor config
+- Use the camera position as listener position instead of the players actual position

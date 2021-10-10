@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 public abstract class SoundPhysicsMod {
 
-    public static final String MODID = "soundphysics";
+    public static final String MODID = "sound_physics_remastered";
 
     public static SoundPhysicsConfig CONFIG;
     public static ReflectivityConfig REFLECTIVITY_CONFIG;

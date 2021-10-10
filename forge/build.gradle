@@ -93,7 +93,7 @@ dependencies {
 }
 
 mixin {
-    add sourceSets.main, "soundphysics.refmap.json"
+    add sourceSets.main, "sound_physics_remastered.refmap.json"
 }
 
 processResources {
@@ -173,7 +173,7 @@ jar.finalizedBy('reobfJar')
 shadowJar {
     configurations = [project.configurations.shadow]
     classifier ''
-    relocate 'de.maxhenkel.configbuilder', "com.sonicether.${mod_id}.configbuilder"
+    relocate 'de.maxhenkel.configbuilder', "com.sonicether.soundphysics.configbuilder"
 }
 
 reobf {

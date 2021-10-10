@@ -135,7 +135,7 @@ forgeUpdate {
 shadowJar {
     configurations = [project.configurations.shadow]
     classifier 'shadow-dev'
-    relocate 'de.maxhenkel.configbuilder', "com.sonicether.${mod_id}.configbuilder"
+    relocate 'de.maxhenkel.configbuilder', "com.sonicether.soundphysics.configbuilder"
 }
 
 remapJar {

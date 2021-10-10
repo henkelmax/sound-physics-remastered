@@ -10,7 +10,7 @@ authors="Sonic Ether, vlad2305m, Max Henkel"
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
-# updateJSONURL="https://maxhenkel.de/update/xxx.json"
+updateJSONURL="https://maxhenkel.de/update/sound_physics_remastered.json"
 description='''Provides realistic sound attenuation, reverberation, and absorption through blocks.'''
 [[dependencies.${mod_id}]]
     modId="forge"

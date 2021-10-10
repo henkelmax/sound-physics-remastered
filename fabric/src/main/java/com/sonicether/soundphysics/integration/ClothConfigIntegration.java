@@ -21,38 +21,38 @@ public class ClothConfigIntegration {
         ConfigBuilder builder = ConfigBuilder
                 .create()
                 .setParentScreen(parent)
-                .setTitle(new TranslatableComponent("cloth_config.soundphysics.settings"));
+                .setTitle(new TranslatableComponent("cloth_config.sound_physics_remastered.settings"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory general = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.general"));
+        ConfigCategory general = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.general"));
 
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.enabled"), SoundPhysicsMod.CONFIG.enabled));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.attenuation_factor"), SoundPhysicsMod.CONFIG.attenuationFactor));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.reverb_gain"), SoundPhysicsMod.CONFIG.reverbGain));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.reverb_brightness"), SoundPhysicsMod.CONFIG.reverbBrightness));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.block_absorption"), SoundPhysicsMod.CONFIG.blockAbsorption));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.occlusion_variation"), SoundPhysicsMod.CONFIG.occlusionVariation));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.default_block_reflectivity"), SoundPhysicsMod.CONFIG.defaultBlockReflectivity));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.default_block_occlusion_factor"), SoundPhysicsMod.CONFIG.defaultBlockOcclusionFactor));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.sound_distance_allowance"), SoundPhysicsMod.CONFIG.soundDistanceAllowance));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.air_absorption"), SoundPhysicsMod.CONFIG.airAbsorption));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.underwater_filter"), SoundPhysicsMod.CONFIG.underwaterFilter));
-        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.sound_blacklist_regex"), SoundPhysicsMod.CONFIG.soundBlacklistRegex));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.enabled"), SoundPhysicsMod.CONFIG.enabled));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.attenuation_factor"), SoundPhysicsMod.CONFIG.attenuationFactor));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.reverb_gain"), SoundPhysicsMod.CONFIG.reverbGain));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.reverb_brightness"), SoundPhysicsMod.CONFIG.reverbBrightness));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.block_absorption"), SoundPhysicsMod.CONFIG.blockAbsorption));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.occlusion_variation"), SoundPhysicsMod.CONFIG.occlusionVariation));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.default_block_reflectivity"), SoundPhysicsMod.CONFIG.defaultBlockReflectivity));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.default_block_occlusion_factor"), SoundPhysicsMod.CONFIG.defaultBlockOcclusionFactor));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.sound_distance_allowance"), SoundPhysicsMod.CONFIG.soundDistanceAllowance));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.air_absorption"), SoundPhysicsMod.CONFIG.airAbsorption));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.underwater_filter"), SoundPhysicsMod.CONFIG.underwaterFilter));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.sound_blacklist_regex"), SoundPhysicsMod.CONFIG.soundBlacklistRegex));
 
-        ConfigCategory performance = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.performance"));
+        ConfigCategory performance = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.performance"));
 
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_evaluation_ray_count"), SoundPhysicsMod.CONFIG.environmentEvaluationRayCount));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_evaluation_ray_bounces"), SoundPhysicsMod.CONFIG.environmentEvaluationRayBounces));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.non_full_block_occlusion_factor"), SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.max_occlusion_rays"), SoundPhysicsMod.CONFIG.maxOcclusionRays));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.max_occlusion"), SoundPhysicsMod.CONFIG.maxOcclusion));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.strict_occlusion"), SoundPhysicsMod.CONFIG.strictOcclusion));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.sound_direction_evaluation"), SoundPhysicsMod.CONFIG.soundDirectionEvaluation));
-        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.redirect_non_occluded_sounds"), SoundPhysicsMod.CONFIG.redirectNonOccludedSounds));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.environment_evaluation_ray_count"), SoundPhysicsMod.CONFIG.environmentEvaluationRayCount));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.environment_evaluation_ray_bounces"), SoundPhysicsMod.CONFIG.environmentEvaluationRayBounces));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.non_full_block_occlusion_factor"), SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.max_occlusion_rays"), SoundPhysicsMod.CONFIG.maxOcclusionRays));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.max_occlusion"), SoundPhysicsMod.CONFIG.maxOcclusion));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.strict_occlusion"), SoundPhysicsMod.CONFIG.strictOcclusion));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.sound_direction_evaluation"), SoundPhysicsMod.CONFIG.soundDirectionEvaluation));
+        performance.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.redirect_non_occluded_sounds"), SoundPhysicsMod.CONFIG.redirectNonOccludedSounds));
 
 
-        ConfigCategory reflectivity = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.reflectivity"));
+        ConfigCategory reflectivity = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.reflectivity"));
 
         Map<SoundType, Double> defaultReflectivityMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
 
@@ -66,7 +66,7 @@ public class ClothConfigIntegration {
             reflectivity.addEntry(e);
         }
 
-        ConfigCategory occlusion = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.occlusion"));
+        ConfigCategory occlusion = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.occlusion"));
 
         Map<SoundType, Double> defaultOcclusionMap = SoundPhysicsMod.OCCLUSION_CONFIG.createDefaultMap();
 
@@ -80,14 +80,14 @@ public class ClothConfigIntegration {
             occlusion.addEntry(e);
         }
 
-        ConfigCategory logging = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.soundphysics.category.debug"));
+        ConfigCategory logging = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.debug"));
 
-        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.debug_logging"), SoundPhysicsMod.CONFIG.debugLogging));
-        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.occlusion_logging"), SoundPhysicsMod.CONFIG.occlusionLogging));
-        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.environment_logging"), SoundPhysicsMod.CONFIG.environmentLogging));
-        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.performance_logging"), SoundPhysicsMod.CONFIG.performanceLogging));
-        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.render_sound_bounces"), SoundPhysicsMod.CONFIG.renderSoundBounces));
-        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.soundphysics.render_occlusion"), SoundPhysicsMod.CONFIG.renderOcclusion));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.debug_logging"), SoundPhysicsMod.CONFIG.debugLogging));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.occlusion_logging"), SoundPhysicsMod.CONFIG.occlusionLogging));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.environment_logging"), SoundPhysicsMod.CONFIG.environmentLogging));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.performance_logging"), SoundPhysicsMod.CONFIG.performanceLogging));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.render_sound_bounces"), SoundPhysicsMod.CONFIG.renderSoundBounces));
+        logging.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.sound_physics_remastered.render_occlusion"), SoundPhysicsMod.CONFIG.renderOcclusion));
 
         return builder.build();
     }

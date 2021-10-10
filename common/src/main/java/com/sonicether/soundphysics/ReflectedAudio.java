@@ -14,15 +14,17 @@ public class ReflectedAudio {
     @Nullable
     private Map.Entry<Vec3, Double> directDirection;
     private final double occlusion;
+    private final String sound;
     private int sharedAirspaces;
 
-    public ReflectedAudio(double occlusion) {
+    public ReflectedAudio(double occlusion, String sound) {
         this.occlusion = occlusion;
+        this.sound = sound;
         this.airspaceDirections = new LinkedList<>();
     }
 
     public boolean shouldEvaluateDirection() {
-        return SoundPhysicsMod.CONFIG.soundDirectionEvaluation.get() && (occlusion > 0D || !SoundPhysicsMod.CONFIG.redirectNonOccludedSounds.get());
+        return SoundPhysicsMod.CONFIG.soundDirectionEvaluation.get() && (occlusion > 0D || !SoundPhysicsMod.CONFIG.redirectNonOccludedSounds.get()) && !SoundPhysics.isVoicechatSound(sound);
     }
 
     public int getSharedAirspaces() {

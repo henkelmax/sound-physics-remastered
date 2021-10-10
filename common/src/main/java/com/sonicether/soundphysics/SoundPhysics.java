@@ -26,15 +26,16 @@ import static com.sonicether.soundphysics.RaycastFix.fixedRaycast;
 
 public class SoundPhysics {
 
-    public static final String LOG_PREFIX = "Sound Physics - %s";
+    private static final String LOG_PREFIX = "Sound Physics - %s";
     public static final Logger LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "General"));
     public static final Logger OCCLUSION_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Occlusion"));
     public static final Logger ENVIRONMENT_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Environment"));
     public static final Logger DEBUG_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Debug"));
 
-    public static final float PHI = 1.618033988F;
+    private static final float PHI = 1.618033988F;
 
-    private static final Pattern blockPattern = Pattern.compile(".*block..*");
+    private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
+    private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat$");
 
     private static int auxFXSlot0;
     private static int auxFXSlot1;
@@ -142,18 +143,32 @@ public class SoundPhysics {
         lastSoundName = name;
     }
 
+    /**
+     * The old method signature of soundphysics to stay compatible
+     */
     public static void onPlaySound(double posX, double posY, double posZ, int sourceID) {
+        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSoundName);
+    }
+
+    /**
+     * Processes the current sound
+     *
+     * @return The new sound origin or null if it didn't change
+     */
+    @Nullable
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, String sound) {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
-            return;
+            return null;
         }
 
-        logDebug("On play sound - Source ID: {} {}, {}, {} \tSound category: {} \tSound name: {}", sourceID, posX, posY, posZ, lastSoundCategory.toString(), lastSoundName);
+        logDebug("On play sound - Source ID: {} {}, {}, {} \tSound category: {} \tSound name: {}", source, posX, posY, posZ, category.toString(), sound);
 
         long startTime = System.nanoTime();
-        evaluateEnvironment(sourceID, posX, posY, posZ);
+        @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound);
         if (SoundPhysicsMod.CONFIG.performanceLogging.get()) {
-            LOGGER.info("Total calculation time for sound {}: {} milliseconds", lastSoundName, (double) (System.nanoTime() - startTime) / 1_000_000D);
+            LOGGER.info("Total calculation time for sound {}: {} milliseconds", sound, (double) (System.nanoTime() - startTime) / 1_000_000D);
         }
+        return newPos;
     }
 
     private static float getBlockReflectivity(BlockPos blockPos) {
@@ -172,15 +187,16 @@ public class SoundPhysics {
         return new Vec3(x, y, z);
     }
 
-    private static void evaluateEnvironment(int sourceID, double posX, double posY, double posZ) {
-        if (mc.player == null || mc.level == null || posY <= mc.level.getMinBuildHeight() || lastSoundCategory == SoundSource.RECORDS) {
+    @Nullable
+    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound) {
+        if (mc.player == null || mc.level == null || posY <= mc.level.getMinBuildHeight() || category == SoundSource.RECORDS) {
             setDefaultEnvironment(sourceID);
-            return;
+            return null;
         }
 
-        if (SoundPhysicsMod.CONFIG.soundBlacklist.matcher(lastSoundName).matches()) {
+        if (SoundPhysicsMod.CONFIG.soundBlacklist.matcher(sound).matches()) {
             setDefaultEnvironment(sourceID);
-            return;
+            return null;
         }
 
         RaycastFix.updateCache();
@@ -197,7 +213,7 @@ public class SoundPhysics {
 
         logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
 
-        double occlusionAccumulation = calculateOcclusion(soundPos, playerPos);
+        double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 
         directCutoff = (float) Math.exp(-occlusionAccumulation * absorptionCoeff);
         float directGain = (float) Math.pow(directCutoff, 0.1D);
@@ -225,7 +241,7 @@ public class SoundPhysics {
         int numRays = SoundPhysicsMod.CONFIG.environmentEvaluationRayCount.get();
         int rayBounces = SoundPhysicsMod.CONFIG.environmentEvaluationRayBounces.get();
 
-        ReflectedAudio audioDirection = new ReflectedAudio(occlusionAccumulation);
+        ReflectedAudio audioDirection = new ReflectedAudio(occlusionAccumulation, sound);
 
         float[] bounceReflectivityRatio = new float[rayBounces];
 
@@ -327,7 +343,7 @@ public class SoundPhysics {
             bounceReflectivityRatio[i] = bounceReflectivityRatio[i] / numRays;
         }
 
-        Vec3 newSoundPos = audioDirection.evaluateSoundPosition(soundPos, playerPos);
+        @Nullable Vec3 newSoundPos = audioDirection.evaluateSoundPosition(soundPos, playerPos);
         if (newSoundPos != null) {
             setSoundPos(sourceID, newSoundPos);
         }
@@ -378,13 +394,18 @@ public class SoundPhysics {
             sendCutoff3 *= 0.4F;
         }
         setEnvironment(sourceID, sendGain0, sendGain1, sendGain2, sendGain3, sendCutoff0, sendCutoff1, sendCutoff2, sendCutoff3, directCutoff, directGain);
+        return newSoundPos;
     }
 
-    private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos) {
+    static boolean isVoicechatSound(String sound) {
+        return VOICECHAT_PATTERN.matcher(sound).matches();
+    }
+
+    private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, String sound) {
         if (SoundPhysicsMod.CONFIG.strictOcclusion.get()) {
             return Math.min(runOcclusion(soundPos, playerPos), SoundPhysicsMod.CONFIG.maxOcclusion.get());
         }
-        boolean isBlock = lastSoundCategory == SoundSource.BLOCKS || blockPattern.matcher(lastSoundName).matches();
+        boolean isBlock = category == SoundSource.BLOCKS || BLOCK_PATTERN.matcher(sound).matches();
         double variationFactor = SoundPhysicsMod.CONFIG.occlusionVariation.get();
         if (isBlock) {
             variationFactor = Math.max(variationFactor, 0.501D);
@@ -515,7 +536,7 @@ public class SoundPhysics {
     }
 
     private static void setSoundPos(int sourceID, Vec3 pos) {
-        AL11.alSourcefv(sourceID, AL11.AL_POSITION, new float[]{(float) pos.x, (float) pos.y, (float) pos.z});
+        AL11.alSource3f(sourceID, AL11.AL_POSITION, (float) pos.x, (float) pos.y, (float) pos.z);
     }
 
     /*

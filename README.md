@@ -1,12 +1,32 @@
-# Sound-Physics
+# Sound Physics Remastered
 
-**!!! REQUIRES Cloth Config !!!**
+> This is a fork of [Sound Physics Fabric](https://github.com/vlad2305m/Sound-Physics-Fabric) by [vlad2305m](https://github.com/vlad2305m) which is a fork of [Sound Physics](https://github.com/sonicether/Sound-Physics) by [Sonic Ether](https://github.com/sonicether).
 
-A Minecraft mod that provides realistic sound attenuation, reverberation, and absorption through blocks. (By the means of cheap ray tracing)
+A Minecraft mod that provides realistic sound attenuation, reverberation, and absorption through blocks.
 
-Ported to 1.17 fabric by vlad2305m featuring some improvements by daipenjer (I only found one 1.16 fabric fork which is just the example mod, so I believe this one is unique)
+Optimized for the use with [Simple Voice Chat](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat) 2.X.X.
 
-Notice: You will not spot the difference until you turn up the config. Only a very small difference is there initially, and it is hard to spot because it feels very natual.
+### Differences to [Sound Physics Fabric](https://github.com/vlad2305m/Sound-Physics-Fabric)
 
-My favourites: decrease attenuation rolloff to < 0.5; increase global reflectivity to ~1.8
-Feel free to submit your favourites for me to create config presets.
+**Improvements**
+
+- Improved sound processing performance by a factor of 10
+- Optimized for [Simple Voice Chat](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
+- Ported the mod to Forge
+- Improved configuration UI
+- Made Cloth Config optional
+- Tweaked default config values
+- Added reflectivity to the config GUI
+- Added occlusion variation
+- Added block occlusion factor config
+- Added debug sound bounce rendering
+- Added debug sound occlusion rendering
+
+**Bugfixes**
+
+- Fixed sounds not bouncing more than once
+- Fixed sound bouncing using an excessive amount of performance, despite not working at all
+- Fixed direction evaluation not taking sound source and primary bounces into account
+- Fixed sound allowance not working for `/playsound` command
+- Fixed unmapped field names in the reflectivity config
+- Fixed sound processing using player position instead of camera position

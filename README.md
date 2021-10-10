@@ -6,7 +6,9 @@ A Minecraft mod that provides realistic sound attenuation, reverberation, and ab
 
 Optimized for the use with [Simple Voice Chat](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat) 2.X.X.
 
-### Differences to [Sound Physics Fabric](https://github.com/vlad2305m/Sound-Physics-Fabric)
+---
+
+### Changes to the Original Mod
 
 **Improvements**
 

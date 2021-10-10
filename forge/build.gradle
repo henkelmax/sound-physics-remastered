@@ -85,7 +85,7 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"))
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation 'org.spongepowered:mixin:0.8.4'

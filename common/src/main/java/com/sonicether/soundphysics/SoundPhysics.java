@@ -460,7 +460,10 @@ public class SoundPhysics {
             //Accumulate density
             occlusionAccumulation += blockOcclusion;
 
-            logOcclusion("New trace position: {}, {}, {}", rayOrigin.x, rayOrigin.y, rayOrigin.z);
+            if (occlusionAccumulation > SoundPhysicsMod.CONFIG.maxOcclusion.get()) {
+                logOcclusion("Max occlusion reached after {} steps", i + 1);
+                break;
+            }
         }
 
         return occlusionAccumulation;

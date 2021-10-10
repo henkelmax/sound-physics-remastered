@@ -7,7 +7,7 @@ public class MixinConnector implements IMixinConnector {
 
     @Override
     public void connect() {
-        Mixins.addConfiguration("soundphysics.mixins.json");
+        Mixins.addConfiguration("sound_physics_remastered.mixins.json");
     }
 
 }

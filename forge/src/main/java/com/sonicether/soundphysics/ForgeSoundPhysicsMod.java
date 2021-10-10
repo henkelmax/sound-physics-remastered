@@ -3,14 +3,16 @@ package com.sonicether.soundphysics;
 import com.sonicether.soundphysics.config.SoundPhysicsConfig;
 import com.sonicether.soundphysics.integration.ClothConfigIntegration;
 import de.maxhenkel.configbuilder.ConfigBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fmlclient.ConfigGuiHandler;
+
+import java.nio.file.Path;
 
 @Mod(SoundPhysicsMod.MODID)
 public class ForgeSoundPhysicsMod extends SoundPhysicsMod {
@@ -36,7 +38,7 @@ public class ForgeSoundPhysicsMod extends SoundPhysicsMod {
         if (ModList.get().isLoaded("cloth-config2")) {
             try {
                 Class.forName("me.shedaniel.clothconfig2.api.ConfigBuilder");
-                SoundPhysics.LOGGER.warn("Using Cloth Config GUI");
+                SoundPhysics.LOGGER.info("Using Cloth Config GUI");
                 return true;
             } catch (Exception e) {
                 SoundPhysics.LOGGER.warn("Failed to load Cloth Config: {}", e.getMessage());
@@ -48,6 +50,11 @@ public class ForgeSoundPhysicsMod extends SoundPhysicsMod {
 
     @Override
     public SoundPhysicsConfig createConfig() {
-        return ConfigBuilder.build(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(MODID).resolve("soundphysics.properties"), true, SoundPhysicsConfig::new);
+        return ConfigBuilder.build(getConfigFolder().resolve(MODID).resolve("soundphysics.properties"), true, SoundPhysicsConfig::new);
+    }
+
+    @Override
+    public Path getConfigFolder() {
+        return FMLLoader.getGamePath().resolve("config");
     }
 }

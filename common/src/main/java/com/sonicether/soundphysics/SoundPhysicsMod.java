@@ -3,7 +3,8 @@ package com.sonicether.soundphysics;
 import com.sonicether.soundphysics.config.OcclusionConfig;
 import com.sonicether.soundphysics.config.ReflectivityConfig;
 import com.sonicether.soundphysics.config.SoundPhysicsConfig;
-import net.minecraft.client.Minecraft;
+
+import java.nio.file.Path;
 
 public abstract class SoundPhysicsMod {
 
@@ -18,10 +19,12 @@ public abstract class SoundPhysicsMod {
         CONFIG = createConfig();
         CONFIG.reload();
 
-        REFLECTIVITY_CONFIG = new ReflectivityConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(MODID).resolve("reflectivity.properties"));
-        OCCLUSION_CONFIG = new OcclusionConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(MODID).resolve("occlusion.properties"));
+        REFLECTIVITY_CONFIG = new ReflectivityConfig(getConfigFolder().resolve(MODID).resolve("reflectivity.properties"));
+        OCCLUSION_CONFIG = new OcclusionConfig(getConfigFolder().resolve(MODID).resolve("occlusion.properties"));
     }
 
     public abstract SoundPhysicsConfig createConfig();
+
+    public abstract Path getConfigFolder();
 
 }

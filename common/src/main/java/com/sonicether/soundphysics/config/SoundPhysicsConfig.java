@@ -60,7 +60,7 @@ public class SoundPhysicsConfig {
         environmentEvaluationRayBounces = builder.integerEntry("environment_evaluation_ray_bounces", 4, 2, 64);
         nonFullBlockOcclusionFactor = builder.doubleEntry("non_full_block_occlusion_factor", 0.25D, 0D, 1D);
         maxOcclusionRays = builder.integerEntry("max_occlusion_rays", 16, 1, 128);
-        maxOcclusion = builder.doubleEntry("max_occlusion", 10D, 0D, 100D);
+        maxOcclusion = builder.doubleEntry("max_occlusion", 3D, 0D, 100D);
         strictOcclusion = builder.booleanEntry("strict_occlusion", false);
         soundDirectionEvaluation = builder.booleanEntry("sound_direction_evaluation", true);
         redirectNonOccludedSounds = builder.booleanEntry("redirect_non_occluded_sounds", true);

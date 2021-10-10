@@ -35,7 +35,7 @@ public class ForgeSoundPhysicsMod extends SoundPhysicsMod {
     }
 
     private static boolean isClothConfigLoaded() {
-        if (ModList.get().isLoaded("cloth-config2")) {
+        if (ModList.get().isLoaded("cloth_config")) {
             try {
                 Class.forName("me.shedaniel.clothconfig2.api.ConfigBuilder");
                 SoundPhysics.LOGGER.info("Using Cloth Config GUI");

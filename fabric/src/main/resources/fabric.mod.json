@@ -10,6 +10,10 @@
     "Max Henkel"
   ],
   "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered",
+    "issues": "https://github.com/henkelmax/sound-physics-remastered/issues",
+    "sources": "https://github.com/henkelmax/sound-physics-remastered",
+    "email": "info@modrepo.de"
   },
   "license": "GPL",
   "icon": "icon.png",

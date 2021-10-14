@@ -147,6 +147,7 @@ curseforge {
             displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
                 optionalDependency 'cloth-config-forge'
+                optionalDependency 'simple-voice-chat'
             }
         }
     }

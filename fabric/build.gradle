@@ -103,6 +103,7 @@ curseforge {
             relations {
                 optionalDependency 'cloth-config'
                 optionalDependency 'modmenu'
+                optionalDependency 'simple-voice-chat'
             }
         }
         afterEvaluate {

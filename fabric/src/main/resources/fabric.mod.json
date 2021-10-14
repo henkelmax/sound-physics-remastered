@@ -39,6 +39,7 @@
   },
   "suggests": {
     "modmenu": "*",
-    "cloth-config2": ">=${cloth_config_version}"
+    "cloth-config2": ">=${cloth_config_version}",
+    "voicechat": ">=${minecraft_version}-2.0.0"
   }
 }

@@ -6,6 +6,19 @@ A Minecraft mod that provides realistic sound attenuation, reverberation, and ab
 
 Optimized for the use with [Simple Voice Chat](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat) 2.X.X.
 
+
+### Requirements
+This mod does not require any dependencies, but it is recommended to use the following:
+
+**Fabric**
+
+- [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu)
+- [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config)
+
+**Forge**
+
+- [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config-forge)
+
 ---
 
 ### Changes to the Original Mod

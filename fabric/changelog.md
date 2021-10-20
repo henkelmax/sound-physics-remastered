@@ -1,14 +1,1 @@
-- Improve configuration UI
-- Made Cloth Config optional
-- Tweak default config values
-- Fixed unmapped field names in the config
-- Added reflectivity to the config GUI
-- Added debug sound bounce rendering
-- Make sound actually bounce more than once
-- Improved sound processing performance by a factor of 10
-- Fixed direction evaluation not taking sound source and primary bounces into account
-- Added debug sound occlusion rendering
-- Added occlusion variation
-- Fixed sound allowance not working for playsound command
-- Added block occlusion factor config
-- Use the camera position as listener position instead of the players actual position
+- Updated mixin config

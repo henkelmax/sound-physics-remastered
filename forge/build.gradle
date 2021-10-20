@@ -88,14 +88,13 @@ dependencies {
     implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation 'org.spongepowered:mixin:0.8.4'
 
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 }
 
 mixin {
-    add sourceSets.main, "sound_physics_remastered.refmap.json"
+    add sourceSets.main, "${mod_id}.refmap.json"
 }
 
 processResources {
@@ -104,10 +103,13 @@ processResources {
                 'mod_version': mod_version,
                 'mod_name': mod_name,
                 'mod_forge_version': mod_forge_version,
+                'mod_loader_version': mod_loader_version,
                 'minecraft_version': minecraft_version,
                 'cloth_config_version': cloth_config_version
     }
-    from("${project(':common').projectDir}/src/main/resources")
+    from("${project(':common').projectDir}/src/main/resources") {
+        exclude('*.mixins.json')
+    }
 }
 
 tasks.withType(JavaCompile) {

@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8.2",
+  "package": "com.sonicether.soundphysics.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "refmap": "sound_physics_remastered.refmap.json",
+  "mixins": [
+    "EntityMixin",
+    "ServerWorldMixin",
+    "PlaySoundCommandMixin"
+  ],
+  "client": [
+    "SoundSystemMixin",
+    "SourceMixin",
+    "DebugRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

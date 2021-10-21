@@ -60,8 +60,8 @@ processResources {
         expand 'mod_id': mod_id,
                 'mod_version': mod_version,
                 'minecraft_version': minecraft_version,
+                'minecraft_dependency': minecraft_dependency,
                 'loader_version': loader_version,
-                'fabric_version': fabric_version,
                 'cloth_config_version': cloth_config_version
     }
 }

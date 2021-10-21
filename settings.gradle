@@ -7,4 +7,4 @@ pluginManagement {
 }
 
 rootProject.name = 'sound-physics'
-include('common', 'fabric', 'forge')
+include('common', 'fabric'/*, 'forge'*/)

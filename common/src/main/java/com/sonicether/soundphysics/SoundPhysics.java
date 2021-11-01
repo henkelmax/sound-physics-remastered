@@ -189,7 +189,12 @@ public class SoundPhysics {
 
     @Nullable
     private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound) {
-        if (mc.player == null || mc.level == null || posY <= mc.level.getMinBuildHeight() || category == SoundSource.RECORDS) {
+        if (mc.player == null || mc.level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
+            setDefaultEnvironment(sourceID);
+            return null;
+        }
+
+        if (category == SoundSource.RECORDS) {
             setDefaultEnvironment(sourceID);
             return null;
         }

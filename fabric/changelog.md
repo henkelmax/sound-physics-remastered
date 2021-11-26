@@ -1,1 +1,1 @@
-- Fixed mixin apply error
+- Updated to 1.18-rc1

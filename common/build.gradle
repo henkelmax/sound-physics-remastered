@@ -10,12 +10,18 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
-    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+    //TODO remove after snapshots
+    id 'fabric-loom' version '0.10-SNAPSHOT'
+    // id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
 archivesBaseName = archives_base_name
 version = artifact_version
 group = maven_group
+
+//TODO remove after snapshots
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
@@ -23,23 +29,35 @@ repositories {
     maven { url 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     mavenLocal()
+    //TODO remove after snapshots
+    maven { url = 'https://maven.fabricmc.net/' }
 }
 
-minecraft {
+//TODO remove after snapshots
+task prepareWorkspace {
+
+}
+
+/*minecraft {
     version(minecraft_version)
     runs {
         server()
         client()
     }
-}
+}*/
 
 dependencies {
+    //TODO remove after snapshots
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings minecraft.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:0.12.5"
+
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.spongepowered:mixin:0.8.4'
 
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
-    implementation("me.shedaniel.cloth:cloth-config:${cloth_config_version}"){
+    implementation("me.shedaniel.cloth:cloth-config:${cloth_config_version}") {
         exclude(group: 'net.fabricmc:fabric-loader')
         exclude(group: 'net.fabricmc.fabric-api')
     }

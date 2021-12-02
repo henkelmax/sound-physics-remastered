@@ -1,1 +1,1 @@
-- Fixed sounds below Y=0 not being processed
+- Updated to 1.18

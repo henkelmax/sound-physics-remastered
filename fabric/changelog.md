@@ -1,1 +1,1 @@
-- Tweaked config values
+- Updated to 1.18.1

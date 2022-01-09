@@ -36,11 +36,15 @@ public class ReflectedAudio {
     }
 
     public void addSharedAirspace(Vec3 sharedAirspaceVector, double totalRayDistance) {
+        double length = totalRayDistance + sharedAirspaceVector.length();
+        if (length <= 0D || length > 16D / SoundPhysicsMod.CONFIG.attenuationFactor.get()) {
+            return;
+        }
         sharedAirspaces++;
         if (!shouldEvaluateDirection()) {
             return;
         }
-        airspaceDirections.add(Map.entry(sharedAirspaceVector, totalRayDistance + sharedAirspaceVector.length()));
+        airspaceDirections.add(Map.entry(sharedAirspaceVector, length));
     }
 
     /**

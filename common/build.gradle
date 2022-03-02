@@ -10,47 +10,33 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
-    //TODO remove after snapshots
     id 'fabric-loom' version '0.10-SNAPSHOT'
-    // id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
 archivesBaseName = archives_base_name
 version = artifact_version
 group = maven_group
 
-//TODO remove after snapshots
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
+    maven { url = 'https://maven.fabricmc.net/' }
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     mavenLocal()
-    //TODO remove after snapshots
-    maven { url = 'https://maven.fabricmc.net/' }
 }
 
-//TODO remove after snapshots
 task prepareWorkspace {
 
 }
 
-/*minecraft {
-    version(minecraft_version)
-    runs {
-        server()
-        client()
-    }
-}*/
-
 dependencies {
-    //TODO remove after snapshots
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings minecraft.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:0.12.5"
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.spongepowered:mixin:0.8.4'

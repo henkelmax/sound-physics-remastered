@@ -1,1 +1,1 @@
-- Fixed reflected sounds
+- Use Simple Voice Chat Plugin API

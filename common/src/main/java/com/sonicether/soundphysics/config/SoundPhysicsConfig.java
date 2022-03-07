@@ -39,6 +39,8 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Boolean> renderSoundBounces;
     public final ConfigEntry<Boolean> renderOcclusion;
 
+    public final ConfigEntry<Boolean> simpleVoiceChatIntegration;
+
     public Pattern soundBlacklist;
 
     public SoundPhysicsConfig(ConfigBuilder builder) {
@@ -71,6 +73,8 @@ public class SoundPhysicsConfig {
         performanceLogging = builder.booleanEntry("performance_logging", false);
         renderSoundBounces = builder.booleanEntry("render_sound_bounces", false);
         renderOcclusion = builder.booleanEntry("render_occlusion", false);
+
+        simpleVoiceChatIntegration = builder.booleanEntry("simple_voice_chat_integration", true);
     }
 
     public void reload() {

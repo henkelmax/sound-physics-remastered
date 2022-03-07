@@ -26,6 +26,10 @@ archivesBaseName = archives_base_name
 version = mod_version
 group = maven_group
 
+runClient.doFirst {
+    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
+}
+
 repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
@@ -33,6 +37,13 @@ repositories {
     maven { url "https://maven.terraformersmc.com/releases" }
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
     mavenLocal()
 }
 
@@ -44,6 +55,11 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     implementation(project(':common'))
+
+    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+
+    modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${voicechat_version}"
+    modRuntimeOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -62,7 +78,8 @@ processResources {
                 'minecraft_version': minecraft_version,
                 'loader_version': loader_version,
                 'fabric_version': fabric_version,
-                'cloth_config_version': cloth_config_version
+                'cloth_config_version': cloth_config_version,
+                'voicechat_api_version': voicechat_api_version
     }
 }
 

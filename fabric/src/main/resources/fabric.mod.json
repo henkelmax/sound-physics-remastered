@@ -24,6 +24,9 @@
     ],
     "modmenu": [
       "com.sonicether.soundphysics.integration.ModMenuIntegration"
+    ],
+    "voicechat": [
+      "com.sonicether.soundphysics.integration.voicechat.SimpleVoiceChatPlugin"
     ]
   },
   "mixins": [
@@ -35,11 +38,12 @@
     "java": ">=16"
   },
   "breaks": {
-    "soundphysics": "*"
+    "soundphysics": "*",
+    "voicechat": "<${minecraft_version}-${voicechat_api_version}"
   },
   "suggests": {
     "modmenu": "*",
     "cloth-config2": ">=${cloth_config_version}",
-    "voicechat": ">=${minecraft_version}-2.0.0"
+    "voicechat": ">=${minecraft_version}-${voicechat_api_version}"
   }
 }

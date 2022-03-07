@@ -1,1 +1,1 @@
-- Updated to 1.18.2
+- Use Simple Voice Chat Plugin API

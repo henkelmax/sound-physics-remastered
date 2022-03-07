@@ -41,6 +41,8 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.spongepowered:mixin:0.8.4'
 
+    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
     implementation("me.shedaniel.cloth:cloth-config:${cloth_config_version}") {

@@ -25,6 +25,9 @@ public abstract class EntityMixin {
 
     @ModifyArg(method = "playSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"), index = 2)
     private double playSound(@Nullable Player player, double x, double y, double z, SoundEvent sound, SoundSource category, float volume, float pitch) {
+        if (sound == null) {
+            return y;
+        }
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return y;
         }

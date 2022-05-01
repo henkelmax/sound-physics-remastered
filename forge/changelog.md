@@ -1,1 +1,1 @@
-- Use Simple Voice Chat Plugin API
+- Fixed crash when playing sounds that are null

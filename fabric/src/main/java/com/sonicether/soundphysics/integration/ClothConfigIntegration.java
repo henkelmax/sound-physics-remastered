@@ -10,7 +10,6 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.DoubleListEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.SoundType;
 
 import java.util.Map;
@@ -21,123 +20,123 @@ public class ClothConfigIntegration {
         ConfigBuilder builder = ConfigBuilder
                 .create()
                 .setParentScreen(parent)
-                .setTitle(new TranslatableComponent("cloth_config.sound_physics_remastered.settings"));
+                .setTitle(Component.translatable("cloth_config.sound_physics_remastered.settings"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory general = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.general"));
+        ConfigCategory general = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.general"));
 
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.enabled"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.enabled.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.enabled"),
+                Component.translatable("cloth_config.sound_physics_remastered.enabled.description"),
                 SoundPhysicsMod.CONFIG.enabled
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.simple_voice_chat_integration"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.simple_voice_chat_integration.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.simple_voice_chat_integration"),
+                Component.translatable("cloth_config.sound_physics_remastered.simple_voice_chat_integration.description"),
                 SoundPhysicsMod.CONFIG.simpleVoiceChatIntegration
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.attenuation_factor"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.attenuation_factor.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.attenuation_factor"),
+                Component.translatable("cloth_config.sound_physics_remastered.attenuation_factor.description"),
                 SoundPhysicsMod.CONFIG.attenuationFactor
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.reverb_gain"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.reverb_gain.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_gain"),
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_gain.description"),
                 SoundPhysicsMod.CONFIG.reverbGain
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.reverb_brightness"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.reverb_brightness.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_brightness"),
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_brightness.description"),
                 SoundPhysicsMod.CONFIG.reverbBrightness
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.block_absorption"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.block_absorption.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.block_absorption"),
+                Component.translatable("cloth_config.sound_physics_remastered.block_absorption.description"),
                 SoundPhysicsMod.CONFIG.blockAbsorption
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.occlusion_variation"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.occlusion_variation.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.occlusion_variation"),
+                Component.translatable("cloth_config.sound_physics_remastered.occlusion_variation.description"),
                 SoundPhysicsMod.CONFIG.occlusionVariation
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.default_block_reflectivity"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.default_block_reflectivity.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.default_block_reflectivity"),
+                Component.translatable("cloth_config.sound_physics_remastered.default_block_reflectivity.description"),
                 SoundPhysicsMod.CONFIG.defaultBlockReflectivity
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.default_block_occlusion_factor"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.default_block_occlusion_factor.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.default_block_occlusion_factor"),
+                Component.translatable("cloth_config.sound_physics_remastered.default_block_occlusion_factor.description"),
                 SoundPhysicsMod.CONFIG.defaultBlockOcclusionFactor
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.sound_distance_allowance"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.sound_distance_allowance.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.sound_distance_allowance"),
+                Component.translatable("cloth_config.sound_physics_remastered.sound_distance_allowance.description"),
                 SoundPhysicsMod.CONFIG.soundDistanceAllowance
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.air_absorption"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.air_absorption.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.air_absorption"),
+                Component.translatable("cloth_config.sound_physics_remastered.air_absorption.description"),
                 SoundPhysicsMod.CONFIG.airAbsorption
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.underwater_filter"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.underwater_filter.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.underwater_filter"),
+                Component.translatable("cloth_config.sound_physics_remastered.underwater_filter.description"),
                 SoundPhysicsMod.CONFIG.underwaterFilter
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.sound_blacklist_regex"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.sound_blacklist_regex.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.sound_blacklist_regex"),
+                Component.translatable("cloth_config.sound_physics_remastered.sound_blacklist_regex.description"),
                 SoundPhysicsMod.CONFIG.soundBlacklistRegex
         ));
 
-        ConfigCategory performance = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.performance"));
+        ConfigCategory performance = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.performance"));
 
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.environment_evaluation_ray_count"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.environment_evaluation_ray_count.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.environment_evaluation_ray_count"),
+                Component.translatable("cloth_config.sound_physics_remastered.environment_evaluation_ray_count.description"),
                 SoundPhysicsMod.CONFIG.environmentEvaluationRayCount
         ));
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.environment_evaluation_ray_bounces"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.environment_evaluation_ray_bounces.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.environment_evaluation_ray_bounces"),
+                Component.translatable("cloth_config.sound_physics_remastered.environment_evaluation_ray_bounces.description"),
                 SoundPhysicsMod.CONFIG.environmentEvaluationRayBounces
         ));
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.non_full_block_occlusion_factor"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.non_full_block_occlusion_factor.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.non_full_block_occlusion_factor"),
+                Component.translatable("cloth_config.sound_physics_remastered.non_full_block_occlusion_factor.description"),
                 SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor
         ));
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.max_occlusion_rays"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.max_occlusion_rays.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.max_occlusion_rays"),
+                Component.translatable("cloth_config.sound_physics_remastered.max_occlusion_rays.description"),
                 SoundPhysicsMod.CONFIG.maxOcclusionRays
         ));
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.max_occlusion"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.max_occlusion.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.max_occlusion"),
+                Component.translatable("cloth_config.sound_physics_remastered.max_occlusion.description"),
                 SoundPhysicsMod.CONFIG.maxOcclusion
         ));
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.strict_occlusion"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.strict_occlusion.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.strict_occlusion"),
+                Component.translatable("cloth_config.sound_physics_remastered.strict_occlusion.description"),
                 SoundPhysicsMod.CONFIG.strictOcclusion
         ));
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.sound_direction_evaluation"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.sound_direction_evaluation.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.sound_direction_evaluation"),
+                Component.translatable("cloth_config.sound_physics_remastered.sound_direction_evaluation.description"),
                 SoundPhysicsMod.CONFIG.soundDirectionEvaluation
         ));
         performance.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.redirect_non_occluded_sounds"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.redirect_non_occluded_sounds.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.redirect_non_occluded_sounds"),
+                Component.translatable("cloth_config.sound_physics_remastered.redirect_non_occluded_sounds.description"),
                 SoundPhysicsMod.CONFIG.redirectNonOccludedSounds
         ));
 
 
-        ConfigCategory reflectivity = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.reflectivity"));
+        ConfigCategory reflectivity = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.reflectivity"));
 
         Map<SoundType, Double> defaultReflectivityMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
 
@@ -151,7 +150,7 @@ public class ClothConfigIntegration {
             reflectivity.addEntry(e);
         }
 
-        ConfigCategory occlusion = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.occlusion"));
+        ConfigCategory occlusion = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.occlusion"));
 
         Map<SoundType, Double> defaultOcclusionMap = SoundPhysicsMod.OCCLUSION_CONFIG.createDefaultMap();
 
@@ -165,36 +164,36 @@ public class ClothConfigIntegration {
             occlusion.addEntry(e);
         }
 
-        ConfigCategory logging = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.debug"));
+        ConfigCategory logging = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.debug"));
 
         logging.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.debug_logging"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.debug_logging.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.debug_logging"),
+                Component.translatable("cloth_config.sound_physics_remastered.debug_logging.description"),
                 SoundPhysicsMod.CONFIG.debugLogging
         ));
         logging.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.occlusion_logging"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.occlusion_logging.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.occlusion_logging"),
+                Component.translatable("cloth_config.sound_physics_remastered.occlusion_logging.description"),
                 SoundPhysicsMod.CONFIG.occlusionLogging
         ));
         logging.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.environment_logging"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.environment_logging.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.environment_logging"),
+                Component.translatable("cloth_config.sound_physics_remastered.environment_logging.description"),
                 SoundPhysicsMod.CONFIG.environmentLogging
         ));
         logging.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.performance_logging"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.performance_logging.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.performance_logging"),
+                Component.translatable("cloth_config.sound_physics_remastered.performance_logging.description"),
                 SoundPhysicsMod.CONFIG.performanceLogging
         ));
         logging.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.render_sound_bounces"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.render_sound_bounces.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.render_sound_bounces"),
+                Component.translatable("cloth_config.sound_physics_remastered.render_sound_bounces.description"),
                 SoundPhysicsMod.CONFIG.renderSoundBounces
         ));
         logging.addEntry(fromConfigEntry(entryBuilder,
-                new TranslatableComponent("cloth_config.sound_physics_remastered.render_occlusion"),
-                new TranslatableComponent("cloth_config.sound_physics_remastered.render_occlusion.description"),
+                Component.translatable("cloth_config.sound_physics_remastered.render_occlusion"),
+                Component.translatable("cloth_config.sound_physics_remastered.render_occlusion.description"),
                 SoundPhysicsMod.CONFIG.renderOcclusion
         ));
 

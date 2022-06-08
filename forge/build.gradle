@@ -1,23 +1,22 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenLocal()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 
 plugins {
+    id 'net.minecraftforge.gradle' version '5.+'
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -98,7 +97,9 @@ dependencies {
 
     runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
 
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
+    // TODO Fix cloth config version
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:6.2.62")
+    // implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
@@ -124,6 +125,10 @@ processResources {
     from("${project(':common').projectDir}/src/main/resources") {
         exclude('*.mixins.json')
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }
 
 tasks.withType(JavaCompile) {

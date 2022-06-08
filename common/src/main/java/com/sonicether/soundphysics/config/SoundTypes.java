@@ -1,7 +1,6 @@
 package com.sonicether.soundphysics.config;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.block.SoundType;
 
 import javax.annotation.Nullable;
@@ -115,7 +114,7 @@ public class SoundTypes {
     public static Component getNameComponent(SoundType soundType) {
         String name = getName(soundType);
         if (name == null) {
-            return new TextComponent("N/A");
+            return Component.literal("N/A");
         }
         String[] split = name.split("_");
         StringBuilder builder = new StringBuilder();
@@ -125,7 +124,7 @@ public class SoundTypes {
             builder.append(" ");
         }
 
-        return new TextComponent(builder.toString().trim());
+        return Component.literal(builder.toString().trim());
     }
 
 }

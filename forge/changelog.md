@@ -1,1 +1,1 @@
-- Fixed crash when playing sounds that are null
+- Updated to 1.19

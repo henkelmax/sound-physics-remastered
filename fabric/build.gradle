@@ -152,6 +152,7 @@ modrinth {
         optional.project "mOgUt4GM" // ModMenu
         optional.project "9s6osm5g" // ClothConfig
     }
+    syncBodyFrom = file("${rootDir}/README.md").text
 }
 tasks.modrinth.dependsOn(build)
 

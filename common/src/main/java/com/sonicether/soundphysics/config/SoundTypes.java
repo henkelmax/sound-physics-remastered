@@ -88,11 +88,22 @@ public class SoundTypes {
         names.put(SoundType.HANGING_ROOTS, "HANGING_ROOTS");
         names.put(SoundType.AZALEA_LEAVES, "AZALEA_LEAVES");
         names.put(SoundType.SCULK_SENSOR, "SCULK_SENSOR");
+        names.put(SoundType.SCULK_CATALYST, "SCULK_CATALYST");
+        names.put(SoundType.SCULK, "SCULK");
+        names.put(SoundType.SCULK_VEIN, "SCULK_VEIN");
+        names.put(SoundType.SCULK_SHRIEKER, "SCULK_SHRIEKER");
         names.put(SoundType.GLOW_LICHEN, "GLOW_LICHEN");
         names.put(SoundType.DEEPSLATE, "DEEPSLATE");
         names.put(SoundType.DEEPSLATE_BRICKS, "DEEPSLATE_BRICKS");
         names.put(SoundType.DEEPSLATE_TILES, "DEEPSLATE_TILES");
         names.put(SoundType.POLISHED_DEEPSLATE, "POLISHED_DEEPSLATE");
+        names.put(SoundType.FROGLIGHT, "FROGLIGHT");
+        names.put(SoundType.FROGSPAWN, "FROGSPAWN");
+        names.put(SoundType.MANGROVE_ROOTS, "MANGROVE_ROOTS");
+        names.put(SoundType.MUDDY_MANGROVE_ROOTS, "MUDDY_MANGROVE_ROOTS");
+        names.put(SoundType.MUD, "MUD");
+        names.put(SoundType.MUD_BRICKS, "MUD_BRICKS");
+        names.put(SoundType.PACKED_MUD, "PACKED_MUD");
 
         TRANSLATION_MAP = Collections.unmodifiableMap(names);
     }

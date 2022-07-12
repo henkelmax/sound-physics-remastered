@@ -1,1 +1,1 @@
-- Added new 1.19 sound types
+- Updated Forge version

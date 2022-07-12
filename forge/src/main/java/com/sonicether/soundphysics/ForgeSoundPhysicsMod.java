@@ -3,7 +3,7 @@ package com.sonicether.soundphysics;
 import com.sonicether.soundphysics.config.SoundPhysicsConfig;
 import com.sonicether.soundphysics.integration.ClothConfigIntegration;
 import de.maxhenkel.configbuilder.ConfigBuilder;
-import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -28,7 +28,7 @@ public class ForgeSoundPhysicsMod extends SoundPhysicsMod {
 
     public void clientSetup(FMLClientSetupEvent event) {
         if (isClothConfigLoaded()) {
-            ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> new ConfigGuiHandler.ConfigGuiFactory((client, parent) -> {
+            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
                 return ClothConfigIntegration.createConfigScreen(parent);
             }));
         }

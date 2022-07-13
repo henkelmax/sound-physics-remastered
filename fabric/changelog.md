@@ -1,1 +1,1 @@
-- Bumped version
+- Fixed issue where only 1 aux effect was being heard

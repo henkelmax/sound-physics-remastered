@@ -55,7 +55,7 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation(project(':common'))
+    implementation project(path: ':common', configuration: 'namedElements')
 
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
 

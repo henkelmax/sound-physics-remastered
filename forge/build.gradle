@@ -42,27 +42,11 @@ minecraft {
         client {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'debug'
-            source sourceSets.main
-            source project(":common").sourceSets.main
-            mods {
-                soundphysics {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
         }
         server {
             workingDirectory project.file('run/server').canonicalPath
             property 'forge.logging.console.level', 'debug'
             arg "--nogui"
-            source sourceSets.main
-            source project(":common").sourceSets.main
-            mods {
-                soundphysics {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
         }
     }
 }
@@ -98,9 +82,7 @@ dependencies {
 
     runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
 
-    // TODO Fix cloth config version
-    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:6.2.62")
-    // implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 

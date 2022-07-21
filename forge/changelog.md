@@ -1,1 +1,1 @@
-- Added option to hear yourself through voice chat
+- Added reverb to music discs and goat horns

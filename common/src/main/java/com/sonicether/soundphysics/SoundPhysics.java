@@ -198,11 +198,6 @@ public class SoundPhysics {
             return null;
         }
 
-        if (category == SoundSource.RECORDS) {
-            setDefaultEnvironment(sourceID);
-            return null;
-        }
-
         if (SoundPhysicsMod.CONFIG.soundBlacklist.matcher(sound).matches()) {
             setDefaultEnvironment(sourceID);
             return null;

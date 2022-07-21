@@ -6,7 +6,8 @@
   "mixins": [
     "EntityMixin",
     "ServerWorldMixin",
-    "PlaySoundCommandMixin"
+    "PlaySoundCommandMixin",
+    "ChannelAccessor"
   ],
   "client": [
     "SoundSystemMixin",

@@ -1,1 +1,1 @@
-- Fixed issue where only 1 aux effect was being heard
+- Added option to hear yourself through voice chat

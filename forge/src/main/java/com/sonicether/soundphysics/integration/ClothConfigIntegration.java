@@ -37,6 +37,11 @@ public class ClothConfigIntegration {
                 SoundPhysicsMod.CONFIG.simpleVoiceChatIntegration
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
+                Component.translatable("cloth_config.sound_physics_remastered.simple_voice_chat_hear_self"),
+                Component.translatable("cloth_config.sound_physics_remastered.simple_voice_chat_hear_self.description"),
+                SoundPhysicsMod.CONFIG.hearSelf
+        ));
+        general.addEntry(fromConfigEntry(entryBuilder,
                 Component.translatable("cloth_config.sound_physics_remastered.attenuation_factor"),
                 Component.translatable("cloth_config.sound_physics_remastered.attenuation_factor.description"),
                 SoundPhysicsMod.CONFIG.attenuationFactor

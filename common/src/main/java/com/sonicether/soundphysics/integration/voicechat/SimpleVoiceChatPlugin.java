@@ -6,10 +6,9 @@ import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.VoicechatApi;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
-import de.maxhenkel.voicechat.api.events.ClientVoicechatConnectionEvent;
-import de.maxhenkel.voicechat.api.events.CreateOpenALContextEvent;
-import de.maxhenkel.voicechat.api.events.EventRegistration;
-import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
+import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
+import de.maxhenkel.voicechat.api.events.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.openal.EXTThreadLocalContext;
 
@@ -22,6 +21,7 @@ import java.util.UUID;
 public class SimpleVoiceChatPlugin implements VoicechatPlugin {
 
     private final Map<UUID, AudioChannel> audioChannels;
+    private ClientLocationalAudioChannel locationalAudioChannel;
 
     public SimpleVoiceChatPlugin() {
         audioChannels = new HashMap<>();
@@ -43,6 +43,19 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
         registration.registerEvent(CreateOpenALContextEvent.class, this::onCreateALContext);
         registration.registerEvent(OpenALSoundEvent.class, this::onOpenALSound);
         registration.registerEvent(ClientVoicechatConnectionEvent.class, this::onConnection);
+        registration.registerEvent(ClientSoundEvent.class, this::onClientSound);
+    }
+
+    private void onClientSound(ClientSoundEvent event) {
+        if (locationalAudioChannel == null) {
+            return;
+        }
+        if (!SoundPhysicsMod.CONFIG.hearSelf.get()) {
+            return;
+        }
+        Vec3 position = Minecraft.getInstance().player.position();
+        locationalAudioChannel.setLocation(event.getVoicechat().createPosition(position.x, position.y, position.z));
+        locationalAudioChannel.play(event.getRawAudio());
     }
 
     private void onCreateALContext(CreateOpenALContextEvent event) {
@@ -58,6 +71,7 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
     private void onConnection(ClientVoicechatConnectionEvent event) {
         SoundPhysics.DEBUG_LOGGER.info("Clearing unused audio channels");
         audioChannels.values().removeIf(AudioChannel::canBeRemoved);
+        locationalAudioChannel = event.getVoicechat().createLocationalAudioChannel(UUID.randomUUID(), event.getVoicechat().createPosition(0D, 0D, 0D));
     }
 
     private void onOpenALSound(OpenALSoundEvent event) {

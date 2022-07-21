@@ -11,6 +11,8 @@
   "cloth_config.sound_physics_remastered.enabled.description": "Enables/Disables all sound effects.",
   "cloth_config.sound_physics_remastered.simple_voice_chat_integration": "Simple Voice Chat integration",
   "cloth_config.sound_physics_remastered.simple_voice_chat_integration.description": "Enables/Disables sound effects for Simple Voice Chat audio.",
+  "cloth_config.sound_physics_remastered.simple_voice_chat_hear_self": "Hear yourself",
+  "cloth_config.sound_physics_remastered.simple_voice_chat_hear_self.description": "Enables/Disables hearing yourself with Simple Voice Chat.",
   "cloth_config.sound_physics_remastered.attenuation_factor": "Attenuation factor",
   "cloth_config.sound_physics_remastered.attenuation_factor.description": "Affects how quiet a sound gets based on distance. Lower values mean distant sounds are louder. This setting requires you to be in singleplayer or having the mod installed on the server. 1.0 is the physically correct value.",
   "cloth_config.sound_physics_remastered.reverb_gain": "Reverb gain",

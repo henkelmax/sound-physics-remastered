@@ -40,6 +40,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Boolean> renderOcclusion;
 
     public final ConfigEntry<Boolean> simpleVoiceChatIntegration;
+    public final ConfigEntry<Boolean> hearSelf;
 
     public Pattern soundBlacklist;
 
@@ -75,6 +76,7 @@ public class SoundPhysicsConfig {
         renderOcclusion = builder.booleanEntry("render_occlusion", false);
 
         simpleVoiceChatIntegration = builder.booleanEntry("simple_voice_chat_integration", true);
+        hearSelf = builder.booleanEntry("simple_voice_chat_hear_self", false);
     }
 
     public void reload() {

@@ -1,1 +1,1 @@
-- Updated to 1.19.1
+- Fixed errors when having environment_evaluation_ray_bounces set to a lower value than 4

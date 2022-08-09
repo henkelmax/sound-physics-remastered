@@ -1,1 +1,1 @@
-- Added reverb to music discs and goat horns
+- Fixed errors when having environment_evaluation_ray_bounces set to a lower value than 4

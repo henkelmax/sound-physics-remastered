@@ -345,6 +345,7 @@ public class SoundPhysics {
         }
         for (int i = 0; i < bounceReflectivityRatio.length; i++) {
             bounceReflectivityRatio[i] = bounceReflectivityRatio[i] / numRays;
+            logEnvironment("Bounce reflectivity {}: {}", i, bounceReflectivityRatio[i]);
         }
 
         @Nullable Vec3 newSoundPos = audioDirection.evaluateSoundPosition(soundPos, playerPos);
@@ -372,11 +373,13 @@ public class SoundPhysics {
 
         directGain = (float) Math.pow(directCutoff, 0.1D);
 
-        logEnvironment("Bounce reflectivity 0: {}, bounce reflectivity 1: {}, bounce reflectivity 2: {}, bounce reflectivity 3: {}", bounceReflectivityRatio[0], bounceReflectivityRatio[1], bounceReflectivityRatio[2], bounceReflectivityRatio[3]);
-
         sendGain1 *= bounceReflectivityRatio[1];
-        sendGain2 *= (float) Math.pow(bounceReflectivityRatio[2], 3D);
-        sendGain3 *= (float) Math.pow(bounceReflectivityRatio[3], 4D);
+        if (bounceReflectivityRatio.length > 2) {
+            sendGain2 *= (float) Math.pow(bounceReflectivityRatio[2], 3D);
+        }
+        if (bounceReflectivityRatio.length > 3) {
+            sendGain3 *= (float) Math.pow(bounceReflectivityRatio[3], 4D);
+        }
 
         sendGain0 = Mth.clamp(sendGain0, 0F, 1F);
         sendGain1 = Mth.clamp(sendGain1, 0F, 1F);

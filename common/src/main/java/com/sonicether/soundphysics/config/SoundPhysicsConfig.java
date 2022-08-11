@@ -57,7 +57,7 @@ public class SoundPhysicsConfig {
         soundDistanceAllowance = builder.doubleEntry("sound_distance_allowance", 4D, 1D, 6D);
         airAbsorption = builder.doubleEntry("air_absorption", 1D, 0D, 5D);
         underwaterFilter = builder.doubleEntry("underwater_filter", 1D, 0D, 1D);
-        soundBlacklistRegex = builder.stringEntry("sound_blacklist_regex", ".*rain.*");
+        soundBlacklistRegex = builder.stringEntry("sound_blacklist_regex", "(.*rain.*)|(.*lightning_bolt.*)");
 
         environmentEvaluationRayCount = builder.integerEntry("environment_evaluation_ray_count", 32, 8, 64);
         environmentEvaluationRayBounces = builder.integerEntry("environment_evaluation_ray_bounces", 4, 2, 64);

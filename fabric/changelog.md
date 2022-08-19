@@ -1,1 +1,1 @@
-- Added thunder sounds to blacklist regex
+- Added config option to disable updating moving sounds

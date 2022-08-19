@@ -1,6 +1,7 @@
 package com.sonicether.soundphysics.mixin;
 
 import com.sonicether.soundphysics.SoundPhysics;
+import com.sonicether.soundphysics.SoundPhysicsMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -35,6 +36,9 @@ public class SoundSystemMixin {
 
     @Inject(method = "tickNonPaused", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;getSoundSourceVolume(Lnet/minecraft/sounds/SoundSource;)F"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void tickNonPaused(CallbackInfo ci, Iterator<?> iterator, Map.Entry<SoundInstance, ChannelAccess.ChannelHandle> map, ChannelAccess.ChannelHandle channelHandle, SoundInstance sound) {
+        if (!SoundPhysicsMod.CONFIG.updateMovingSounds.get()) {
+            return;
+        }
         if (minecraft.level != null && minecraft.level.getGameTime() % 5 == 0) {
             channelHandle.execute(channel -> {
                 SoundPhysics.processSound(((ChannelAccessor) channel).getSource(), sound.getX(), sound.getY(), sound.getZ(), sound.getSource(), sound.getLocation().getPath());

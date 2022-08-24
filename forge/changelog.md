@@ -1,1 +1,1 @@
-- Added config option to disable updating moving sounds
+- Disabled moving sounds by default due to performance impact

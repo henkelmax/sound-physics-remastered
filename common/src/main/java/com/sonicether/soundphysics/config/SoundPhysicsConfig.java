@@ -68,7 +68,7 @@ public class SoundPhysicsConfig {
         strictOcclusion = builder.booleanEntry("strict_occlusion", false);
         soundDirectionEvaluation = builder.booleanEntry("sound_direction_evaluation", true);
         redirectNonOccludedSounds = builder.booleanEntry("redirect_non_occluded_sounds", true);
-        updateMovingSounds = builder.booleanEntry("update_moving_sounds", true);
+        updateMovingSounds = builder.booleanEntry("update_moving_sounds", false);
 
         debugLogging = builder.booleanEntry("debug_logging", false);
         occlusionLogging = builder.booleanEntry("occlusion_logging", false);

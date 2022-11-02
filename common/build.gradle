@@ -10,7 +10,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.0-SNAPSHOT'
 }
 
 archivesBaseName = archives_base_name

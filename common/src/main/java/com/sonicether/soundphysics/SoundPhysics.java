@@ -151,7 +151,23 @@ public class SoundPhysics {
      * The old method signature of soundphysics to stay compatible
      */
     public static void onPlaySound(double posX, double posY, double posZ, int sourceID) {
-        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSoundName);
+        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSoundName, false);
+    }
+
+    /**
+     * The old method signature of soundphysics to stay compatible
+     */
+    public static void onPlayReverb(double posX, double posY, double posZ, int sourceID) {
+        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSoundName, true);
+    }
+
+    /**
+     * Processes the current sound
+     *
+     * @return The new sound origin or null if it didn't change
+     */
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, String sound) {
+        return processSound(source, posX, posY, posZ, category, sound, false);
     }
 
     /**
@@ -160,7 +176,7 @@ public class SoundPhysics {
      * @return The new sound origin or null if it didn't change
      */
     @Nullable
-    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, String sound) {
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return null;
         }
@@ -168,7 +184,7 @@ public class SoundPhysics {
         logDebug("On play sound - Source ID: {} {}, {}, {} \tSound category: {} \tSound name: {}", source, posX, posY, posZ, category.toString(), sound);
 
         long startTime = System.nanoTime();
-        @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound);
+        @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
         if (SoundPhysicsMod.CONFIG.performanceLogging.get()) {
             LOGGER.info("Total calculation time for sound {}: {} milliseconds", sound, (double) (System.nanoTime() - startTime) / 1_000_000D);
         }
@@ -192,21 +208,21 @@ public class SoundPhysics {
     }
 
     @Nullable
-    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound) {
+    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
         if (mc.player == null || mc.level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
-            setDefaultEnvironment(sourceID);
+            setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }
 
         if (!SoundPhysicsMod.CONFIG.updateMovingSounds.get()) {
             if (category == SoundSource.RECORDS) {
-                setDefaultEnvironment(sourceID);
+                setDefaultEnvironment(sourceID, auxOnly);
                 return null;
             }
         }
 
         if (SoundPhysicsMod.CONFIG.soundBlacklist.matcher(sound).matches()) {
-            setDefaultEnvironment(sourceID);
+            setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }
 
@@ -227,7 +243,7 @@ public class SoundPhysics {
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 
         directCutoff = (float) Math.exp(-occlusionAccumulation * absorptionCoeff);
-        float directGain = (float) Math.pow(directCutoff, 0.1D);
+        float directGain = auxOnly ? 0F : (float) Math.pow(directCutoff, 0.1D);
 
         logOcclusion("Direct cutoff: {}, direct gain: {}", directCutoff, directGain);
 
@@ -378,7 +394,7 @@ public class SoundPhysics {
         float averageSharedAirspace = (sharedAirspaceWeight0 + sharedAirspaceWeight1 + sharedAirspaceWeight2 + sharedAirspaceWeight3) * 0.25F;
         directCutoff = Math.max((float) Math.pow(averageSharedAirspace, 0.5D) * 0.2F, directCutoff);
 
-        directGain = (float) Math.pow(directCutoff, 0.1D);
+        directGain = auxOnly ? 0F : (float) Math.pow(directCutoff, 0.1D);
 
         sendGain1 *= bounceReflectivityRatio[1];
         if (bounceReflectivityRatio.length > 2) {
@@ -515,7 +531,11 @@ public class SoundPhysics {
     }
 
     public static void setDefaultEnvironment(int sourceID) {
-        setEnvironment(sourceID, 0F, 0F, 0F, 0F, 1F, 1F, 1F, 1F, 1F, 1F);
+        setDefaultEnvironment(sourceID, false);
+    }
+
+    public static void setDefaultEnvironment(int sourceID, boolean auxOnly) {
+        setEnvironment(sourceID, 0F, 0F, 0F, 0F, 1F, 1F, 1F, 1F, 1F, auxOnly ? 0F : 1F);
     }
 
     public static void setEnvironment(int sourceID, float sendGain0, float sendGain1, float sendGain2, float sendGain3, float sendCutoff0, float sendCutoff1, float sendCutoff2, float sendCutoff3, float directCutoff, float directGain) {

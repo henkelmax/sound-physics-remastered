@@ -1,1 +1,1 @@
-- Disabled moving sounds by default due to performance impact
+- Improved Simple Voice Chat integration

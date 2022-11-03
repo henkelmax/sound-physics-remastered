@@ -20,6 +20,8 @@ import java.util.UUID;
 @ForgeVoicechatPlugin
 public class SimpleVoiceChatPlugin implements VoicechatPlugin {
 
+    private static final UUID OWN_VOICE_ID = UUID.randomUUID();
+
     private final Map<UUID, AudioChannel> audioChannels;
     private ClientLocationalAudioChannel locationalAudioChannel;
 
@@ -71,7 +73,7 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
     private void onConnection(ClientVoicechatConnectionEvent event) {
         SoundPhysics.DEBUG_LOGGER.info("Clearing unused audio channels");
         audioChannels.values().removeIf(AudioChannel::canBeRemoved);
-        locationalAudioChannel = event.getVoicechat().createLocationalAudioChannel(UUID.randomUUID(), event.getVoicechat().createPosition(0D, 0D, 0D));
+        locationalAudioChannel = event.getVoicechat().createLocationalAudioChannel(OWN_VOICE_ID, event.getVoicechat().createPosition(0D, 0D, 0D));
     }
 
     private void onOpenALSound(OpenALSoundEvent event) {
@@ -86,6 +88,8 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
             return;
         }
 
+        boolean auxOnly = SoundPhysicsMod.CONFIG.hearSelf.get() && OWN_VOICE_ID.equals(channelId);
+
         @Nullable AudioChannel audioChannel = audioChannels.get(channelId);
 
         if (audioChannel == null) {
@@ -93,7 +97,7 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
             audioChannels.put(channelId, audioChannel);
         }
 
-        audioChannel.onSound(event.getSource(), position == null ? null : new Vec3(position.getX(), position.getY(), position.getZ()));
+        audioChannel.onSound(event.getSource(), position == null ? null : new Vec3(position.getX(), position.getY(), position.getZ()), auxOnly);
     }
 
 }

@@ -17,9 +17,9 @@ public class AudioChannel {
         this.channelId = channelId;
     }
 
-    public void onSound(int source, @Nullable Vec3 soundPos) {
+    public void onSound(int source, @Nullable Vec3 soundPos, boolean auxOnly) {
         if (soundPos == null) {
-            SoundPhysics.setDefaultEnvironment(source);
+            SoundPhysics.setDefaultEnvironment(source, auxOnly);
             return;
         }
 
@@ -30,7 +30,11 @@ public class AudioChannel {
         }
 
         SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, "voicechat");
-        SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        if (auxOnly) {
+            SoundPhysics.onPlayReverb(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        } else {
+            SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        }
 
         lastUpdate = time;
         lastPos = soundPos;

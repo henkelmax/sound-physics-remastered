@@ -135,6 +135,11 @@ public class ClothConfigIntegration {
                 new TranslatableComponent("cloth_config.sound_physics_remastered.redirect_non_occluded_sounds.description"),
                 SoundPhysicsMod.CONFIG.redirectNonOccludedSounds
         ));
+        performance.addEntry(fromConfigEntry(entryBuilder,
+                new TranslatableComponent("cloth_config.sound_physics_remastered.update_moving_sounds"),
+                new TranslatableComponent("cloth_config.sound_physics_remastered.update_moving_sounds.description"),
+                SoundPhysicsMod.CONFIG.updateMovingSounds
+        ));
 
 
         ConfigCategory reflectivity = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.sound_physics_remastered.category.reflectivity"));

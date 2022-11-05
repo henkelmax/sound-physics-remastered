@@ -1,1 +1,1 @@
-- Fixed crash when playing sounds that are null
+- Added reverb to music discs 

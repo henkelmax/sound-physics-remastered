@@ -1,1 +1,1 @@
-- Improved Simple Voice Chat integration
+- Updated to 1.19.3

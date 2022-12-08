@@ -1,6 +1,5 @@
 package com.sonicether.soundphysics;
 
-import com.mojang.math.Vector3f;
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
 import net.minecraft.ChatFormatting;
@@ -15,6 +14,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Vector3f;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;

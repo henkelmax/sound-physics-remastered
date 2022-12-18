@@ -39,7 +39,8 @@ public class SoundSystemMixin {
         if (!SoundPhysicsMod.CONFIG.updateMovingSounds.get()) {
             return;
         }
-        if (minecraft.level != null && minecraft.level.getGameTime() % 5 == 0) {
+
+        if (minecraft.level != null && (minecraft.level.getGameTime() + sound.hashCode()) % SoundPhysicsMod.CONFIG.soundUpdateInterval.get() == 0) {
             channelHandle.execute(channel -> {
                 SoundPhysics.processSound(((ChannelAccessor) channel).getSource(), sound.getX(), sound.getY(), sound.getZ(), sound.getSource(), sound.getLocation().getPath());
             });

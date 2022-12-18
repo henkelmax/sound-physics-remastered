@@ -32,6 +32,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Boolean> soundDirectionEvaluation;
     public final ConfigEntry<Boolean> redirectNonOccludedSounds;
     public final ConfigEntry<Boolean> updateMovingSounds;
+    public final ConfigEntry<Integer> soundUpdateInterval;
 
     public final ConfigEntry<Boolean> debugLogging;
     public final ConfigEntry<Boolean> occlusionLogging;
@@ -69,6 +70,7 @@ public class SoundPhysicsConfig {
         soundDirectionEvaluation = builder.booleanEntry("sound_direction_evaluation", true);
         redirectNonOccludedSounds = builder.booleanEntry("redirect_non_occluded_sounds", true);
         updateMovingSounds = builder.booleanEntry("update_moving_sounds", false);
+        soundUpdateInterval = builder.integerEntry("sound_update_interval", 5, 1, Integer.MAX_VALUE);
 
         debugLogging = builder.booleanEntry("debug_logging", false);
         occlusionLogging = builder.booleanEntry("occlusion_logging", false);

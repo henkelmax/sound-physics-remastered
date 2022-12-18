@@ -1,1 +1,1 @@
-- Updated to 1.19.3
+- Improved performance when having 'update_moving_sounds' enabled

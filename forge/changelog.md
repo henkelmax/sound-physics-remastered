@@ -1,1 +1,1 @@
-- Improved Simple Voice Chat integration
+- Improved performance when having 'update_moving_sounds' enabled

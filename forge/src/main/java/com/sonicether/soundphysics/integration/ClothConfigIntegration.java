@@ -144,6 +144,11 @@ public class ClothConfigIntegration {
                 Component.translatable("cloth_config.sound_physics_remastered.update_moving_sounds.description"),
                 SoundPhysicsMod.CONFIG.updateMovingSounds
         ));
+        performance.addEntry(fromConfigEntry(entryBuilder,
+                Component.translatable("cloth_config.sound_physics_remastered.sound_update_interval"),
+                Component.translatable("cloth_config.sound_physics_remastered.sound_update_interval.description"),
+                SoundPhysicsMod.CONFIG.soundUpdateInterval
+        ));
 
 
         ConfigCategory reflectivity = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.reflectivity"));
@@ -211,7 +216,7 @@ public class ClothConfigIntegration {
     }
 
     private static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, Component description, ConfigEntry<T> entry) {
-        if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.DoubleConfigEntry e) {
+        if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, e.get())
                     .setTooltip(description)
@@ -223,7 +228,7 @@ public class ClothConfigIntegration {
                         SoundPhysicsMod.CONFIG.reload();
                     })
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.IntegerConfigEntry e) {
+        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, e.get())
                     .setTooltip(description)
@@ -235,7 +240,7 @@ public class ClothConfigIntegration {
                         SoundPhysicsMod.CONFIG.reload();
                     })
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.BooleanConfigEntry e) {
+        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setTooltip(description)
@@ -245,7 +250,7 @@ public class ClothConfigIntegration {
                         SoundPhysicsMod.CONFIG.reload();
                     })
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.StringConfigEntry e) {
+        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
                     .setTooltip(description)

@@ -1,1 +1,2 @@
-- Improved performance when having 'update_moving_sounds' enabled
+- Updated ConfigBuilder
+- Added comments to the config

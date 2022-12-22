@@ -3,3 +3,4 @@
 - Removed sound blacklist regex
 - Added allowed sounds config
 - Fixed lag when saving in cloth config GUI
+- Fixed sound distance allowance not working with playsound commands

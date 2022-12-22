@@ -6,8 +6,7 @@
   "refmap": "sound_physics_remastered.refmap.json",
   "mixins": [
     "EntityMixin",
-    "ServerWorldMixin",
-    "PlaySoundCommandMixin",
+    "SoundEventMixin",
     "ChannelAccessor"
   ],
   "client": [

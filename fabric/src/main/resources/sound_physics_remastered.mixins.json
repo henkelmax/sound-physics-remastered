@@ -5,8 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "EntityMixin",
-    "ServerWorldMixin",
-    "PlaySoundCommandMixin",
+    "SoundEventMixin",
     "ChannelAccessor"
   ],
   "client": [

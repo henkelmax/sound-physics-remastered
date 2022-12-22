@@ -91,11 +91,6 @@ public class ClothConfigIntegration {
                 Component.translatable("cloth_config.sound_physics_remastered.underwater_filter.description"),
                 SoundPhysicsMod.CONFIG.underwaterFilter
         ));
-        general.addEntry(fromConfigEntry(entryBuilder,
-                Component.translatable("cloth_config.sound_physics_remastered.sound_blacklist_regex"),
-                Component.translatable("cloth_config.sound_physics_remastered.sound_blacklist_regex.description"),
-                SoundPhysicsMod.CONFIG.soundBlacklistRegex
-        ));
 
         ConfigCategory performance = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.performance"));
 

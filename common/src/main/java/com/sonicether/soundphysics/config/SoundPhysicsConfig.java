@@ -4,9 +4,6 @@ import com.sonicether.soundphysics.SoundPhysics;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.ConfigEntry;
 
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
 public class SoundPhysicsConfig {
 
     public final ConfigEntry<Boolean> enabled;
@@ -21,7 +18,6 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Double> soundDistanceAllowance;
     public final ConfigEntry<Double> airAbsorption;
     public final ConfigEntry<Double> underwaterFilter;
-    public final ConfigEntry<String> soundBlacklistRegex;
 
     public final ConfigEntry<Integer> environmentEvaluationRayCount;
     public final ConfigEntry<Integer> environmentEvaluationRayBounces;
@@ -43,8 +39,6 @@ public class SoundPhysicsConfig {
 
     public final ConfigEntry<Boolean> simpleVoiceChatIntegration;
     public final ConfigEntry<Boolean> hearSelf;
-
-    public Pattern soundBlacklist;
 
     public SoundPhysicsConfig(ConfigBuilder builder) {
         enabled = builder.booleanEntry("enabled", true)
@@ -101,11 +95,6 @@ public class SoundPhysicsConfig {
                         "How much sound is filtered when the player is underwater",
                         "0.0 means no filter",
                         "1.0 means fully filtered"
-                );
-        soundBlacklistRegex = builder.stringEntry("sound_blacklist_regex", "(.*rain.*)|(.*lightning_bolt.*)")
-                .comment(
-                        "This regex is applied to all sounds that are getting played",
-                        "If it matches, the sound doesn't get any effects applied to it"
                 );
 
         environmentEvaluationRayCount = builder.integerEntry("environment_evaluation_ray_count", 32, 8, 64)
@@ -164,13 +153,6 @@ public class SoundPhysicsConfig {
     }
 
     public void reload() {
-        SoundPhysics.LOGGER.info("Reloading config");
-        try {
-            soundBlacklist = Pattern.compile(soundBlacklistRegex.get());
-        } catch (PatternSyntaxException e) {
-            SoundPhysics.LOGGER.warn("Failed to parse sound blacklist regex '{}'", soundBlacklistRegex.get());
-            soundBlacklist = Pattern.compile(soundBlacklistRegex.getDefault());
-        }
         SoundPhysics.LOGGER.info("Reloading reverb parameters");
         SoundPhysics.syncReverbParams();
     }

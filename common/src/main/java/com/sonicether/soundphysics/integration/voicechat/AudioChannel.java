@@ -29,7 +29,7 @@ public class AudioChannel {
             return;
         }
 
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, "voicechat");
+        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, "voicechat:voicechat");
         if (auxOnly) {
             SoundPhysics.onPlayReverb(soundPos.x(), soundPos.y(), soundPos.z(), source);
         } else {

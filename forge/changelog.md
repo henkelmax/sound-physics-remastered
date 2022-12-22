@@ -1,2 +1,4 @@
 - Updated ConfigBuilder
 - Added comments to the config
+- Removed sound blacklist regex
+- Added allowed sounds config

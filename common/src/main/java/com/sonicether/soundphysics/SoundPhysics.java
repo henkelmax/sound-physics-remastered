@@ -221,7 +221,7 @@ public class SoundPhysics {
             }
         }
 
-        if (SoundPhysicsMod.CONFIG.soundBlacklist.matcher(sound).matches()) {
+        if (!SoundPhysicsMod.ALLOWED_SOUND_CONFIG.isAllowed(sound)) {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }

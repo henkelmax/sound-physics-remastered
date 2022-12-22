@@ -2,3 +2,4 @@
 - Added comments to the config
 - Removed sound blacklist regex
 - Added allowed sounds config
+- Fixed lag when saving in cloth config GUI

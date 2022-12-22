@@ -49,7 +49,7 @@ public class OcclusionConfig extends CommentedPropertyConfig {
         properties.clear();
 
         for (Map.Entry<SoundType, Double> entry : occlusion.entrySet()) {
-            properties.put(SoundTypes.getName(entry.getKey()), String.valueOf(entry.getValue()));
+            properties.set(SoundTypes.getName(entry.getKey()), String.valueOf(entry.getValue()));
         }
 
         super.saveSync();

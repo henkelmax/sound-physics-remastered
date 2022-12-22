@@ -1,5 +1,6 @@
 package com.sonicether.soundphysics.integration;
 
+import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import com.sonicether.soundphysics.config.SoundTypes;
 import de.maxhenkel.configbuilder.ConfigEntry;
@@ -145,7 +146,6 @@ public class ClothConfigIntegration {
                 SoundPhysicsMod.CONFIG.soundUpdateInterval
         ));
 
-
         ConfigCategory reflectivity = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.reflectivity"));
 
         Map<SoundType, Double> defaultReflectivityMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
@@ -207,6 +207,15 @@ public class ClothConfigIntegration {
                 SoundPhysicsMod.CONFIG.renderOcclusion
         ));
 
+        builder.setSavingRunnable(() -> {
+            SoundPhysics.LOGGER.info("Saving configs");
+            SoundPhysicsMod.CONFIG.enabled.save();
+            SoundPhysicsMod.REFLECTIVITY_CONFIG.save();
+            SoundPhysicsMod.OCCLUSION_CONFIG.save();
+            SoundPhysicsMod.ALLOWED_SOUND_CONFIG.save();
+            SoundPhysicsMod.CONFIG.reload();
+        });
+
         return builder.build();
     }
 
@@ -218,10 +227,7 @@ public class ClothConfigIntegration {
                     .setMin(e.getMin())
                     .setMax(e.getMax())
                     .setDefaultValue(e::getDefault)
-                    .setSaveConsumer(d -> {
-                        e.set(d).save();
-                        SoundPhysicsMod.CONFIG.reload();
-                    })
+                    .setSaveConsumer(d -> e.set(d))
                     .build();
         } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
@@ -230,30 +236,21 @@ public class ClothConfigIntegration {
                     .setMin(e.getMin())
                     .setMax(e.getMax())
                     .setDefaultValue(e::getDefault)
-                    .setSaveConsumer(d -> {
-                        e.set(d).save();
-                        SoundPhysicsMod.CONFIG.reload();
-                    })
+                    .setSaveConsumer(d -> e.save())
                     .build();
         } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setTooltip(description)
                     .setDefaultValue(e::getDefault)
-                    .setSaveConsumer(d -> {
-                        e.set(d).save();
-                        SoundPhysicsMod.CONFIG.reload();
-                    })
+                    .setSaveConsumer(d -> e.set(d))
                     .build();
         } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
                     .setTooltip(description)
                     .setDefaultValue(e::getDefault)
-                    .setSaveConsumer(d -> {
-                        e.set(d).save();
-                        SoundPhysicsMod.CONFIG.reload();
-                    })
+                    .setSaveConsumer(d -> e.set(d))
                     .build();
         }
 

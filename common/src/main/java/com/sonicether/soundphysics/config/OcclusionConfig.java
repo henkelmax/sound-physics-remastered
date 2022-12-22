@@ -2,7 +2,7 @@ package com.sonicether.soundphysics.config;
 
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
-import de.maxhenkel.configbuilder.PropertyConfig;
+import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.world.level.block.SoundType;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OcclusionConfig extends PropertyConfig {
+public class OcclusionConfig extends CommentedPropertyConfig {
 
     private Map<SoundType, Double> occlusion;
 
@@ -25,11 +25,11 @@ public class OcclusionConfig extends PropertyConfig {
 
         occlusion = createDefaultMap();
 
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            String key = (String) entry.getKey();
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            String key = entry.getKey();
             double value;
             try {
-                value = Double.parseDouble((String) entry.getValue());
+                value = Double.parseDouble(entry.getValue());
             } catch (NumberFormatException e) {
                 SoundPhysics.LOGGER.warn("Failed to parse occlusion factor of {}", key);
                 continue;

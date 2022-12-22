@@ -54,6 +54,8 @@
   "cloth_config.sound_physics_remastered.redirect_non_occluded_sounds.description": "Skip redirecting non-occluded sounds (the ones you can see directly).",
   "cloth_config.sound_physics_remastered.update_moving_sounds": "Update moving sounds",
   "cloth_config.sound_physics_remastered.update_moving_sounds.description": "If music discs or other longer sounds should be frequently reevaluated",
+  "cloth_config.sound_physics_remastered.sound_update_interval": "Sound update interval",
+  "cloth_config.sound_physics_remastered.sound_update_interval.description": "The interval in ticks that moving sounds are reevaluated. Lower values mean more frequent reevaluation but also more lag. This option only takes effect if 'Update moving sounds' is enabled.",
 
   "cloth_config.sound_physics_remastered.debug_logging": "Debug logging",
   "cloth_config.sound_physics_remastered.debug_logging.description": "Enables debug logging.",

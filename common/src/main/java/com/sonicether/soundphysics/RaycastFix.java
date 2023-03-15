@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -60,7 +59,7 @@ public class RaycastFix {
             double blockLocation = start.distanceToSqr(blockHit.getLocation());
             double fluidLocation = start.distanceToSqr(fluidHit.getLocation());
             return blockLocation <= fluidLocation ? blockHit : fluidHit;
-        }, c -> BlockHitResult.miss(context.getTo(), null, new BlockPos(context.getTo())));
+        }, c -> BlockHitResult.miss(context.getTo(), null, new BlockPos((int) context.getTo().x, (int) context.getTo().y, (int) context.getTo().z)));
     }
 
     private static <T, C> T traverseBlocks(Vec3 start, Vec3 end, C context, BiFunction<C, BlockPos, T> blockHitFactory, Function<C, T> missFactory) {

@@ -72,7 +72,6 @@ public class RaycastRenderer {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tesselator.getBuilder();
-        RenderSystem.disableTexture();
         RenderSystem.disableBlend();
         RenderSystem.lineWidth(1F);
 
@@ -84,7 +83,6 @@ public class RaycastRenderer {
         tesselator.end();
         RenderSystem.lineWidth(1F);
         RenderSystem.enableBlend();
-        RenderSystem.enableTexture();
     }
 
     private static int getRed(int argb) {

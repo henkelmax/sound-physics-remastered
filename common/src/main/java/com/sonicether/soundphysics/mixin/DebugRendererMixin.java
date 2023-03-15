@@ -14,7 +14,7 @@ public class DebugRendererMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void onDrawBlockOutline(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, double x, double y, double z, CallbackInfo ci) {
-        RaycastRenderer.renderRays(x, y, z);
+        RaycastRenderer.renderRays(poseStack, bufferSource, x, y, z);
     }
 
 }

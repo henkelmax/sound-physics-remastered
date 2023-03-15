@@ -1,14 +1,14 @@
 package com.sonicether.soundphysics.debug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class RaycastRenderer {
     private static final List<Ray> rays = Collections.synchronizedList(new ArrayList<>());
     private static final Minecraft mc = Minecraft.getInstance();
 
-    public static void renderRays(double x, double y, double z) {
+    public static void renderRays(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, double x, double y, double z) {
         if (mc.level == null) {
             return;
         }
@@ -33,7 +33,7 @@ public class RaycastRenderer {
         synchronized (rays) {
             rays.removeIf(ray -> (gameTime - ray.tickCreated) > ray.lifespan || (gameTime - ray.tickCreated) < 0L);
             for (Ray ray : rays) {
-                renderRay(ray, x, y, z);
+                renderRay(ray, poseStack, bufferSource, x, y, z);
             }
         }
     }
@@ -61,28 +61,24 @@ public class RaycastRenderer {
         }
     }
 
-    public static void renderRay(Ray ray, double x, double y, double z) {
+    public static void renderRay(Ray ray, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, double x, double y, double z) {
+        poseStack.pushPose();
         int red = getRed(ray.color);
         int green = getGreen(ray.color);
         int blue = getBlue(ray.color);
 
-        if (!ray.throughWalls) {
-            RenderSystem.enableDepthTest();
+        if (ray.throughWalls) {
+            //TODO Fix rays through walls not rendering properly
+            RenderSystem.disableDepthTest();
         }
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tesselator.getBuilder();
-        RenderSystem.disableBlend();
-        RenderSystem.lineWidth(1F);
 
-        bufferBuilder.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.debugLineStrip(1D));
+        Matrix4f matrix4f = poseStack.last().pose();
 
-        bufferBuilder.vertex(ray.start.x - x, ray.start.y - y, ray.start.z - z).color(red, green, blue, 255).endVertex();
-        bufferBuilder.vertex(ray.end.x - x, ray.end.y - y, ray.end.z - z).color(red, green, blue, 255).endVertex();
+        consumer.vertex(matrix4f, (float) (ray.start.x - x), (float) (ray.start.y - y), (float) (ray.start.z - z)).color(red, green, blue, 255).endVertex();
+        consumer.vertex(matrix4f, (float) (ray.end.x - x), (float) (ray.end.y - y), (float) (ray.end.z - z)).color(red, green, blue, 255).endVertex();
 
-        tesselator.end();
-        RenderSystem.lineWidth(1F);
-        RenderSystem.enableBlend();
+        poseStack.popPose();
     }
 
     private static int getRed(int argb) {

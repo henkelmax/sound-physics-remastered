@@ -12,7 +12,6 @@ buildscript {
 plugins {
     id 'fabric-loom' version '1.0-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
@@ -187,22 +186,4 @@ prepareRemapJar {
 
 remapJar {
     input = shadowJar.archiveFile.get()
-}
-
-publishing {
-    publications {
-        soundPhysicsFabric(MavenPublication) {
-            artifactId archives_base_name
-            artifact(remapJar.archivePath) {
-                builtBy build
-                classifier null
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = 'henkelmax.public'
-            url = 'https://maven.maxhenkel.de/repository/public'
-        }
-    }
 }

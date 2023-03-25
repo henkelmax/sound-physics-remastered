@@ -8,7 +8,6 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
     id 'fabric-loom' version '1.0-SNAPSHOT'
 }
@@ -48,23 +47,5 @@ dependencies {
     implementation("me.shedaniel.cloth:cloth-config:${cloth_config_version}") {
         exclude(group: 'net.fabricmc:fabric-loader')
         exclude(group: 'net.fabricmc.fabric-api')
-    }
-}
-
-publishing {
-    publications {
-        soundPhysicsCommon(MavenPublication) {
-            artifactId archives_base_name
-            artifact(jar.archivePath) {
-                builtBy build
-                classifier null
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = 'henkelmax.public'
-            url = 'https://maven.maxhenkel.de/repository/public'
-        }
     }
 }

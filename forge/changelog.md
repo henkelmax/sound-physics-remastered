@@ -1,1 +1,1 @@
-- Updated to 1.19.4
+- Fixed some cloth config settings not saving properly

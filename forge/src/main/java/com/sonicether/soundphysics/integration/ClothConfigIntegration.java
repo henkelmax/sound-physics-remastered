@@ -236,21 +236,21 @@ public class ClothConfigIntegration {
                     .setMin(e.getMin())
                     .setMax(e.getMax())
                     .setDefaultValue(e::getDefault)
-                    .setSaveConsumer(d -> e.save())
+                    .setSaveConsumer(i -> e.set(i))
                     .build();
         } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setTooltip(description)
                     .setDefaultValue(e::getDefault)
-                    .setSaveConsumer(d -> e.set(d))
+                    .setSaveConsumer(b -> e.set(b))
                     .build();
         } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
                     .setTooltip(description)
                     .setDefaultValue(e::getDefault)
-                    .setSaveConsumer(d -> e.set(d))
+                    .setSaveConsumer(s -> e.set(s))
                     .build();
         }
 

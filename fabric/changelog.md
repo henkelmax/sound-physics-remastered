@@ -1,5 +1,1 @@
-- Updated ConfigBuilder
-- Added comments to the config
-- Removed sound blacklist regex
-- Added allowed sounds config
-- Fixed lag when saving in cloth config GUI
+- Fixed some cloth config settings not saving properly

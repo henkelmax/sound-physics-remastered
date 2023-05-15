@@ -1,22 +1,11 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://maven.maxhenkel.de/repository/public' }
-        mavenLocal()
-    }
-    dependencies {
-        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
-    }
-}
-
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'net.linguica.maven-settings' version '0.5'
-    id 'com.github.johnrengelman.shadow' version '7.1.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'mod-update' version '2.0.0'
 }
 
-apply plugin: 'forge-update'
+apply plugin: 'fabric-loom'
 apply plugin: 'com.modrinth.minotaur'
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -33,15 +22,14 @@ runClient.doFirst {
 repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
-    maven { url "https://maven.shedaniel.me/" }
-    maven { url "https://maven.terraformersmc.com/releases" }
+    maven { url = 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.terraformersmc.com/releases' }
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
+        url = 'https://api.modrinth.com/maven'
         content {
-            includeGroup "maven.modrinth"
+            includeGroup 'maven.modrinth'
         }
     }
     mavenLocal()
@@ -72,7 +60,7 @@ dependencies {
 }
 
 processResources {
-    filesMatching("fabric.mod.json") {
+    filesMatching('fabric.mod.json') {
         expand 'mod_id': mod_id,
                 'mod_version': mod_version,
                 'minecraft_version': minecraft_version,
@@ -84,7 +72,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
+    it.options.encoding = 'UTF-8'
     it.options.release = 17
 }
 
@@ -111,7 +99,7 @@ curseforge {
     project {
         id = curse_id
         changelogType = 'markdown'
-        changelog = file("changelog.md")
+        changelog = file('changelog.md')
         releaseType = release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Fabric'
@@ -155,35 +143,24 @@ modrinth {
 }
 tasks.modrinth.dependsOn(build)
 
-forgeUpdate {
-    def messages = []
-    file("changelog.md").eachLine { String line ->
-        if (line.trim().startsWith('-')) {
-            messages.add(line.replaceFirst('-', '').trim())
-        }
-    }
-
+modUpdate {
     serverURL = 'https://update.maxhenkel.de/'
-    apiKey = file("${rootDir}/forge_update_api_key.txt").exists() ? file("${rootDir}/forge_update_api_key.txt").text : ''
     modID = mod_id
     gameVersion = minecraft_version
     modLoader = 'fabric'
     modVersion = mod_version
-    updateMessages = messages
+    changelogFile = file('changelog.md')
     releaseType = release_type
     tags = recommended == 'true' ? ['recommended'] : []
 }
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    classifier 'shadow-dev'
+    archiveClassifier = 'shadow-dev'
     relocate 'de.maxhenkel.configbuilder', "com.sonicether.soundphysics.configbuilder"
 }
 
-prepareRemapJar {
-    dependsOn shadowJar
-}
-
 remapJar {
-    input = shadowJar.archiveFile.get()
+    dependsOn shadowJar
+    inputFile = shadowJar.archiveFile.get()
 }

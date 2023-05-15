@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenLocal()
     }
 }
@@ -9,8 +8,9 @@ buildscript {
 plugins {
     id 'java'
     id 'net.linguica.maven-settings' version '0.5'
-    id 'fabric-loom' version '1.0-SNAPSHOT'
 }
+
+apply plugin: 'fabric-loom'
 
 archivesBaseName = archives_base_name
 version = artifact_version
@@ -23,7 +23,7 @@ repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-    maven { url 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     mavenLocal()
 }

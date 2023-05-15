@@ -1,3 +1,4 @@
 plugins {
-    id "com.modrinth.minotaur" version "2.+" apply false
+    id 'com.modrinth.minotaur' version '2.+' apply false
+    id 'fabric-loom' version '1.2-SNAPSHOT' apply false
 }

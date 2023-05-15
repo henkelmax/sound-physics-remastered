@@ -1,24 +1,22 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = 'https://maven.maxhenkel.de/repository/public' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenLocal()
     }
     dependencies {
-        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 
 plugins {
-    id 'net.minecraftforge.gradle' version '5.+'
-    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id 'net.minecraftforge.gradle' version '6.+'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'net.linguica.maven-settings' version '0.5'
-    id "com.github.johnrengelman.shadow" version "7.1.0"
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'mod-update' version '2.0.0'
 }
 
-apply plugin: 'forge-update'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.modrinth.minotaur'
 
@@ -33,28 +31,27 @@ minecraft {
 
     runs {
         client {
-            workingDirectory project.file('run')
+            workingDirectory file('run')
             property 'forge.logging.console.level', 'debug'
         }
         server {
-            workingDirectory project.file('run/server').canonicalPath
+            workingDirectory file('run/server').canonicalPath
             property 'forge.logging.console.level', 'debug'
-            arg "--nogui"
+            arg '--nogui'
         }
     }
 }
 
 repositories {
     mavenCentral()
-    maven { url 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
+        url = 'https://api.modrinth.com/maven'
         content {
-            includeGroup "maven.modrinth"
+            includeGroup 'maven.modrinth'
         }
     }
     mavenLocal()
@@ -92,7 +89,7 @@ mixin {
 }
 
 processResources {
-    filesMatching("**/*.toml") {
+    filesMatching('**/*.toml') {
         expand 'mod_id': mod_id,
                 'mod_version': mod_version,
                 'mod_name': mod_name,
@@ -122,14 +119,14 @@ task prepareWorkspace {
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        attributes(["Specification-Title"     : mod_name,
-                    "Specification-Vendor"    : mod_vendor,
-                    "Specification-Version"   : "1",
-                    "Implementation-Title"    : mod_name,
-                    "Implementation-Version"  : mod_version,
-                    "Implementation-Vendor"   : mod_vendor,
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "MixinConnector"          : "com.sonicether.soundphysics.MixinConnector"
+        attributes(['Specification-Title'     : mod_name,
+                    'Specification-Vendor'    : mod_vendor,
+                    'Specification-Version'   : '1',
+                    'Implementation-Title'    : mod_name,
+                    'Implementation-Version'  : mod_version,
+                    'Implementation-Vendor'   : mod_vendor,
+                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    'MixinConnector'          : 'com.sonicether.soundphysics.MixinConnector'
         ])
     }
 }
@@ -139,7 +136,7 @@ curseforge {
     project {
         id = curse_id
         changelogType = 'markdown'
-        changelog = file("changelog.md")
+        changelog = file('changelog.md')
         releaseType = release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Forge'
@@ -165,30 +162,22 @@ modrinth {
     versionName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
     uploadFile = jar
     versionType = release_type.toUpperCase()
-    changelog = file("changelog.md").text
+    changelog = file('changelog.md').text
     gameVersions = [minecraft_version]
     loaders = ['forge']
     dependencies {
-        optional.project "9eGKb6K1" // Simple Voice Chat
-        optional.project "9s6osm5g" // ClothConfig
+        optional.project '9eGKb6K1' // Simple Voice Chat
+        optional.project '9s6osm5g' // ClothConfig
     }
 }
 tasks.modrinth.dependsOn(build)
 
-forgeUpdate {
-    def messages = []
-    file("changelog.md").eachLine { String line ->
-        if (line.trim().startsWith('-')) {
-            messages.add(line.replaceFirst('-', '').trim())
-        }
-    }
-
+modUpdate {
     serverURL = 'https://update.maxhenkel.de/'
-    apiKey = file("${rootDir}/forge_update_api_key.txt").exists() ? file("${rootDir}/forge_update_api_key.txt").text : ''
     modID = mod_id
     gameVersion = minecraft_version
     modVersion = mod_version
-    updateMessages = messages
+    changelogFile = file('changelog.md')
     releaseType = release_type
     tags = recommended == 'true' ? ['recommended'] : []
 }
@@ -197,8 +186,8 @@ jar.finalizedBy('reobfJar')
 
 shadowJar {
     configurations = [project.configurations.shadowMc]
-    classifier ''
-    relocate 'de.maxhenkel.configbuilder', "com.sonicether.soundphysics.configbuilder"
+    archiveClassifier = ''
+    relocate 'de.maxhenkel.configbuilder', 'com.sonicether.soundphysics.configbuilder'
 }
 
 reobf {

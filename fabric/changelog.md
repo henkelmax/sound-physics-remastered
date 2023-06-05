@@ -1,1 +1,1 @@
-- Fixed some cloth config settings not saving properly
+- Updated to 1.20

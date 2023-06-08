@@ -193,3 +193,4 @@ shadowJar {
 reobf {
     shadowJar {}
 }
+tasks.shadowJar.mustRunAfter('reobfJar')

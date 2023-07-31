@@ -12,6 +12,7 @@ version="${mod_version}"
 displayName="${mod_name}"
 updateJSONURL="https://maxhenkel.de/update/sound_physics_remastered.json"
 description='''Provides realistic sound attenuation, reverberation, and absorption through blocks.'''
+displayTest="IGNORE_ALL_VERSION"
 [[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true

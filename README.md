@@ -12,12 +12,12 @@ This mod does not require any dependencies, but it is recommended to use the fol
 
 **Fabric**
 
-- [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu)
-- [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config)
+- [ModMenu](https://modrinth.com/mod/modmenu)
+- [ClothConfig](https://modrinth.com/mod/cloth-config)
 
 **Forge**
 
-- [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config-forge)
+- [ClothConfig](https://modrinth.com/mod/cloth-config)
 
 ---
 
@@ -26,7 +26,7 @@ This mod does not require any dependencies, but it is recommended to use the fol
 **Improvements**
 
 - Improved sound processing performance by a factor of 10
-- Optimized for [Simple Voice Chat](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
+- Optimized for [Simple Voice Chat](https://modrinth.com/mod/simple-voice-chat)
 - Ported the mod to Forge
 - Improved configuration UI
 - Made Cloth Config optional

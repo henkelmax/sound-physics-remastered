@@ -1,8 +1,6 @@
 modLoader="javafml"
 loaderVersion="${mod_loader_version}"
 license="GPL"
-# issueTrackerURL=""
-# displayURL=""
 logoFile="icon.png"
 credits="Sonic Ether, vlad2305m"
 authors="Sonic Ether, vlad2305m, Max Henkel"

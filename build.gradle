@@ -1,4 +1,7 @@
 plugins {
-    id 'com.modrinth.minotaur' version '2.+' apply false
-    id 'fabric-loom' version '1.2-SNAPSHOT' apply false
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
+    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}" apply false
+    id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
+    id 'mod-update' version "${mod_update_version}" apply false
+    id 'fabric-loom' version "${fabric_version}" apply false
 }

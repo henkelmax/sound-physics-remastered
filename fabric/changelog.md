@@ -1,1 +1,1 @@
-- Fixed some cloth config settings not saving properly
+- Switch to NeoGradle

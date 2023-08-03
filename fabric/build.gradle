@@ -1,30 +1,28 @@
-plugins {
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'net.linguica.maven-settings' version '0.5'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'mod-update' version '2.0.0'
-}
-
 apply plugin: 'fabric-loom'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'mod-update'
+apply plugin: 'idea'
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 
 archivesBaseName = archives_base_name
 version = mod_version
 group = maven_group
 
-runClient.doFirst {
-    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url = 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.terraformersmc.com/releases' }
-    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven {
         url = 'https://api.modrinth.com/maven'
@@ -32,13 +30,16 @@ repositories {
             includeGroup 'maven.modrinth'
         }
     }
-    mavenLocal()
+}
+
+runClient.doFirst {
+    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
@@ -65,7 +66,7 @@ processResources {
                 'mod_version': mod_version,
                 'minecraft_version': minecraft_version,
                 'minecraft_dependency': minecraft_dependency,
-                'loader_version': loader_version,
+                'fabric_loader_version': fabric_loader_version,
                 'cloth_config_version': cloth_config_version,
                 'voicechat_api_version': voicechat_api_version
     }
@@ -103,6 +104,7 @@ curseforge {
         releaseType = release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Fabric'
+        addGameVersion 'Quilt'
         mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
@@ -133,11 +135,11 @@ modrinth {
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
     gameVersions = [minecraft_version]
-    loaders = ['fabric']
+    loaders = ['fabric', 'quilt']
     dependencies {
-        optional.project "9eGKb6K1" // Simple Voice Chat
-        optional.project "mOgUt4GM" // ModMenu
-        optional.project "9s6osm5g" // ClothConfig
+        optional.project 'cloth-config'
+        optional.project "modmenu"
+        optional.project 'simple-voice-chat'
     }
     syncBodyFrom = file("${rootDir}/README.md").text
 }

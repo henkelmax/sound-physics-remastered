@@ -1,23 +1,6 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-    }
-}
-
-plugins {
-    id 'java'
-    id 'net.linguica.maven-settings' version '0.5'
-}
-
 apply plugin: 'fabric-loom'
 
-archivesBaseName = archives_base_name
-version = artifact_version
-group = maven_group
-
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 repositories {
     mavenCentral()
@@ -25,17 +8,16 @@ repositories {
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url = 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
-    mavenLocal()
 }
 
-task prepareWorkspace {
+tasks.register('prepareWorkspace') {
 
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.spongepowered:mixin:0.8.4'

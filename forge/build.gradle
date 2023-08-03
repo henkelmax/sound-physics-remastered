@@ -147,7 +147,7 @@ curseforge {
         addGameVersion 'NeoForge'
         addGameVersion "Java ${java_version}"
         mainArtifact(jar) {
-            displayName = "[${minecraft_version}] ${mod_name} ${mod_version}"
+            displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
                 optionalDependency 'cloth-config'
                 optionalDependency 'simple-voice-chat'

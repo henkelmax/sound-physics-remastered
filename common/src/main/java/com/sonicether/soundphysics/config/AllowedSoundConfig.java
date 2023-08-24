@@ -1,6 +1,7 @@
 package com.sonicether.soundphysics.config;
 
 import com.sonicether.soundphysics.SoundPhysics;
+import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -18,8 +19,9 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
     private Map<String, Boolean> allowedSounds;
 
     public AllowedSoundConfig(Path path) {
-        super(path);
-        save();
+        super(new CommentedProperties(false));
+        this.path = path;
+        reload();
     }
 
     @Override
@@ -50,6 +52,7 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
 
             setAllowed(soundEvent, value);
         }
+        saveSync();
     }
 
     @Override

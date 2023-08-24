@@ -191,6 +191,9 @@ public class SoundPhysics {
     }
 
     private static float getBlockReflectivity(BlockPos blockPos) {
+        if (mc.level == null) {
+            return SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get();
+        }
         BlockState blockState = mc.level.getBlockState(blockPos);
         return (float) SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivity(blockState.getSoundType());
     }
@@ -256,7 +259,7 @@ public class SoundPhysics {
         float sendCutoff3 = 1F;
 
         if (mc.player.isUnderWater()) {
-            directCutoff *= 1F - SoundPhysicsMod.CONFIG.underwaterFilter.get().floatValue();
+            directCutoff *= 1F - SoundPhysicsMod.CONFIG.underwaterFilter.get();
         }
 
         // Shoot rays around sound
@@ -574,7 +577,7 @@ public class SoundPhysics {
         AL11.alSourcei(sourceID, EXTEfx.AL_DIRECT_FILTER, directFilter0);
         logALError("Set environment directFilter0:");
 
-        AL11.alSourcef(sourceID, EXTEfx.AL_AIR_ABSORPTION_FACTOR, SoundPhysicsMod.CONFIG.airAbsorption.get().floatValue());
+        AL11.alSourcef(sourceID, EXTEfx.AL_AIR_ABSORPTION_FACTOR, SoundPhysicsMod.CONFIG.airAbsorption.get());
         logALError("Set environment airAbsorption:");
     }
 

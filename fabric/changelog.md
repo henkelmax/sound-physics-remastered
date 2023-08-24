@@ -1,1 +1,2 @@
-- Switch to NeoGradle
+- Fixed game freezing when far away from the world origin
+- Fixed lag spikes

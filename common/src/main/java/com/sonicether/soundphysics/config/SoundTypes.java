@@ -104,6 +104,20 @@ public class SoundTypes {
         names.put(SoundType.MUD, "MUD");
         names.put(SoundType.MUD_BRICKS, "MUD_BRICKS");
         names.put(SoundType.PACKED_MUD, "PACKED_MUD");
+        names.put(SoundType.HANGING_SIGN, "HANGING_SIGN");
+        names.put(SoundType.NETHER_WOOD_HANGING_SIGN, "NETHER_WOOD_HANGING_SIGN");
+        names.put(SoundType.BAMBOO_WOOD_HANGING_SIGN, "BAMBOO_WOOD_HANGING_SIGN");
+        names.put(SoundType.BAMBOO_WOOD, "BAMBOO_WOOD");
+        names.put(SoundType.NETHER_WOOD, "NETHER_WOOD");
+        names.put(SoundType.CHERRY_WOOD, "CHERRY_WOOD");
+        names.put(SoundType.CHERRY_SAPLING, "CHERRY_SAPLING");
+        names.put(SoundType.CHERRY_LEAVES, "CHERRY_LEAVES");
+        names.put(SoundType.CHERRY_WOOD_HANGING_SIGN, "CHERRY_WOOD_HANGING_SIGN");
+        names.put(SoundType.CHISELED_BOOKSHELF, "CHISELED_BOOKSHELF");
+        names.put(SoundType.SUSPICIOUS_SAND, "SUSPICIOUS_SAND");
+        names.put(SoundType.SUSPICIOUS_GRAVEL, "SUSPICIOUS_GRAVEL");
+        names.put(SoundType.DECORATED_POT, "DECORATED_POT");
+        names.put(SoundType.DECORATED_POT_CRACKED, "DECORATED_POT_CRACKED");
 
         TRANSLATION_MAP = Collections.unmodifiableMap(names);
     }

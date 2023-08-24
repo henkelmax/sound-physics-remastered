@@ -9,6 +9,9 @@ import java.util.UUID;
 
 public class AudioChannel {
 
+    private static final String CATEGORY_TEMPLATE = "voicechat:%s";
+    private static final String CATEGORY_VOICECHAT = "voicechat";
+
     private final UUID channelId;
     private long lastUpdate;
     private Vec3 lastPos;
@@ -17,7 +20,7 @@ public class AudioChannel {
         this.channelId = channelId;
     }
 
-    public void onSound(int source, @Nullable Vec3 soundPos, boolean auxOnly) {
+    public void onSound(int source, @Nullable Vec3 soundPos, boolean auxOnly, @Nullable String category) {
         if (soundPos == null) {
             SoundPhysics.setDefaultEnvironment(source, auxOnly);
             return;
@@ -29,7 +32,8 @@ public class AudioChannel {
             return;
         }
 
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, "voicechat:voicechat");
+
+        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, CATEGORY_TEMPLATE.formatted(category == null ? CATEGORY_VOICECHAT : category));
         if (auxOnly) {
             SoundPhysics.onPlayReverb(soundPos.x(), soundPos.y(), soundPos.z(), source);
         } else {

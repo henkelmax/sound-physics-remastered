@@ -97,7 +97,7 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
             audioChannels.put(channelId, audioChannel);
         }
 
-        audioChannel.onSound(event.getSource(), position == null ? null : new Vec3(position.getX(), position.getY(), position.getZ()), auxOnly);
+        audioChannel.onSound(event.getSource(), position == null ? null : new Vec3(position.getX(), position.getY(), position.getZ()), auxOnly, event.getCategory());
     }
 
 }

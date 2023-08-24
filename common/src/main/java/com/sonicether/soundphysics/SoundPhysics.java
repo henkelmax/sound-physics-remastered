@@ -195,7 +195,7 @@ public class SoundPhysics {
             return SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get();
         }
         BlockState blockState = mc.level.getBlockState(blockPos);
-        return (float) SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivity(blockState.getSoundType());
+        return SoundPhysicsMod.REFLECTIVITY_CONFIG.getBlockDefinitionValue(blockState);
     }
 
     private static Vec3 reflect(Vec3 dir, Vec3 normal) {
@@ -475,7 +475,7 @@ public class SoundPhysics {
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
             BlockState blockHit = mc.level.getBlockState(blockHitPos);
-            float blockOcclusion = (float) SoundPhysicsMod.OCCLUSION_CONFIG.getOcclusionFactor(blockHit.getSoundType());
+            float blockOcclusion = SoundPhysicsMod.OCCLUSION_CONFIG.getBlockDefinitionValue(blockHit);
 
             // Regardless to whether we hit from inside or outside
             Vec3 dirVec = rayOrigin.subtract(blockHitPos.getX() + 0.5D, blockHitPos.getY() + 0.5D, blockHitPos.getZ() + 0.5D);

@@ -3,6 +3,7 @@ package com.sonicether.soundphysics.integration;
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import com.sonicether.soundphysics.config.SoundTypes;
+import com.sonicether.soundphysics.config.blocksound.BlockDefinition;
 import de.maxhenkel.configbuilder.entry.*;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.SoundType;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ClothConfigIntegration {
@@ -148,29 +150,31 @@ public class ClothConfigIntegration {
 
         ConfigCategory reflectivity = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.reflectivity"));
 
-        Map<SoundType, Float> defaultReflectivityMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
+        Map<BlockDefinition, Float> defaultReflectivityMap = new LinkedHashMap<>();
+        SoundPhysicsMod.REFLECTIVITY_CONFIG.addDefaults(defaultReflectivityMap);
 
-        for (Map.Entry<SoundType, Float> entry : SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivities().entrySet()) {
+        for (Map.Entry<BlockDefinition, Float> entry : SoundPhysicsMod.REFLECTIVITY_CONFIG.getBlockDefinitions().entrySet()) {
             FloatListEntry e = entryBuilder
-                    .startFloatField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
+                    .startFloatField(entry.getKey().getName(), entry.getValue())
                     .setMin(0.01F)
                     .setMax(10F)
                     .setDefaultValue(defaultReflectivityMap.getOrDefault(entry.getKey(), SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get()))
-                    .setSaveConsumer(value -> SoundPhysicsMod.REFLECTIVITY_CONFIG.setReflectivity(entry.getKey(), value).save()).build();
+                    .setSaveConsumer(value -> SoundPhysicsMod.REFLECTIVITY_CONFIG.setBlockDefinitionValue(entry.getKey(), value)).build();
             reflectivity.addEntry(e);
         }
 
         ConfigCategory occlusion = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.occlusion"));
 
-        Map<SoundType, Float> defaultOcclusionMap = SoundPhysicsMod.OCCLUSION_CONFIG.createDefaultMap();
+        Map<BlockDefinition, Float> defaultOcclusionMap = new LinkedHashMap<>();
+        SoundPhysicsMod.OCCLUSION_CONFIG.addDefaults(defaultOcclusionMap);
 
-        for (Map.Entry<SoundType, Float> entry : SoundPhysicsMod.OCCLUSION_CONFIG.getOcclusionFactors().entrySet()) {
+        for (Map.Entry<BlockDefinition, Float> entry : SoundPhysicsMod.OCCLUSION_CONFIG.getBlockDefinitions().entrySet()) {
             FloatListEntry e = entryBuilder
-                    .startFloatField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
+                    .startFloatField(entry.getKey().getName(), entry.getValue())
                     .setMin(0F)
                     .setMax(10F)
                     .setDefaultValue(defaultOcclusionMap.getOrDefault(entry.getKey(), SoundPhysicsMod.CONFIG.defaultBlockOcclusionFactor.get()))
-                    .setSaveConsumer(value -> SoundPhysicsMod.OCCLUSION_CONFIG.setOcclusionFactor(entry.getKey(), value).save()).build();
+                    .setSaveConsumer(value -> SoundPhysicsMod.OCCLUSION_CONFIG.setBlockDefinitionValue(entry.getKey(), value)).build();
             occlusion.addEntry(e);
         }
 

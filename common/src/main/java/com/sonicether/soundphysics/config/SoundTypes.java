@@ -1,6 +1,7 @@
 package com.sonicether.soundphysics.config;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.SoundType;
 
 import javax.annotation.Nullable;
@@ -136,7 +137,7 @@ public class SoundTypes {
         return TRANSLATION_MAP.entrySet().stream().filter(e -> e.getValue().equals(name)).map(Map.Entry::getKey).findFirst().orElse(null);
     }
 
-    public static Component getNameComponent(SoundType soundType) {
+    public static MutableComponent getNameComponent(SoundType soundType) {
         String name = getName(soundType);
         if (name == null) {
             return Component.literal("N/A");

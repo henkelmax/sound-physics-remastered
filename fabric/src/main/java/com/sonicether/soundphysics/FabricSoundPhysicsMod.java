@@ -16,7 +16,7 @@ public class FabricSoundPhysicsMod extends SoundPhysicsMod implements ModInitial
 
     @Override
     public SoundPhysicsConfig createConfig() {
-        return ConfigBuilder.build(getConfigFolder().resolve(MODID).resolve("soundphysics.properties"), true, SoundPhysicsConfig::new);
+        return ConfigBuilder.builder(SoundPhysicsConfig::new).path(getConfigFolder().resolve(MODID).resolve("soundphysics.properties")).build();
     }
 
     @Override

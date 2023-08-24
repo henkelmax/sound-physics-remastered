@@ -3,13 +3,12 @@ package com.sonicether.soundphysics.integration;
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import com.sonicether.soundphysics.config.SoundTypes;
-import de.maxhenkel.configbuilder.ConfigBuilderImpl;
-import de.maxhenkel.configbuilder.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.*;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.gui.entries.DoubleListEntry;
+import me.shedaniel.clothconfig2.gui.entries.FloatListEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.SoundType;
@@ -149,11 +148,11 @@ public class ClothConfigIntegration {
 
         ConfigCategory reflectivity = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.reflectivity"));
 
-        Map<SoundType, Double> defaultReflectivityMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
+        Map<SoundType, Float> defaultReflectivityMap = SoundPhysicsMod.REFLECTIVITY_CONFIG.createDefaultMap();
 
-        for (Map.Entry<SoundType, Double> entry : SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivities().entrySet()) {
-            DoubleListEntry e = entryBuilder
-                    .startDoubleField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
+        for (Map.Entry<SoundType, Float> entry : SoundPhysicsMod.REFLECTIVITY_CONFIG.getReflectivities().entrySet()) {
+            FloatListEntry e = entryBuilder
+                    .startFloatField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
                     .setMin(0.01F)
                     .setMax(10F)
                     .setDefaultValue(defaultReflectivityMap.getOrDefault(entry.getKey(), SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get()))
@@ -163,11 +162,11 @@ public class ClothConfigIntegration {
 
         ConfigCategory occlusion = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.occlusion"));
 
-        Map<SoundType, Double> defaultOcclusionMap = SoundPhysicsMod.OCCLUSION_CONFIG.createDefaultMap();
+        Map<SoundType, Float> defaultOcclusionMap = SoundPhysicsMod.OCCLUSION_CONFIG.createDefaultMap();
 
-        for (Map.Entry<SoundType, Double> entry : SoundPhysicsMod.OCCLUSION_CONFIG.getOcclusionFactors().entrySet()) {
-            DoubleListEntry e = entryBuilder
-                    .startDoubleField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
+        for (Map.Entry<SoundType, Float> entry : SoundPhysicsMod.OCCLUSION_CONFIG.getOcclusionFactors().entrySet()) {
+            FloatListEntry e = entryBuilder
+                    .startFloatField(SoundTypes.getNameComponent(entry.getKey()), entry.getValue())
                     .setMin(0F)
                     .setMax(10F)
                     .setDefaultValue(defaultOcclusionMap.getOrDefault(entry.getKey(), SoundPhysicsMod.CONFIG.defaultBlockOcclusionFactor.get()))
@@ -221,7 +220,7 @@ public class ClothConfigIntegration {
     }
 
     private static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, Component description, ConfigEntry<T> entry) {
-        if (entry instanceof ConfigBuilderImpl.DoubleConfigEntry e) {
+        if (entry instanceof DoubleConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, e.get())
                     .setTooltip(description)
@@ -230,7 +229,16 @@ public class ClothConfigIntegration {
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d))
                     .build();
-        } else if (entry instanceof ConfigBuilderImpl.IntegerConfigEntry e) {
+        } else if (entry instanceof FloatConfigEntry e) {
+            return (AbstractConfigListEntry<T>) entryBuilder
+                    .startFloatField(name, e.get())
+                    .setTooltip(description)
+                    .setMin(e.getMin())
+                    .setMax(e.getMax())
+                    .setDefaultValue(e::getDefault)
+                    .setSaveConsumer(d -> e.set(d))
+                    .build();
+        } else if (entry instanceof IntegerConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, e.get())
                     .setTooltip(description)
@@ -239,14 +247,14 @@ public class ClothConfigIntegration {
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(i -> e.set(i))
                     .build();
-        } else if (entry instanceof ConfigBuilderImpl.BooleanConfigEntry e) {
+        } else if (entry instanceof BooleanConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setTooltip(description)
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(b -> e.set(b))
                     .build();
-        } else if (entry instanceof ConfigBuilderImpl.StringConfigEntry e) {
+        } else if (entry instanceof StringConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
                     .setTooltip(description)

@@ -2,7 +2,8 @@ package com.sonicether.soundphysics.config;
 
 import com.sonicether.soundphysics.SoundPhysics;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -38,7 +39,7 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
             }
             SoundEvent soundEvent = null;
             try {
-                soundEvent = BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation(key));
+                soundEvent = Registry.SOUND_EVENT.get(new ResourceLocation(key));
             } catch (Exception e) {
                 SoundPhysics.LOGGER.warn("Failed to set allowed sound entry {}", key, e);
             }
@@ -84,7 +85,7 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
 
     public Map<String, Boolean> createDefaultMap() {
         Map<String, Boolean> map = new HashMap<>();
-        for (SoundEvent event : BuiltInRegistries.SOUND_EVENT) {
+        for (SoundEvent event : Registry.SOUND_EVENT) {
             map.put(event.getLocation().toString(), true);
         }
 

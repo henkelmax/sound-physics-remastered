@@ -2,28 +2,28 @@ package com.sonicether.soundphysics.config;
 
 import com.sonicether.soundphysics.SoundPhysics;
 import de.maxhenkel.configbuilder.ConfigBuilder;
-import de.maxhenkel.configbuilder.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.ConfigEntry;
 
 public class SoundPhysicsConfig {
 
     public final ConfigEntry<Boolean> enabled;
 
-    public final ConfigEntry<Double> attenuationFactor;
-    public final ConfigEntry<Double> reverbGain;
-    public final ConfigEntry<Double> reverbBrightness;
-    public final ConfigEntry<Double> blockAbsorption;
-    public final ConfigEntry<Double> occlusionVariation;
-    public final ConfigEntry<Double> defaultBlockReflectivity;
-    public final ConfigEntry<Double> defaultBlockOcclusionFactor;
-    public final ConfigEntry<Double> soundDistanceAllowance;
-    public final ConfigEntry<Double> airAbsorption;
-    public final ConfigEntry<Double> underwaterFilter;
+    public final ConfigEntry<Float> attenuationFactor;
+    public final ConfigEntry<Float> reverbGain;
+    public final ConfigEntry<Float> reverbBrightness;
+    public final ConfigEntry<Float> blockAbsorption;
+    public final ConfigEntry<Float> occlusionVariation;
+    public final ConfigEntry<Float> defaultBlockReflectivity;
+    public final ConfigEntry<Float> defaultBlockOcclusionFactor;
+    public final ConfigEntry<Float> soundDistanceAllowance;
+    public final ConfigEntry<Float> airAbsorption;
+    public final ConfigEntry<Float> underwaterFilter;
 
     public final ConfigEntry<Integer> environmentEvaluationRayCount;
     public final ConfigEntry<Integer> environmentEvaluationRayBounces;
-    public final ConfigEntry<Double> nonFullBlockOcclusionFactor;
+    public final ConfigEntry<Float> nonFullBlockOcclusionFactor;
     public final ConfigEntry<Integer> maxOcclusionRays;
-    public final ConfigEntry<Double> maxOcclusion;
+    public final ConfigEntry<Float> maxOcclusion;
     public final ConfigEntry<Boolean> strictOcclusion;
     public final ConfigEntry<Boolean> soundDirectionEvaluation;
     public final ConfigEntry<Boolean> redirectNonOccludedSounds;
@@ -45,7 +45,7 @@ public class SoundPhysicsConfig {
                 .comment("Enables/Disables all sound effects");
 
         attenuationFactor = builder
-                .doubleEntry("attenuation_factor", 1D, 0.1D, 1D)
+                .floatEntry("attenuation_factor", 1F, 0.1F, 1F)
                 .comment(
                         "Affects how quiet a sound gets based on distance",
                         "Lower values mean distant sounds are louder",
@@ -53,44 +53,44 @@ public class SoundPhysicsConfig {
                         "1.0 is the physically correct value"
                 );
         reverbGain = builder
-                .doubleEntry("reverb_gain", 1D, 0.1D, 2D)
+                .floatEntry("reverb_gain", 1F, 0.1F, 2F)
                 .comment("The volume of simulated reverberations");
-        reverbBrightness = builder.doubleEntry("reverb_brightness", 1D, 0.1D, 2D)
+        reverbBrightness = builder.floatEntry("reverb_brightness", 1F, 0.1F, 2F)
                 .comment(
                         "The brightness of reverberation",
                         "Higher values result in more high frequencies in reverberation",
                         "Lower values give a more muffled sound to the reverb"
                 );
-        blockAbsorption = builder.doubleEntry("block_absorption", 1D, 0.1D, 4D)
+        blockAbsorption = builder.floatEntry("block_absorption", 1F, 0.1F, 4F)
                 .comment("The amount of sound that will be absorbed when traveling through blocks");
-        occlusionVariation = builder.doubleEntry("occlusion_variation", 0.35D, 0D, 16D)
+        occlusionVariation = builder.floatEntry("occlusion_variation", 0.35F, 0F, 16F)
                 .comment("Higher values mean smaller objects won't be considered as occluding");
-        defaultBlockReflectivity = builder.doubleEntry("default_block_reflectivity", 0.5D, 0.1D, 4D)
+        defaultBlockReflectivity = builder.floatEntry("default_block_reflectivity", 0.5F, 0.1F, 4F)
                 .comment(
                         "The default amount of sound reflectance energy for all blocks",
                         "Lower values result in more conservative reverb simulation with shorter reverb tails",
                         "Higher values result in more generous reverb simulation with higher reverb tails"
                 );
-        defaultBlockOcclusionFactor = builder.doubleEntry("default_block_occlusion_factor", 1D, 0D, 10D)
+        defaultBlockOcclusionFactor = builder.floatEntry("default_block_occlusion_factor", 1F, 0F, 10F)
                 .comment(
                         "The default amount of occlusion for all blocks",
                         "Lower values will result in sounds being less muffled through walls",
                         "Higher values mean sounds will be not audible though thicker walls"
                 );
-        soundDistanceAllowance = builder.doubleEntry("sound_distance_allowance", 4D, 1D, 6D)
+        soundDistanceAllowance = builder.floatEntry("sound_distance_allowance", 4F, 1F, 6F)
                 .comment(
                         "Minecraft won't allow sounds to play past a certain distance",
                         "This parameter is a multiplier for how far away a sound source is allowed to be in order for it to actually play",
                         "This setting only takes affect in singleplayer worlds and when installed on the server"
                 );
-        airAbsorption = builder.doubleEntry("air_absorption", 1D, 0D, 5D)
+        airAbsorption = builder.floatEntry("air_absorption", 1F, 0F, 5F)
                 .comment(
                         "A value controlling the amount that air absorbs high frequencies with distance",
                         "A value of 1.0 is physically correct for air with normal humidity and temperature",
                         "Higher values mean air will absorb more high frequencies with distance",
                         "0 disables this effect"
                 );
-        underwaterFilter = builder.doubleEntry("underwater_filter", 1D, 0D, 1D)
+        underwaterFilter = builder.floatEntry("underwater_filter", 1F, 0F, 1F)
                 .comment(
                         "How much sound is filtered when the player is underwater",
                         "0.0 means no filter",
@@ -109,14 +109,14 @@ public class SoundPhysicsConfig {
                         "More bounces provides more echo and sound ducting but takes more time to calculate",
                         "Decrease this value if you experience lag spikes when sounds play"
                 );
-        nonFullBlockOcclusionFactor = builder.doubleEntry("non_full_block_occlusion_factor", 0.25D, 0D, 1D)
+        nonFullBlockOcclusionFactor = builder.floatEntry("non_full_block_occlusion_factor", 0.25F, 0F, 1F)
                 .comment("If sound hits a non-full-square side, block occlusion is multiplied by this");
         maxOcclusionRays = builder.integerEntry("max_occlusion_rays", 16, 1, 128)
                 .comment(
                         "The maximum amount of rays to determine occlusion",
                         "Directly correlates to the amount of blocks between walls that are considered"
                 );
-        maxOcclusion = builder.doubleEntry("max_occlusion", 64D, 0D, 1024D)
+        maxOcclusion = builder.floatEntry("max_occlusion", 64F, 0F, 1024F)
                 .comment("The amount at which occlusion is capped");
         strictOcclusion = builder.booleanEntry("strict_occlusion", false)
                 .comment("If enabled, the occlusion calculation only uses one path between the sound source and the listener instead of 9");

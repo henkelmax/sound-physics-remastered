@@ -41,7 +41,7 @@ public class SourceMixin {
         if (param != AL11.AL_MAX_DISTANCE) {
             throw new IllegalArgumentException("Tried modifying wrong field. No attenuation here.");
         }
-        return attenuation / SoundPhysicsMod.CONFIG.attenuationFactor.get().floatValue();
+        return attenuation / SoundPhysicsMod.CONFIG.attenuationFactor.get();
     }
 
 }

@@ -14,7 +14,7 @@ public class SoundEventMixin {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return value;
         }
-        return value * SoundPhysicsMod.CONFIG.soundDistanceAllowance.get().floatValue();
+        return value * SoundPhysicsMod.CONFIG.soundDistanceAllowance.get();
     }
 
 }

@@ -116,9 +116,7 @@ public class SoundTypes {
         names.put(SoundType.CHERRY_WOOD_HANGING_SIGN, "CHERRY_WOOD_HANGING_SIGN");
         names.put(SoundType.CHISELED_BOOKSHELF, "CHISELED_BOOKSHELF");
         names.put(SoundType.SUSPICIOUS_SAND, "SUSPICIOUS_SAND");
-        names.put(SoundType.SUSPICIOUS_GRAVEL, "SUSPICIOUS_GRAVEL");
         names.put(SoundType.DECORATED_POT, "DECORATED_POT");
-        names.put(SoundType.DECORATED_POT_CRACKED, "DECORATED_POT_CRACKED");
 
         TRANSLATION_MAP = Collections.unmodifiableMap(names);
     }

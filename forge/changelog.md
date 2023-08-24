@@ -2,3 +2,4 @@
 - Fixed lag spikes
 - Reworked reflectivity config
 - Reworked occlusion config
+- Added voice chat audio categories to allowed sounds config

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -21,8 +22,6 @@ import org.lwjgl.openal.EXTEfx;
 
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
-
-import static com.sonicether.soundphysics.RaycastFix.fixedRaycast;
 
 public class SoundPhysics {
 
@@ -226,8 +225,6 @@ public class SoundPhysics {
             return null;
         }
 
-        RaycastFix.updateCache();
-
         float directCutoff;
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
@@ -290,7 +287,7 @@ public class SoundPhysics {
 
             Vec3 rayEnd = new Vec3(soundPos.x + rayDir.x * maxDistance, soundPos.y + rayDir.y * maxDistance, soundPos.z + rayDir.z * maxDistance);
 
-            BlockHitResult rayHit = fixedRaycast(soundPos, rayEnd, soundBlockPos);
+            BlockHitResult rayHit = raycast(soundPos, rayEnd, soundBlockPos);
 
             if (rayHit.getType() == HitResult.Type.BLOCK) {
                 double rayLength = soundPos.distanceTo(rayHit.getLocation());
@@ -316,7 +313,7 @@ public class SoundPhysics {
                     Vec3 newRayStart = lastHitPos;
                     Vec3 newRayEnd = new Vec3(newRayStart.x + newRayDir.x * maxDistance, newRayStart.y + newRayDir.y * maxDistance, newRayStart.z + newRayDir.z * maxDistance);
 
-                    BlockHitResult newRayHit = fixedRaycast(newRayStart, newRayEnd, lastHitBlock);
+                    BlockHitResult newRayHit = raycast(newRayStart, newRayEnd, lastHitBlock);
 
                     float blockReflectivity = getBlockReflectivity(lastHitBlock);
                     float energyTowardsPlayer = 0.25F * (blockReflectivity * 0.75F + 0.25F);
@@ -462,7 +459,7 @@ public class SoundPhysics {
         Vec3 rayOrigin = soundPos;
         BlockPos lastBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
         for (int i = 0; i < SoundPhysicsMod.CONFIG.maxOcclusionRays.get(); i++) {
-            BlockHitResult rayHit = fixedRaycast(rayOrigin, playerPos, lastBlockPos);
+            BlockHitResult rayHit = raycast(rayOrigin, playerPos, lastBlockPos);
 
             lastBlockPos = rayHit.getBlockPos();
 
@@ -522,7 +519,7 @@ public class SoundPhysics {
      */
     @Nullable
     private static Vec3 getSharedAirspace(Vec3 soundPosition, Vec3 listenerPosition) {
-        BlockHitResult finalRayHit = fixedRaycast(soundPosition, listenerPosition, null);
+        BlockHitResult finalRayHit = raycast(soundPosition, listenerPosition, null);
         if (finalRayHit.getType() == HitResult.Type.MISS) {
             RaycastRenderer.addSoundBounceRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), ChatFormatting.WHITE.getColor());
             return soundPosition.subtract(listenerPosition);
@@ -614,6 +611,14 @@ public class SoundPhysics {
 
         // Attach updated effect object
         EXTEfx.alAuxiliaryEffectSloti(auxFXSlot, EXTEfx.AL_EFFECTSLOT_EFFECT, reverbSlot);
+    }
+
+    public static BlockHitResult raycast(Vec3 start, Vec3 end, @Nullable BlockPos ignore) {
+        if (mc.level == null) {
+            Vec3 dir = end.subtract(start);
+            return BlockHitResult.miss(end, Direction.getNearest(dir.x, dir.y, dir.z), new BlockPos((int) end.x, (int) end.y, (int) end.z));
+        }
+        return mc.level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player));
     }
 
     protected static void logOcclusion(String message, Object... args) {

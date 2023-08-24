@@ -1,6 +1,6 @@
 package com.sonicether.soundphysics.config.blocksound;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -46,7 +46,7 @@ public class BlockTagDefinition extends BlockDefinition {
         if (!ResourceLocation.isValidResourceLocation(id)) {
             return null;
         }
-        return new BlockTagDefinition(TagKey.create(Registries.BLOCK, new ResourceLocation(id)));
+        return new BlockTagDefinition(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(id)));
     }
 
     @Override

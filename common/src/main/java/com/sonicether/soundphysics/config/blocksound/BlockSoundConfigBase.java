@@ -3,9 +3,6 @@ package com.sonicether.soundphysics.config.blocksound;
 import com.sonicether.soundphysics.SoundPhysics;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -14,7 +11,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
 
@@ -115,7 +115,7 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
             return value;
         }
         for (Map.Entry<TagKey<Block>, Float> entry : getBlockTags().entrySet()) {
-            if (isTagIn(entry.getKey(), blockState.getBlock())) {
+            if (blockState.is(entry.getKey())) {
                 return entry.getValue();
             }
         }
@@ -124,20 +124,6 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
             return value;
         }
         return getDefaultValue();
-    }
-
-    public static <T> boolean isTagIn(TagKey<T> tagKey, T entry) {
-        Optional<? extends Registry<?>> registryOptional = BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().location());
-        if (registryOptional.isPresent()) {
-            if (tagKey.isFor(registryOptional.get().key())) {
-                Registry<T> registry = (Registry<T>) registryOptional.get();
-                Optional<ResourceKey<T>> maybeKey = registry.getResourceKey(entry);
-                if (maybeKey.isPresent()) {
-                    return registry.getHolderOrThrow(maybeKey.get()).is(tagKey);
-                }
-            }
-        }
-        return false;
     }
 
     private void invalidateCaches() {

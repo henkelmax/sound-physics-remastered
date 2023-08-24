@@ -1,6 +1,6 @@
 package com.sonicether.soundphysics.config.blocksound;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -18,7 +18,7 @@ public class BlockIdDefinition extends BlockDefinition {
 
     @Override
     public String getConfigString() {
-        return BuiltInRegistries.BLOCK.getKey(block).toString();
+        return Registry.BLOCK.getKey(block).toString();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class BlockIdDefinition extends BlockDefinition {
         if (!ResourceLocation.isValidResourceLocation(configString)) {
             return null;
         }
-        return new BlockIdDefinition(BuiltInRegistries.BLOCK.get(new ResourceLocation(configString)));
+        return new BlockIdDefinition(Registry.BLOCK.get(new ResourceLocation(configString)));
     }
 
     @Override

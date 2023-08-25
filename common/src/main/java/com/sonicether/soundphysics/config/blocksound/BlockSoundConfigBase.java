@@ -1,6 +1,6 @@
 package com.sonicether.soundphysics.config.blocksound;
 
-import com.sonicether.soundphysics.SoundPhysics;
+import com.sonicether.soundphysics.Loggers;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.Registry;
@@ -46,12 +46,12 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
             try {
                 value = Float.parseFloat(entry.getValue());
             } catch (NumberFormatException e) {
-                SoundPhysics.LOGGER.warn("Failed to parse value of {}", key);
+                Loggers.LOGGER.warn("Failed to parse value of {}", key);
                 continue;
             }
             BlockDefinition blockDefinition = loadBlockDefinition(key);
             if (blockDefinition == null) {
-                SoundPhysics.LOGGER.warn("Block definition {} not found", key);
+                Loggers.LOGGER.warn("Block definition {} not found", key);
                 continue;
             }
 

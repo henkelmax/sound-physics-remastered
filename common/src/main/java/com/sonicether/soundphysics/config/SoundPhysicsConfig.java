@@ -1,5 +1,6 @@
 package com.sonicether.soundphysics.config;
 
+import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysics;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
@@ -152,8 +153,8 @@ public class SoundPhysicsConfig {
                 .comment("Enables/Disables hearing your own echo with Simple Voice Chat");
     }
 
-    public void reload() {
-        SoundPhysics.LOGGER.info("Reloading reverb parameters");
+    public void reloadClient() {
+        Loggers.LOGGER.info("Reloading reverb parameters");
         SoundPhysics.syncReverbParams();
     }
 

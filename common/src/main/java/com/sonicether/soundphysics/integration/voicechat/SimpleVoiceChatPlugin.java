@@ -1,5 +1,6 @@
 package com.sonicether.soundphysics.integration.voicechat;
 
+import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
@@ -36,7 +37,7 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
 
     @Override
     public void initialize(VoicechatApi api) {
-        SoundPhysics.LOGGER.info("Initializing Simple Voice Chat integration");
+        Loggers.LOGGER.info("Initializing Simple Voice Chat integration");
         audioChannels.clear();
     }
 
@@ -64,14 +65,14 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
         long oldContext = EXTThreadLocalContext.alcGetThreadContext();
         EXTThreadLocalContext.alcSetThreadContext(event.getContext());
 
-        SoundPhysics.LOGGER.info("Initializing sound physics for voice chat audio");
+        Loggers.LOGGER.info("Initializing sound physics for voice chat audio");
         SoundPhysics.init();
 
         EXTThreadLocalContext.alcSetThreadContext(oldContext);
     }
 
     private void onConnection(ClientVoicechatConnectionEvent event) {
-        SoundPhysics.DEBUG_LOGGER.info("Clearing unused audio channels");
+        Loggers.DEBUG_LOGGER.info("Clearing unused audio channels");
         audioChannels.values().removeIf(AudioChannel::canBeRemoved);
         locationalAudioChannel = event.getVoicechat().createLocationalAudioChannel(OWN_VOICE_ID, event.getVoicechat().createPosition(0D, 0D, 0D));
     }

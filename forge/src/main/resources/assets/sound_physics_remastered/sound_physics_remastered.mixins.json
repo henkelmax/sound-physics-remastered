@@ -6,14 +6,14 @@
   "refmap": "sound_physics_remastered.refmap.json",
   "mixins": [
     "EntityMixin",
-    "SoundEventMixin",
-    "ChannelAccessor"
+    "SoundEventMixin"
   ],
   "client": [
     "SoundSystemMixin",
     "SourceMixin",
     "DebugRendererMixin",
-    "LibraryMixin"
+    "LibraryMixin",
+    "ChannelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

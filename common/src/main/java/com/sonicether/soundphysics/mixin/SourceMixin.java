@@ -1,6 +1,7 @@
 package com.sonicether.soundphysics.mixin;
 
 import com.mojang.blaze3d.audio.Channel;
+import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import net.minecraft.world.phys.Vec3;
@@ -30,7 +31,7 @@ public class SourceMixin {
     @Inject(method = "play", at = @At("HEAD"))
     private void play(CallbackInfo ci) {
         SoundPhysics.onPlaySound(pos.x, pos.y, pos.z, source);
-        SoundPhysics.logALError("Sound play injector");
+        Loggers.logALError("Sound play injector");
     }
 
     @ModifyArg(method = "linearAttenuation", at = @At(value = "INVOKE", target = "org/lwjgl/openal/AL10.alSourcef(IIF)V", ordinal = 0, remap = false), index = 2)

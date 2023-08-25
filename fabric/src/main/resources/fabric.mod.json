@@ -22,6 +22,9 @@
     "main": [
       "com.sonicether.soundphysics.FabricSoundPhysicsMod"
     ],
+    "client": [
+      "com.sonicether.soundphysics.FabricSoundPhysicsMod"
+    ],
     "modmenu": [
       "com.sonicether.soundphysics.integration.ModMenuIntegration"
     ],

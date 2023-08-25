@@ -6,14 +6,14 @@
   "mixins": [
     "EntityMixin",
     "ServerWorldMixin",
-    "PlaySoundCommandMixin",
-    "ChannelAccessor"
+    "PlaySoundCommandMixin"
   ],
   "client": [
     "SoundSystemMixin",
     "SourceMixin",
     "DebugRendererMixin",
-    "LibraryMixin"
+    "LibraryMixin",
+    "ChannelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

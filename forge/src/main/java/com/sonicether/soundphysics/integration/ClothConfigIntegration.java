@@ -1,8 +1,7 @@
 package com.sonicether.soundphysics.integration;
 
-import com.sonicether.soundphysics.SoundPhysics;
+import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysicsMod;
-import com.sonicether.soundphysics.config.SoundTypes;
 import com.sonicether.soundphysics.config.blocksound.BlockDefinition;
 import de.maxhenkel.configbuilder.entry.*;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
@@ -12,7 +11,6 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.FloatListEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.SoundType;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -212,12 +210,12 @@ public class ClothConfigIntegration {
         ));
 
         builder.setSavingRunnable(() -> {
-            SoundPhysics.LOGGER.info("Saving configs");
+            Loggers.LOGGER.info("Saving configs");
             SoundPhysicsMod.CONFIG.enabled.save();
             SoundPhysicsMod.REFLECTIVITY_CONFIG.save();
             SoundPhysicsMod.OCCLUSION_CONFIG.save();
             SoundPhysicsMod.ALLOWED_SOUND_CONFIG.save();
-            SoundPhysicsMod.CONFIG.reload();
+            SoundPhysicsMod.CONFIG.reloadClient();
         });
 
         return builder.build();

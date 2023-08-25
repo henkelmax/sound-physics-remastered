@@ -14,8 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;
@@ -23,13 +21,9 @@ import org.lwjgl.openal.EXTEfx;
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
 
-public class SoundPhysics {
+import static com.sonicether.soundphysics.Loggers.*;
 
-    private static final String LOG_PREFIX = "Sound Physics - %s";
-    public static final Logger LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "General"));
-    public static final Logger OCCLUSION_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Occlusion"));
-    public static final Logger ENVIRONMENT_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Environment"));
-    public static final Logger DEBUG_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Debug"));
+public class SoundPhysics {
 
     private static final float PHI = 1.618033988F;
 
@@ -622,45 +616,6 @@ public class SoundPhysics {
             return BlockHitResult.miss(end, Direction.getNearest(dir.x, dir.y, dir.z), new BlockPos((int) end.x, (int) end.y, (int) end.z));
         }
         return mc.level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player));
-    }
-
-    protected static void logOcclusion(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.occlusionLogging.get()) {
-            return;
-        }
-        OCCLUSION_LOGGER.info(message, args);
-    }
-
-    protected static void logEnvironment(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.environmentLogging.get()) {
-            return;
-        }
-        ENVIRONMENT_LOGGER.info(message, args);
-    }
-
-    protected static void logDebug(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.debugLogging.get()) {
-            return;
-        }
-        DEBUG_LOGGER.info(message, args);
-    }
-
-    public static void logALError(String errorMessage) {
-        int error = AL11.alGetError();
-        if (error == AL11.AL_NO_ERROR) {
-            return;
-        }
-
-        String errorName = switch (error) {
-            case AL11.AL_INVALID_NAME -> "AL_INVALID_NAME";
-            case AL11.AL_INVALID_ENUM -> "AL_INVALID_ENUM";
-            case AL11.AL_INVALID_VALUE -> "AL_INVALID_VALUE";
-            case AL11.AL_INVALID_OPERATION -> "AL_INVALID_OPERATION";
-            case AL11.AL_OUT_OF_MEMORY -> "AL_OUT_OF_MEMORY";
-            default -> Integer.toString(error);
-        };
-
-        LOGGER.error("{}: OpenAL error {}", errorMessage, errorName);
     }
 
 }

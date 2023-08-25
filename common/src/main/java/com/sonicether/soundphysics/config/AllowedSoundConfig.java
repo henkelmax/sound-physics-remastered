@@ -1,6 +1,6 @@
 package com.sonicether.soundphysics.config;
 
-import com.sonicether.soundphysics.SoundPhysics;
+import com.sonicether.soundphysics.Loggers;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.Registry;
@@ -36,17 +36,17 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
             try {
                 value = Boolean.parseBoolean(entry.getValue());
             } catch (Exception e) {
-                SoundPhysics.LOGGER.warn("Failed to set allowed sound entry {}", key);
+                Loggers.LOGGER.warn("Failed to set allowed sound entry {}", key);
                 continue;
             }
             SoundEvent soundEvent = null;
             try {
                 soundEvent = Registry.SOUND_EVENT.get(new ResourceLocation(key));
             } catch (Exception e) {
-                SoundPhysics.LOGGER.warn("Failed to set allowed sound entry {}", key, e);
+                Loggers.LOGGER.warn("Failed to set allowed sound entry {}", key, e);
             }
             if (soundEvent == null) {
-                SoundPhysics.LOGGER.warn("Sound event {} not found", key);
+                Loggers.LOGGER.warn("Sound event {} not found", key);
                 continue;
             }
 

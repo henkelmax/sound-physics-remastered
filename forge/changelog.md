@@ -1,2 +1,4 @@
 - Added Spanish translation
 - Added Chinese translation
+- Fixed underwater sounds
+- Fixed boat rowing sounds muffled

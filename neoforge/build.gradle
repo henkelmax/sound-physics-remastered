@@ -1,6 +1,6 @@
 plugins {
-    id 'net.neoforged.gradle' version '6.0.+'
-    id 'org.spongepowered.mixin' version "${mixingradle_version}"
+    id 'net.neoforged.gradle.userdev' version '7.0.+'
+    id 'net.neoforged.gradle.mixin' version "${neogradle_mixin_version}"
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -22,26 +22,34 @@ group = maven_group
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
-minecraft {
-    mappings channel: 'official', version: minecraft_version
+configurations {
+    minecraftLibrary {}
+    implementation.extendsFrom minecraftLibrary
+}
 
-    runs {
-        client {
-            workingDirectory file('run')
-            property 'forge.logging.console.level', 'debug'
-            args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-        }
-        server {
-            workingDirectory file('run/server')
-            property 'forge.logging.console.level', 'debug'
-            arg '--nogui'
-        }
-        data {
-            workingDirectory file('run')
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/')
+runs {
+    configureEach {
+        modSource project.sourceSets.main
+        dependencies {
+            runtime configuration(project.configurations.minecraftLibrary)
         }
     }
+    client {
+        workingDirectory file('run')
+        systemProperty 'forge.logging.console.level', 'debug'
+        programArguments = ['--username', "henkelmax${new Random().nextInt(1000)}"]
+        modSource project.sourceSets.main
+    }
+    server {
+        workingDirectory file('run/server')
+        systemProperty 'forge.logging.console.level', 'debug'
+        programArguments '--nogui'
+        modSource project.sourceSets.main
+    }
+}
+
+tasks.withType(JavaCompile).matching(it -> !it.name.startsWith("neo")).configureEach {
+    source(project(":common").sourceSets.main.allSource)
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -49,6 +57,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     maven { url = 'https://maven.shedaniel.me/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://maven.minecraftforge.net' }
     maven {
         url = 'https://api.modrinth.com/maven'
         content {
@@ -62,26 +71,27 @@ configurations {
 }
 
 dependencies {
-    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
+    implementation "net.neoforged:neoforge:${neoforge_version}"
 
-    implementation(project(':common')){
+    compileOnly(project(path: ':common', configuration: 'namedElements')) {
+        transitive false
+    }
+    shadow(project(path: ':common', configuration: 'namedElements')) {
         transitive false
     }
 
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-    runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
-
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    minecraftLibrary "maven.modrinth:simple-voice-chat:neoforge-${voicechat_version}"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
 
     minecraftLibrary "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    shadowMc "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
 }
 
 jar {
@@ -92,8 +102,7 @@ jar {
                     'Implementation-Title'    : mod_name,
                     'Implementation-Version'  : mod_version,
                     'Implementation-Vendor'   : mod_vendor,
-                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    'MixinConnector'          : 'com.sonicether.soundphysics.MixinConnector'
+                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
@@ -104,8 +113,8 @@ processResources {
                 'mod_version': mod_version,
                 'mod_vendor': mod_vendor,
                 'mod_name': mod_name,
-                'mod_forge_version': mod_forge_version,
-                'mod_loader_version': mod_loader_version,
+                'neoforge_version_range': neoforge_version_range,
+                'loader_version': loader_version,
                 'minecraft_version': minecraft_version,
                 'cloth_config_version': cloth_config_version,
                 'voicechat_api_version': voicechat_api_version
@@ -120,20 +129,12 @@ tasks.withType(JavaCompile).configureEach {
     it.options.release = java_version as int
 }
 
-tasks.withType(JavaCompile) {
-    source(project(':common').sourceSets.main.allSource)
-}
-
 shadowJar {
-    configurations = [project.configurations.shadowMc]
+    configurations = [project.configurations.shadow]
     archiveClassifier = ''
     relocate 'de.maxhenkel.configbuilder', 'com.sonicether.soundphysics.configbuilder'
 }
-shadowJar.dependsOn('reobfJar')
-
-reobf {
-    shadowJar {}
-}
+jar.finalizedBy('shadowJar')
 
 curseforge {
     apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
@@ -143,11 +144,10 @@ curseforge {
         changelog = file('changelog.md')
         releaseType = release_type
         addGameVersion curseforge_minecraft_version
-        addGameVersion 'Forge'
         addGameVersion 'NeoForge'
         addGameVersion "Java ${java_version}"
         mainArtifact(jar) {
-            displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
+            displayName = "[NEOFORGE][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
                 optionalDependency 'cloth-config'
                 optionalDependency 'simple-voice-chat'
@@ -155,6 +155,7 @@ curseforge {
         }
     }
 }
+tasks.curseforge.dependsOn(shadowJar)
 
 tasks.modrinth.configure({
     group = 'upload'
@@ -165,25 +166,27 @@ tasks.modrinthSyncBody.configure({
 modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
-    versionNumber = "forge-${mod_version}"
-    versionName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
+    versionNumber = "neoforge-${mod_version}"
+    versionName = "[NEOFORGE][${minecraft_version}] ${mod_name} ${mod_version}"
     uploadFile = jar
     versionType = release_type.toUpperCase()
     changelog = file('changelog.md').text
     gameVersions = [minecraft_version]
-    loaders = ['forge', 'neoforge']
+    loaders = ['neoforge']
     dependencies {
         optional.project 'cloth-config'
         optional.project 'simple-voice-chat'
     }
 }
-tasks.modrinth.dependsOn(shadowJar)
+tasks.modrinth.dependsOn(build)
 
 modUpdate {
     serverURL = 'https://update.maxhenkel.de/'
     modID = mod_id
     gameVersion = minecraft_version
+    modLoader = 'neoforge'
     modVersion = mod_version
+    changelogFile = file('changelog.md')
     releaseType = release_type
     tags = recommended == 'true' ? ['recommended'] : []
 }

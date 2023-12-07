@@ -2,7 +2,9 @@ package com.sonicether.soundphysics.config;
 
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import com.sonicether.soundphysics.config.blocksound.BlockDefinition;
+import com.sonicether.soundphysics.config.blocksound.BlockIdDefinition;
 import com.sonicether.soundphysics.config.blocksound.BlockSoundConfigBase;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 
 import java.nio.file.Path;
@@ -48,6 +50,9 @@ public class OcclusionConfig extends BlockSoundConfigBase {
         putSoundType(map, SoundType.SMALL_AMETHYST_BUD, 0F);
         putSoundType(map, SoundType.LADDER, 0F);
         putSoundType(map, SoundType.CHAIN, 0F);
+
+        map.put(new BlockIdDefinition(Blocks.WATER), 0.25F);
+        map.put(new BlockIdDefinition(Blocks.LAVA), 0.75F);
     }
 
     @Override

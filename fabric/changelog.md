@@ -2,3 +2,4 @@
 - Added Chinese translation
 - Fixed underwater sounds
 - Fixed boat rowing sounds muffled
+- Fixed player hurt sound muffled when standing in water

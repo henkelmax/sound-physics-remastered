@@ -13,7 +13,8 @@
     "DebugRendererMixin",
     "LibraryMixin",
     "ChannelAccessor",
-    "ClientLevelMixin"
+    "ClientLevelMixin",
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

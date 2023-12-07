@@ -178,7 +178,7 @@ modrinth {
         optional.project 'simple-voice-chat'
     }
 }
-tasks.modrinth.dependsOn(build)
+tasks.modrinth.dependsOn(shadowJar)
 
 modUpdate {
     serverURL = 'https://update.maxhenkel.de/'

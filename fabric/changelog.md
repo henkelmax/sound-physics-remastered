@@ -1,1 +1,2 @@
-- Fixed crash on servers
+- Added Spanish translation
+- Added Chinese translation

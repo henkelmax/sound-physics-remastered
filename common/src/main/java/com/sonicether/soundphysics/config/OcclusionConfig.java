@@ -53,6 +53,7 @@ public class OcclusionConfig extends BlockSoundConfigBase {
 
         map.put(new BlockIdDefinition(Blocks.WATER), 0.25F);
         map.put(new BlockIdDefinition(Blocks.LAVA), 0.75F);
+        map.put(new BlockIdDefinition(Blocks.JUKEBOX), 0F);
     }
 
     @Override

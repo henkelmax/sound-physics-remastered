@@ -5,3 +5,4 @@
 - Fixed player hurt sound muffled when standing in water
 - Fixed not being able to hear ambient cave sounds
 - Fixed ambient underwater sounds being muffled
+- Fixed jukebox sounds being occluded

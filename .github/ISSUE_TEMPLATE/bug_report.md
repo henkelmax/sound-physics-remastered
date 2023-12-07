@@ -26,7 +26,8 @@ You can use [https://gist.github.com/](https://gist.github.com/).
 
 **Versions**
 - Minecraft version
-- Forge/Fabric loader version
+- Mod loader
+- Mod loader version
 - Mod version
 
 **Other mods**

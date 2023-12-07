@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="${mod_loader_version}"
+loaderVersion="${loader_version}"
 license="GPL"
 logoFile="icon.png"
 credits="Sonic Ether, vlad2305m"
@@ -8,13 +8,13 @@ authors="Sonic Ether, vlad2305m, Max Henkel"
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
-updateJSONURL="https://update.maxhenkel.de/forge/sound_physics_remastered"
+updateJSONURL="https://update.maxhenkel.de/neoforge/sound_physics_remastered"
 description='''Provides realistic sound attenuation, reverberation, and absorption through blocks.'''
 displayTest="IGNORE_ALL_VERSION"
 [[dependencies.${mod_id}]]
-    modId="forge"
+    modId="neoforge"
     mandatory=true
-    versionRange="${mod_forge_version}"
+    versionRange="${neoforge_version_range}"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]

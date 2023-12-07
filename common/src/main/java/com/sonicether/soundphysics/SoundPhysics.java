@@ -27,6 +27,7 @@ public class SoundPhysics {
 
     private static final float PHI = 1.618033988F;
 
+    private static final Pattern AMBIENT_PATTERN = Pattern.compile("^[a-zA-Z0-9_\\-\\.]+:ambient\\..*$");
     private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
     private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat$");
 
@@ -218,6 +219,11 @@ public class SoundPhysics {
         }
 
         if (!SoundPhysicsMod.ALLOWED_SOUND_CONFIG.isAllowed(sound)) {
+            setDefaultEnvironment(sourceID, auxOnly);
+            return null;
+        }
+
+        if (!SoundPhysicsMod.CONFIG.evaluateAmbientSounds.get() && isAmbientSound(sound)) {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }
@@ -421,8 +427,12 @@ public class SoundPhysics {
         return newSoundPos;
     }
 
-    static boolean isVoicechatSound(String sound) {
+    public static boolean isVoicechatSound(String sound) {
         return VOICECHAT_PATTERN.matcher(sound).matches();
+    }
+
+    public static boolean isAmbientSound(String sound) {
+        return AMBIENT_PATTERN.matcher(sound).matches();
     }
 
     private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, String sound) {

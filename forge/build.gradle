@@ -48,6 +48,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven { url = 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.minecraftforge.net/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven {
         url = 'https://api.modrinth.com/maven'

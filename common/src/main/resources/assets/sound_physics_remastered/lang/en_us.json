@@ -33,6 +33,8 @@
   "cloth_config.sound_physics_remastered.air_absorption.description": "A value controlling the amount that air absorbs high frequencies with distance. A value of 1.0 is physically correct for air with normal humidity and temperature. Higher values mean air will absorb more high frequencies with distance. 0 disables this effect.",
   "cloth_config.sound_physics_remastered.underwater_filter": "Underwater filter",
   "cloth_config.sound_physics_remastered.underwater_filter.description": "How much sound is filtered when the player is underwater. 0.0 means no filter. 1.0 means fully filtered",
+  "cloth_config.sound_physics_remastered.evaluate_ambient_sounds": "Evaluate ambient sounds",
+  "cloth_config.sound_physics_remastered.evaluate_ambient_sounds.description": "Whether sounds like cave, nether or underwater ambient sounds should have sound physics",
   "cloth_config.sound_physics_remastered.sound_blacklist_regex": "Sound blacklist regex",
   "cloth_config.sound_physics_remastered.sound_blacklist_regex.description": "This regex is applied to all sounds that are getting played. If it matches, the sound doesn't get any effects applied to it.",
 

@@ -19,6 +19,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Float> soundDistanceAllowance;
     public final ConfigEntry<Float> airAbsorption;
     public final ConfigEntry<Float> underwaterFilter;
+    public final ConfigEntry<Boolean> evaluateAmbientSounds;
 
     public final ConfigEntry<Integer> environmentEvaluationRayCount;
     public final ConfigEntry<Integer> environmentEvaluationRayBounces;
@@ -96,6 +97,10 @@ public class SoundPhysicsConfig {
                         "How much sound is filtered when the player is underwater",
                         "0.0 means no filter",
                         "1.0 means fully filtered"
+                );
+        evaluateAmbientSounds = builder.booleanEntry("evaluate_ambient_sounds", false)
+                .comment(
+                        "Whether sounds like cave, nether or underwater ambient sounds should have sound physics"
                 );
 
         environmentEvaluationRayCount = builder.integerEntry("environment_evaluation_ray_count", 32, 8, 64)

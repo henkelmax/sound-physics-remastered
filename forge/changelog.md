@@ -6,3 +6,4 @@
 - Fixed not being able to hear ambient cave sounds
 - Fixed ambient underwater sounds being muffled
 - Fixed jukebox sounds being occluded
+- Updated to 1.20.4

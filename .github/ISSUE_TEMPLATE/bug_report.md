@@ -16,6 +16,8 @@ A clear and concise description of what the bug is.
 3. Scroll down to '...'
 4. See error
 
+Please make sure to check if your issue persists if you delete all config files of the mod.
+
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
@@ -35,5 +37,5 @@ A list of the other mods that were installed when this problem occurred.
 It would be ideal if you could test if this problem persists when no other mod is installed.
 If not, please narrow down the mod(s) that are causing the problem.
 
-**Screenshots (Optional)**
-Screenshots of the issue.
+**Videos (Optional)**
+Videos of the issue. Please make sure you enable debug rays in the settings or config.

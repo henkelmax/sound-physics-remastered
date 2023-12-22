@@ -15,25 +15,25 @@ description = '''Provides realistic sound attenuation, reverberation, and absorp
 displayTest = "IGNORE_ALL_VERSION"
 [[dependencies.sound_physics_remastered]]
 modId = "neoforge"
-type = "required"
+mandatory = true
 versionRange = "${neoforge_dependency}"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.sound_physics_remastered]]
 modId = "minecraft"
-type = "required"
+mandatory = true
 versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.sound_physics_remastered]]
 modId = "cloth_config"
-type = "optional"
+mandatory = false
 versionRange = "[${cloth_config_version},)"
 ordering = "AFTER"
 side = "BOTH"
 [[dependencies.sound_physics_remastered]]
 modId = "voicechat"
-type = "optional"
+mandatory = false
 versionRange = "[${minecraft_version}-${voicechat_api_version},)"
 ordering = "AFTER"
 side = "BOTH"

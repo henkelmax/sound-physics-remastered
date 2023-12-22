@@ -1,5 +1,5 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'net.minecraftforge.gradle' version "${forgegradle_version}"
     id 'org.spongepowered.mixin' version "${mixingradle_version}"
 }
 
@@ -7,185 +7,26 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'mod-update'
-apply plugin: 'idea'
 
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
-    }
-}
-
-archivesBaseName = archives_base_name
-version = mod_version
-group = maven_group
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
-
-minecraft {
-    mappings channel: 'official', version: minecraft_version
-
-    runs {
-        client {
-            workingDirectory file('run')
-            property 'forge.logging.console.level', 'debug'
-            args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-        }
-        server {
-            workingDirectory file('run/server')
-            property 'forge.logging.console.level', 'debug'
-            arg '--nogui'
-        }
-        data {
-            workingDirectory file('run')
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/')
-        }
-    }
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-    maven { url = 'https://maven.shedaniel.me/' }
-    maven { url = 'https://maven.minecraftforge.net/' }
-    maven { url = 'https://maven.maxhenkel.de/repository/public' }
-    maven {
-        url = 'https://api.modrinth.com/maven'
-        content {
-            includeGroup 'maven.modrinth'
-        }
-    }
-}
-
-configurations {
-    shadowMc.extendsFrom minecraftLibrary
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-    implementation(project(':common')){
-        transitive false
-    }
-
-    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-    runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
-
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
-
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-
-    minecraftLibrary "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    shadowMc "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-}
-
-mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-}
-
-jar {
-    manifest {
-        attributes(['Specification-Title'     : mod_name,
-                    'Specification-Vendor'    : mod_vendor,
-                    'Specification-Version'   : '1',
-                    'Implementation-Title'    : mod_name,
-                    'Implementation-Version'  : mod_version,
-                    'Implementation-Vendor'   : mod_vendor,
-                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    'MixinConnector'          : 'com.sonicether.soundphysics.MixinConnector'
-        ])
-    }
-}
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
 processResources {
     filesMatching('**/*.toml') {
-        expand 'mod_id': mod_id,
-                'mod_version': mod_version,
-                'mod_vendor': mod_vendor,
-                'mod_name': mod_name,
-                'mod_forge_version': mod_forge_version,
-                'mod_loader_version': mod_loader_version,
+        expand 'mod_version': mod_version,
+                'forge_dependency': forge_dependency,
                 'minecraft_version': minecraft_version,
                 'cloth_config_version': cloth_config_version,
                 'voicechat_api_version': voicechat_api_version
-    }
-    from("${project(':common').projectDir}/src/main/resources") {
-        exclude('*.mixins.json')
+
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    it.options.release = java_version as int
+repositories {
+    maven { url = 'https://maven.shedaniel.me/' }
 }
 
-tasks.withType(JavaCompile) {
-    source(project(':common').sourceSets.main.allSource)
-}
-
-shadowJar {
-    configurations = [project.configurations.shadowMc]
-    archiveClassifier = ''
-    relocate 'de.maxhenkel.configbuilder', 'com.sonicether.soundphysics.configbuilder'
-}
-shadowJar.dependsOn('reobfJar')
-
-reobf {
-    shadowJar {}
-}
-
-curseforge {
-    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
-    project {
-        id = curse_id
-        changelogType = 'markdown'
-        changelog = file('changelog.md')
-        releaseType = release_type
-        addGameVersion minecraft_version
-        addGameVersion 'Forge'
-        addGameVersion 'NeoForge'
-        addGameVersion "Java ${java_version}"
-        mainArtifact(jar) {
-            displayName = "[${minecraft_version}] ${mod_name} ${mod_version}"
-            relations {
-                optionalDependency 'cloth-config'
-                optionalDependency 'simple-voice-chat'
-            }
-        }
-    }
-}
-
-tasks.modrinth.configure({
-    group = 'upload'
-})
-tasks.modrinthSyncBody.configure({
-    group = 'upload'
-})
-modrinth {
-    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
-    projectId = modrinth_id
-    versionNumber = "forge-${mod_version}"
-    versionName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
-    uploadFile = jar
-    versionType = release_type.toUpperCase()
-    changelog = file('changelog.md').text
-    gameVersions = [minecraft_version]
-    loaders = ['forge', 'neoforge']
-    dependencies {
-        optional.project 'cloth-config'
-        optional.project 'simple-voice-chat'
-    }
-}
-tasks.modrinth.dependsOn(shadowJar)
-
-modUpdate {
-    serverURL = 'https://update.maxhenkel.de/'
-    modID = mod_id
-    gameVersion = minecraft_version
-    modVersion = mod_version
-    releaseType = release_type
-    tags = recommended == 'true' ? ['recommended'] : []
+dependencies {
+    compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+    runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
 }

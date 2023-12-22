@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
+  "id": "sound_physics_remastered",
   "version": "${mod_version}",
   "name": "Sound Physics Remastered",
   "description": "Provides realistic sound attenuation, reverberation, and absorption through blocks.",
@@ -36,9 +36,9 @@
     "sound_physics_remastered.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${fabric_loader_version}",
-    "minecraft": "${minecraft_dependency}",
-    "java": ">=17"
+    "fabricloader": "${fabric_loader_dependency}",
+    "minecraft": "${minecraft_version}",
+    "java": ">=${java_version}"
   },
   "breaks": {
     "soundphysics": "*",

@@ -3,166 +3,31 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'mod-update'
-apply plugin: 'idea'
 
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
-    }
-}
-
-archivesBaseName = archives_base_name
-version = mod_version
-group = maven_group
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://maven.fabricmc.net/' }
-    maven { url = 'https://maven.shedaniel.me/' }
-    maven { url = 'https://maven.terraformersmc.com/releases' }
-    maven { url = 'https://maven.maxhenkel.de/repository/public' }
-    maven {
-        url = 'https://api.modrinth.com/maven'
-        content {
-            includeGroup 'maven.modrinth'
-        }
-    }
-}
-
-runClient.doFirst {
-    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-    implementation project(path: ':common', configuration: 'namedElements')
-
-    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-
-    modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${voicechat_version}"
-    modRuntimeOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
-    modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
-
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-}
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
 processResources {
     filesMatching('fabric.mod.json') {
-        expand 'mod_id': mod_id,
+        expand 'java_version': java_version,
                 'mod_version': mod_version,
                 'minecraft_version': minecraft_version,
-                'minecraft_dependency': minecraft_dependency,
-                'fabric_loader_version': fabric_loader_version,
+                'fabric_loader_dependency': fabric_loader_dependency,
                 'cloth_config_version': cloth_config_version,
                 'voicechat_api_version': voicechat_api_version
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = 'UTF-8'
-    it.options.release = 17
+repositories {
+    maven { url = 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.terraformersmc.com/releases' }
 }
 
-tasks.withType(JavaCompile) {
-    source(project(':common').sourceSets.main.allSource)
-}
+dependencies {
+    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+    modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${voicechat_version}"
 
-processResources {
-    from("${project(':common').projectDir}/src/main/resources")
-}
-
-java {
-    withSourcesJar()
-}
-
-jar {
-    from('LICENSE') {
-        rename { "${it}_${archivesBaseName}" }
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
     }
-}
-
-curseforge {
-    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
-    project {
-        id = curse_id
-        changelogType = 'markdown'
-        changelog = file('changelog.md')
-        releaseType = release_type
-        addGameVersion curseforge_minecraft_version
-        addGameVersion 'Fabric'
-        addGameVersion 'Quilt'
-        mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-            displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
-            relations {
-                optionalDependency 'cloth-config'
-                optionalDependency 'modmenu'
-                optionalDependency 'simple-voice-chat'
-            }
-        }
-        afterEvaluate {
-            uploadTask.dependsOn(remapJar)
-        }
-    }
-    options {
-        forgeGradleIntegration = false
-    }
-}
-
-tasks.modrinth.configure({
-    group = 'upload'
-})
-
-modrinth {
-    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
-    projectId = modrinth_id
-    versionNumber = "fabric-${mod_version}"
-    versionName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
-    uploadFile = remapJar
-    versionType = release_type.toUpperCase()
-    changelog = file("changelog.md").text
-    gameVersions = [minecraft_version]
-    loaders = ['fabric', 'quilt']
-    dependencies {
-        optional.project 'cloth-config'
-        optional.project "modmenu"
-        optional.project 'simple-voice-chat'
-    }
-    syncBodyFrom = file("${rootDir}/README.md").text
-}
-tasks.modrinth.dependsOn(build)
-
-modUpdate {
-    serverURL = 'https://update.maxhenkel.de/'
-    modID = mod_id
-    gameVersion = minecraft_version
-    modLoader = 'fabric'
-    modVersion = mod_version
-    changelogFile = file('changelog.md')
-    releaseType = release_type
-    tags = recommended == 'true' ? ['recommended'] : []
-}
-
-shadowJar {
-    configurations = [project.configurations.shadow]
-    archiveClassifier = 'shadow-dev'
-    relocate 'de.maxhenkel.configbuilder', "com.sonicether.soundphysics.configbuilder"
-}
-
-remapJar {
-    dependsOn shadowJar
-    inputFile = shadowJar.archiveFile.get()
+    modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 }

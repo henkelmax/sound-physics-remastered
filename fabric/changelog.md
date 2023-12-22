@@ -1,8 +1,2 @@
-- Added Spanish translation
-- Added Chinese translation
-- Fixed underwater sounds
-- Fixed boat rowing sounds muffled
-- Fixed player hurt sound muffled when standing in water
-- Fixed not being able to hear ambient cave sounds
-- Fixed ambient underwater sounds being muffled
-- Fixed jukebox sounds being occluded
+- Updated dependencies
+- Fixed mod icon size

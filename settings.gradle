@@ -8,5 +8,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'sound-physics'
+rootProject.name = 'sound-physics-remastered'
 include('common', 'fabric', 'neoforge', 'forge')

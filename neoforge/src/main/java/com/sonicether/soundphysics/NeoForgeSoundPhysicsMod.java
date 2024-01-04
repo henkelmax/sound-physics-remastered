@@ -1,12 +1,12 @@
 package com.sonicether.soundphysics;
 
 import com.sonicether.soundphysics.integration.ClothConfigIntegration;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.ConfigScreenHandler;
 
@@ -15,9 +15,9 @@ import java.nio.file.Path;
 @Mod(SoundPhysicsMod.MODID)
 public class NeoForgeSoundPhysicsMod extends SoundPhysicsMod {
 
-    public NeoForgeSoundPhysicsMod() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+    public NeoForgeSoundPhysicsMod(IEventBus eventBus) {
+        eventBus.addListener(this::commonSetup);
+        eventBus.addListener(this::clientSetup);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

@@ -74,9 +74,9 @@ body:
     validations:
       required: true
   - type: textarea
-    id: screenshots
+    id: videos
     attributes:
-      label: Screenshots
-      description: Screenshots of the issue.
+      label: Videos
+      description: Videos of the issue. Please make sure you enable debug rays in the settings or config.
     validations:
-      required: false
+      required: true

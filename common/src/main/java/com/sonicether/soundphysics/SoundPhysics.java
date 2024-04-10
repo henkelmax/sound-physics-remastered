@@ -29,7 +29,7 @@ public class SoundPhysics {
 
     private static final Pattern AMBIENT_PATTERN = Pattern.compile("^[a-zA-Z0-9_\\-\\.]+:ambient\\..*$");
     private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
-    private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat$");
+    private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat:.*$");
 
     private static int auxFXSlot0;
     private static int auxFXSlot1;

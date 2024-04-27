@@ -43,6 +43,7 @@ public class SoundPhysics {
     private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat:.*$");
 
     private static final int LEVEL_CLONE_RANGE = 8;
+    private static final long LEVEL_CLONE_MAX_RETAIN_TIME = 250_000_000L; // 250ms
     private static final boolean USE_UNSAFE_LEVEL_ACCESS = false;
 
     private static int auxFXSlot0;
@@ -64,6 +65,7 @@ public class SoundPhysics {
 
     private static SoundSource lastSoundCategory;
     private static String lastSoundName;
+    private static long lastLevelClone;
     private static int maxAuxSends;
 
     public static void init() {
@@ -208,6 +210,7 @@ public class SoundPhysics {
 
     @Nullable
     private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
+        long currentTime = System.nanoTime();
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
 
@@ -251,8 +254,13 @@ public class SoundPhysics {
         if (USE_UNSAFE_LEVEL_ACCESS) {
             levelProxy = (ClientLevelProxy) level;
         } else {
-            levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
             BlockPos playerBlockPos = new BlockPos((int) playerPos.x, (int) playerPos.y, (int) playerPos.z);
+
+            // ((ClonedClientLevel) levelProxy).getOrigin().distToCenterSqr(playerPos) > 100D
+            if (levelProxy == null || currentTime > lastLevelClone + LEVEL_CLONE_MAX_RETAIN_TIME) {
+                levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
+                lastLevelClone = currentTime;
+            }
         }
 
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);

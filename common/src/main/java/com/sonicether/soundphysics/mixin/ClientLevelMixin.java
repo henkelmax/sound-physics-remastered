@@ -21,6 +21,7 @@ public abstract class ClientLevelMixin {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return;
         }
+        
         SoundEvent value = holder.value();
         if (SoundEvents.BOAT_PADDLE_WATER.equals(value)) {
             ci.cancel();

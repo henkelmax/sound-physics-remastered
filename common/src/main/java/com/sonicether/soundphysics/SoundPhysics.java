@@ -2,7 +2,8 @@ package com.sonicether.soundphysics;
 
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
-import com.sonicether.soundphysics.models.ClientLevelProxy;
+import com.sonicether.soundphysics.world.ClientLevelProxy;
+import com.sonicether.soundphysics.world.ClonedClientLevel;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -34,6 +35,8 @@ public class SoundPhysics {
     private static final Pattern AMBIENT_PATTERN = Pattern.compile("^[a-zA-Z0-9_\\-\\.]+:ambient\\..*$");
     private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
     private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat:.*$");
+
+    private static final int LEVEL_CLONE_RANGE = 8;
 
     private static int auxFXSlot0;
     private static int auxFXSlot1;
@@ -227,6 +230,7 @@ public class SoundPhysics {
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
         // Direct sound occlusion
+
         Vec3 playerPos = minecraft.gameRenderer.getMainCamera().getPosition();
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
@@ -235,11 +239,10 @@ public class SoundPhysics {
 
         logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
         
-        // Prepare thread-safe level proxy with cloned chunks
+        // Prepare thread-safe level proxy
 
-        // TODO: Change proxy initialization to use player position instead of sound position.
-        BlockPos blockPos = new BlockPos((int) posX, (int) posY, (int) posZ);
-        levelProxy = new ClientLevelProxy(level, blockPos);
+        BlockPos playerBlockPos = new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ());
+        levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
 
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 
@@ -248,7 +251,8 @@ public class SoundPhysics {
 
         logOcclusion("Direct cutoff: {}, direct gain: {}", directCutoff, directGain);
 
-        // Calculate reverb parameters for this sound
+        // Calculate reverb parameters
+
         float sendGain0 = 0F;
         float sendGain1 = 0F;
         float sendGain2 = 0F;
@@ -264,6 +268,7 @@ public class SoundPhysics {
         }
 
         // Shoot rays around sound
+
         float maxDistance = 256F;
 
         int numRays = SoundPhysicsMod.CONFIG.environmentEvaluationRayCount.get();

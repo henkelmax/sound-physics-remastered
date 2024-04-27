@@ -251,8 +251,8 @@ public class SoundPhysics {
         if (USE_UNSAFE_LEVEL_ACCESS) {
             levelProxy = (ClientLevelProxy) level;
         } else {
-            BlockPos playerBlockPos = new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ());
             levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
+            BlockPos playerBlockPos = new BlockPos((int) playerPos.x, (int) playerPos.y, (int) playerPos.z);
         }
 
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);

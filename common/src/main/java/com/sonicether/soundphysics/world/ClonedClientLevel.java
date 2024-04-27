@@ -1,4 +1,4 @@
-package com.sonicether.soundphysics.models;
+package com.sonicether.soundphysics.world;
 
 import java.util.HashMap;
 
@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.client.multiplayer.ClientChunkCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,14 +14,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
-public class ClientLevelProxy implements BlockGetter {
-
-    private static final int cacheDistance = 8;
+public class ClonedClientLevel implements ClientLevelProxy {
     
     private final ClonedLevelHeightAccessor heightAccessor;
     private final HashMap<ChunkPos, ClonedLevelChunk> clonedLevelChunks;
 
-    public ClientLevelProxy(ClientLevel level, BlockPos origin) {
+    private static final int cacheDistance = 8;
+
+    public ClonedClientLevel(ClientLevel level, BlockPos origin) {
         ClientChunkCache cache;
         ClonedLevelHeightAccessor heightAccessor;
 

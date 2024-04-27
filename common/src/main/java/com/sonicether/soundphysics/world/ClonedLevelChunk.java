@@ -1,4 +1,4 @@
-package com.sonicether.soundphysics.models;
+package com.sonicether.soundphysics.world;
 
 import java.util.function.Function;
 

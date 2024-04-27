@@ -1,5 +1,20 @@
 package com.sonicether.soundphysics;
 
+import static com.sonicether.soundphysics.Loggers.LOGGER;
+import static com.sonicether.soundphysics.Loggers.logALError;
+import static com.sonicether.soundphysics.Loggers.logDebug;
+import static com.sonicether.soundphysics.Loggers.logEnvironment;
+import static com.sonicether.soundphysics.Loggers.logOcclusion;
+
+import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
+
+import org.joml.Vector3f;
+import org.lwjgl.openal.AL11;
+import org.lwjgl.openal.ALC10;
+import org.lwjgl.openal.EXTEfx;
+
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
@@ -18,15 +33,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
-import org.lwjgl.openal.AL11;
-import org.lwjgl.openal.ALC10;
-import org.lwjgl.openal.EXTEfx;
-
-import javax.annotation.Nullable;
-import java.util.regex.Pattern;
-
-import static com.sonicether.soundphysics.Loggers.*;
 
 public class SoundPhysics {
 

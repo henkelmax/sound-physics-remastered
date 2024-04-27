@@ -43,6 +43,7 @@ public class SoundPhysics {
     private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat:.*$");
 
     private static final int LEVEL_CLONE_RANGE = 8;
+    private static final boolean USE_UNSAFE_LEVEL_ACCESS = false;
 
     private static int auxFXSlot0;
     private static int auxFXSlot1;
@@ -247,8 +248,12 @@ public class SoundPhysics {
         
         // Prepare thread-safe level proxy
 
-        BlockPos playerBlockPos = new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ());
-        levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
+        if (USE_UNSAFE_LEVEL_ACCESS) {
+            levelProxy = (ClientLevelProxy) level;
+        } else {
+            BlockPos playerBlockPos = new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ());
+            levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
+        }
 
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 

@@ -185,25 +185,6 @@ public class SoundPhysics {
         return newPos;
     }
 
-    private static float getBlockReflectivity(BlockPos blockPos) {
-        if (mc.level == null) {
-            return SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get();
-        }
-        BlockState blockState = mc.level.getBlockState(blockPos);
-        return SoundPhysicsMod.REFLECTIVITY_CONFIG.getBlockDefinitionValue(blockState);
-    }
-
-    private static Vec3 reflect(Vec3 dir, Vec3 normal) {
-        //dir - 2.0 * dot(normal, dir) * normal
-        double dot = dir.dot(normal) * 2D;
-
-        double x = dir.x - dot * normal.x;
-        double y = dir.y - dot * normal.y;
-        double z = dir.z - dot * normal.z;
-
-        return new Vec3(x, y, z);
-    }
-
     @Nullable
     private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
         if (mc.player == null || mc.level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
@@ -433,6 +414,26 @@ public class SoundPhysics {
 
     public static boolean isAmbientSound(String sound) {
         return AMBIENT_PATTERN.matcher(sound).matches();
+    }
+    
+    private static float getBlockReflectivity(BlockPos blockPos) {
+        if (levelProxy == null) {
+            return SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get();
+        }
+
+        BlockState blockState = levelProxy.getBlockState(blockPos);
+        return SoundPhysicsMod.REFLECTIVITY_CONFIG.getBlockDefinitionValue(blockState);
+    }
+
+    private static Vec3 reflect(Vec3 dir, Vec3 normal) {
+        //dir - 2.0 * dot(normal, dir) * normal
+        double dot = dir.dot(normal) * 2D;
+
+        double x = dir.x - dot * normal.x;
+        double y = dir.y - dot * normal.y;
+        double z = dir.z - dot * normal.z;
+
+        return new Vec3(x, y, z);
     }
 
     private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, String sound) {

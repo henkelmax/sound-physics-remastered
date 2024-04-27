@@ -8,7 +8,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 import java.nio.file.Path;
 
@@ -27,9 +27,9 @@ public class NeoForgeSoundPhysicsMod extends SoundPhysicsMod {
     public void clientSetup(FMLClientSetupEvent event) {
         initClient();
         if (isClothConfigLoaded()) {
-            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
+            ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> (client, parent) -> {
                 return ClothConfigIntegration.createConfigScreen(parent);
-            }));
+            });
         }
     }
 

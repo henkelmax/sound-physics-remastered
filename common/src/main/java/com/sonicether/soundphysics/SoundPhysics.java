@@ -2,8 +2,12 @@ package com.sonicether.soundphysics;
 
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
+import com.sonicether.soundphysics.models.ClientLevelProxy;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -44,7 +48,9 @@ public class SoundPhysics {
     private static int sendFilter1;
     private static int sendFilter2;
     private static int sendFilter3;
-    private static Minecraft mc;
+
+    private static Minecraft minecraft;
+    private static ClientLevelProxy levelProxy;
 
     private static SoundSource lastSoundCategory;
     private static String lastSoundName;
@@ -54,7 +60,8 @@ public class SoundPhysics {
         LOGGER.info("Initializing Sound Physics");
         setupEFX();
         LOGGER.info("EFX ready");
-        mc = Minecraft.getInstance();
+
+        minecraft = Minecraft.getInstance();
     }
 
     public static void syncReverbParams() {
@@ -71,6 +78,7 @@ public class SoundPhysics {
         //Get current context and device
         long currentContext = ALC10.alcGetCurrentContext();
         long currentDevice = ALC10.alcGetContextsDevice(currentContext);
+
         if (ALC10.alcIsExtensionPresent(currentDevice, "ALC_EXT_EFX")) {
             LOGGER.info("EFX Extension recognized");
         } else {
@@ -178,16 +186,22 @@ public class SoundPhysics {
         logDebug("On play sound - Source ID: {} {}, {}, {} \tSound category: {} \tSound name: {}", source, posX, posY, posZ, category.toString(), sound);
 
         long startTime = System.nanoTime();
+
         @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
+
         if (SoundPhysicsMod.CONFIG.performanceLogging.get()) {
             LOGGER.info("Total calculation time for sound {}: {} milliseconds", sound, (double) (System.nanoTime() - startTime) / 1_000_000D);
         }
+        
         return newPos;
     }
 
     @Nullable
     private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
-        if (mc.player == null || mc.level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
+        LocalPlayer player = minecraft.player;
+        ClientLevel level = minecraft.level;
+
+        if (player == null || level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }
@@ -212,14 +226,20 @@ public class SoundPhysics {
         float directCutoff;
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
-        //Direct sound occlusion
-        Vec3 playerPos = mc.gameRenderer.getMainCamera().getPosition();
+        // Direct sound occlusion
+        Vec3 playerPos = minecraft.gameRenderer.getMainCamera().getPosition();
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
         BlockPos soundBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
 
         logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
+        
+        // Prepare thread-safe level proxy with cloned chunks
+
+        // TODO: Change proxy initialization to use player position instead of sound position.
+        BlockPos blockPos = new BlockPos((int) posX, (int) posY, (int) posZ);
+        levelProxy = new ClientLevelProxy(level, blockPos);
 
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 
@@ -239,7 +259,7 @@ public class SoundPhysics {
         float sendCutoff2 = 1F;
         float sendCutoff3 = 1F;
 
-        if (mc.player.isUnderWater()) {
+        if (minecraft.player.isUnderWater()) {
             directCutoff *= 1F - SoundPhysicsMod.CONFIG.underwaterFilter.get();
         }
 
@@ -258,6 +278,7 @@ public class SoundPhysics {
         float gAngle = PHI * (float) Math.PI * 2F;
 
         Vec3 directSharedAirspaceVector = getSharedAirspace(soundPos, playerPos);
+
         if (directSharedAirspaceVector != null) {
             audioDirection.addDirectAirspace(directSharedAirspaceVector);
         }
@@ -347,12 +368,14 @@ public class SoundPhysics {
                 }
             }
         }
+        
         for (int i = 0; i < bounceReflectivityRatio.length; i++) {
             bounceReflectivityRatio[i] = bounceReflectivityRatio[i] / numRays;
             logEnvironment("Bounce reflectivity {}: {}", i, bounceReflectivityRatio[i]);
         }
 
         @Nullable Vec3 newSoundPos = audioDirection.evaluateSoundPosition(soundPos, playerPos);
+
         if (newSoundPos != null) {
             setSoundPos(sourceID, newSoundPos);
         }
@@ -374,10 +397,10 @@ public class SoundPhysics {
         // Attempt to preserve directionality when airspace is shared by allowing some of the dry signal through but filtered
         float averageSharedAirspace = (sharedAirspaceWeight0 + sharedAirspaceWeight1 + sharedAirspaceWeight2 + sharedAirspaceWeight3) * 0.25F;
         directCutoff = Math.max((float) Math.pow(averageSharedAirspace, 0.5D) * 0.2F, directCutoff);
-
         directGain = auxOnly ? 0F : (float) Math.pow(directCutoff, 0.1D);
 
         sendGain1 *= bounceReflectivityRatio[1];
+
         if (bounceReflectivityRatio.length > 2) {
             sendGain2 *= (float) Math.pow(bounceReflectivityRatio[2], 3D);
         }
@@ -397,14 +420,16 @@ public class SoundPhysics {
 
         logEnvironment("Final environment settings: {}, {}, {}, {}", sendGain0, sendGain1, sendGain2, sendGain3);
 
-        assert mc.player != null;
-        if (mc.player.isUnderWater()) {
+        assert minecraft.player != null;
+        if (minecraft.player.isUnderWater()) {
             sendCutoff0 *= 0.4F;
             sendCutoff1 *= 0.4F;
             sendCutoff2 *= 0.4F;
             sendCutoff3 *= 0.4F;
         }
+        
         setEnvironment(sourceID, sendGain0, sendGain1, sendGain2, sendGain3, sendCutoff0, sendCutoff1, sendCutoff2, sendCutoff3, directCutoff, directGain);
+
         return newSoundPos;
     }
 
@@ -442,12 +467,14 @@ public class SoundPhysics {
         }
         boolean isBlock = category == SoundSource.BLOCKS || BLOCK_PATTERN.matcher(sound).matches();
         double variationFactor = SoundPhysicsMod.CONFIG.occlusionVariation.get();
+
         if (isBlock) {
             variationFactor = Math.max(variationFactor, 0.501D);
         }
+        
         double occlusionAccMin = Double.MAX_VALUE;
-
         occlusionAccMin = Math.min(occlusionAccMin, runOcclusion(soundPos, playerPos));
+
         if (variationFactor > 0D) {
             for (int x = -1; x <= 1; x += 2) {
                 for (int y = -1; y <= 1; y += 2) {
@@ -466,6 +493,7 @@ public class SoundPhysics {
         double occlusionAccumulation = 0D;
         Vec3 rayOrigin = soundPos;
         BlockPos lastBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
+
         for (int i = 0; i < SoundPhysicsMod.CONFIG.maxOcclusionRays.get(); i++) {
             BlockHitResult rayHit = raycast(rayOrigin, playerPos, lastBlockPos);
 
@@ -475,18 +503,19 @@ public class SoundPhysics {
                 RaycastRenderer.addOcclusionRay(rayOrigin, playerPos.add(0D, -0.1D, 0D), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F));
                 break;
             }
+
             RaycastRenderer.addOcclusionRay(rayOrigin, rayHit.getLocation(), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F));
 
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
-            BlockState blockHit = mc.level.getBlockState(blockHitPos);
+            BlockState blockHit = levelProxy.getBlockState(blockHitPos);
             float blockOcclusion = SoundPhysicsMod.OCCLUSION_CONFIG.getBlockDefinitionValue(blockHit);
 
             // Regardless to whether we hit from inside or outside
             Vec3 dirVec = rayOrigin.subtract(blockHitPos.getX() + 0.5D, blockHitPos.getY() + 0.5D, blockHitPos.getZ() + 0.5D);
             Direction sideHit = Direction.getNearest(dirVec.x, dirVec.y, dirVec.z);
 
-            if (!blockHit.isFaceSturdy(mc.level, rayHit.getBlockPos(), sideHit)) {
+            if (!blockHit.isFaceSturdy(levelProxy, rayHit.getBlockPos(), sideHit)) {
                 blockOcclusion *= SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor.get();
             }
 
@@ -622,11 +651,12 @@ public class SoundPhysics {
     }
 
     public static BlockHitResult raycast(Vec3 start, Vec3 end, @Nullable BlockPos ignore) {
-        if (mc.level == null) {
+        if (levelProxy == null) {
             Vec3 dir = end.subtract(start);
             return BlockHitResult.miss(end, Direction.getNearest(dir.x, dir.y, dir.z), new BlockPos((int) end.x, (int) end.y, (int) end.z));
         }
-        return mc.level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player));
+
+        return levelProxy.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, minecraft.player));
     }
 
 }

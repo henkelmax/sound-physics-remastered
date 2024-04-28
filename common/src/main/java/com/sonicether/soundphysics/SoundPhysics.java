@@ -42,8 +42,8 @@ public class SoundPhysics {
     private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
     private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat:.*$");
 
-    private static final int LEVEL_CLONE_RANGE = 8;
-    private static final long LEVEL_CLONE_MAX_RETAIN_TIME = 250_000_000L; // 250ms
+    private static final int LEVEL_CLONE_RANGE = 4;
+    private static final long LEVEL_CLONE_MAX_RETAIN_TIME = 1_000_000_000L; // 1000ms
     private static final boolean USE_UNSAFE_LEVEL_ACCESS = false;
 
     private static int auxFXSlot0;

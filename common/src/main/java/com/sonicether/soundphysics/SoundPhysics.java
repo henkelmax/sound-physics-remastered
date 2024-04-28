@@ -258,8 +258,11 @@ public class SoundPhysics {
 
             // ((ClonedClientLevel) levelProxy).getOrigin().distToCenterSqr(playerPos) > 100D
             if (levelProxy == null || currentTime > lastLevelClone + LEVEL_CLONE_MAX_RETAIN_TIME) {
+                logDebug("Creating new level proxy for sound simulation.");
                 levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
                 lastLevelClone = currentTime;
+            } else {
+                logDebug("Retaining level proxy for sound simulation within timeout, last clone: {}ns", lastLevelClone);
             }
         }
 

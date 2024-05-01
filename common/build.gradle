@@ -11,8 +11,7 @@ dependencies {
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
 
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
-        exclude(group: 'net.fabricmc:fabric-loader')
-        exclude(group: 'net.fabricmc.fabric-api')
+        transitive = false
     }
 }
 

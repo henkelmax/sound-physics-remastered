@@ -18,6 +18,7 @@ public class ClonedClientLevel implements ClientLevelProxy {
     
     private final ClonedLevelHeightAccessor heightAccessor;
     private final HashMap<ChunkPos, ClonedLevelChunk> clonedLevelChunks;
+    private final BlockPos clonedLevelOrigin;
 
     public ClonedClientLevel(ClientLevel level, BlockPos origin, int range) {
         ClientChunkCache cache;
@@ -55,10 +56,15 @@ public class ClonedClientLevel implements ClientLevelProxy {
         // and just try to request all chunks in range from level chunk source.
 
         this.heightAccessor = heightAccessor;
+        this.clonedLevelOrigin = origin;
         this.clonedLevelChunks = cachedLevelChunks;
     }
 
     // Properties
+
+    public BlockPos getOrigin() {
+        return this.clonedLevelOrigin;
+    }
 
     public ClonedLevelChunk getChunk(int x, int z) {
         var chunkPos = new ChunkPos(x, z);

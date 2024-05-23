@@ -124,31 +124,26 @@ final class ClonedLevelChunk extends ChunkAccess {
 
     @Override
     public ChunkStatus getStatus() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
     }
 
     @Override
     public TicksToSave getTicksForSerialization() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTicksForSerialization'");
     }
 
     @Override
     public void removeBlockEntity(@Nonnull BlockPos blockPos) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removeBlockEntity'");
     }
 
     @Override
     public void setBlockEntity(@Nonnull BlockEntity blockEntity) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setBlockEntity'");
     }
 
     @Override
     public BlockState setBlockState(@Nonnull BlockPos blockPos, @Nonnull BlockState blockState, boolean unknownFlag) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setBlockState'");
     }
 

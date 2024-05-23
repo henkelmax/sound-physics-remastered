@@ -17,8 +17,8 @@ import org.lwjgl.openal.EXTEfx;
 
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
+import com.sonicether.soundphysics.utils.LevelAccessUtils;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
-import com.sonicether.soundphysics.world.ClonedClientLevel;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -42,10 +42,6 @@ public class SoundPhysics {
     private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
     private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat:.*$");
 
-    private static final int LEVEL_CLONE_RANGE = 4;
-    private static final long LEVEL_CLONE_MAX_RETAIN_TIME = 1_000_000_000L; // 1000ms
-    private static final boolean USE_UNSAFE_LEVEL_ACCESS = false;
-
     private static int auxFXSlot0;
     private static int auxFXSlot1;
     private static int auxFXSlot2;
@@ -61,11 +57,9 @@ public class SoundPhysics {
     private static int sendFilter3;
 
     private static Minecraft minecraft;
-    private static ClientLevelProxy levelProxy;
 
     private static SoundSource lastSoundCategory;
     private static String lastSoundName;
-    private static long lastLevelClone;
     private static int maxAuxSends;
 
     public static void init() {
@@ -210,7 +204,6 @@ public class SoundPhysics {
 
     @Nullable
     private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
-        long currentTime = System.nanoTime();
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
 
@@ -240,7 +233,6 @@ public class SoundPhysics {
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
         // Direct sound occlusion
-
         Vec3 playerPos = minecraft.gameRenderer.getMainCamera().getPosition();
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
@@ -248,23 +240,6 @@ public class SoundPhysics {
         BlockPos soundBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
 
         logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
-        
-        // Prepare thread-safe level proxy
-
-        if (USE_UNSAFE_LEVEL_ACCESS) {
-            levelProxy = (ClientLevelProxy) level;
-        } else {
-            BlockPos playerBlockPos = new BlockPos((int) playerPos.x, (int) playerPos.y, (int) playerPos.z);
-
-            // ((ClonedClientLevel) levelProxy).getOrigin().distToCenterSqr(playerPos) > 100D
-            if (levelProxy == null || currentTime > lastLevelClone + LEVEL_CLONE_MAX_RETAIN_TIME) {
-                logDebug("Creating new level proxy for sound simulation.");
-                levelProxy = new ClonedClientLevel(level, playerBlockPos, LEVEL_CLONE_RANGE);
-                lastLevelClone = currentTime;
-            } else {
-                logDebug("Retaining level proxy for sound simulation within timeout, last clone: {}ns", lastLevelClone);
-            }
-        }
 
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 
@@ -469,6 +444,8 @@ public class SoundPhysics {
     }
     
     private static float getBlockReflectivity(BlockPos blockPos) {
+        var levelProxy = getLevelProxy();
+
         if (levelProxy == null) {
             return SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get();
         }
@@ -517,8 +494,15 @@ public class SoundPhysics {
     }
 
     private static double runOcclusion(Vec3 soundPos, Vec3 playerPos) {
+        ClientLevelProxy levelProxy = getLevelProxy();
+
+        if (levelProxy == null) {
+            return 0D;
+        }
+
         double occlusionAccumulation = 0D;
         Vec3 rayOrigin = soundPos;
+        
         BlockPos lastBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
 
         for (int i = 0; i < SoundPhysicsMod.CONFIG.maxOcclusionRays.get(); i++) {
@@ -535,6 +519,7 @@ public class SoundPhysics {
 
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
+            
             BlockState blockHit = levelProxy.getBlockState(blockHitPos);
             float blockOcclusion = SoundPhysicsMod.OCCLUSION_CONFIG.getBlockDefinitionValue(blockHit);
 
@@ -570,6 +555,16 @@ public class SoundPhysics {
 
         return levelProxy.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, minecraft.player));
     }
+
+    /**
+     * Returns a proxy to access the client level with a thread-safe level clone if configured.
+     * May return null if caching is enabled but no cache has been created yet on the main thread.
+     * May return an unsafe client level cast to a level proxy if caching is disabled.
+     */
+    private static ClientLevelProxy getLevelProxy() {
+        return LevelAccessUtils.getClientLevelProxy(minecraft);        
+    }
+
     /**
      * Checks if the hit shares the same airspace with the listener
      *

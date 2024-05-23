@@ -19,15 +19,11 @@ public class ClonedClientLevel implements ClientLevelProxy {
     private final ClonedLevelHeightAccessor heightAccessor;
     private final HashMap<ChunkPos, ClonedLevelChunk> clonedLevelChunks;
     private final BlockPos clonedLevelOrigin;
+    private final long clonedLevelTick;
 
-    public ClonedClientLevel(ClientLevel level, BlockPos origin, int range) {
-        ClientChunkCache cache;
-        ClonedLevelHeightAccessor heightAccessor;
-
-        synchronized(level) {
-            cache = level.getChunkSource();
-            heightAccessor = new ClonedLevelHeightAccessor(level);
-        }
+    public ClonedClientLevel(ClientLevel level, BlockPos origin, long tick, int range) {
+        var cache = level.getChunkSource();
+        var heightAccessor = new ClonedLevelHeightAccessor(level);
 
         var cachedLevelChunks = new HashMap<ChunkPos, ClonedLevelChunk>();
         var originChunkPos = new ChunkPos(origin.getX() >> 4, origin.getZ() >> 4);
@@ -57,6 +53,7 @@ public class ClonedClientLevel implements ClientLevelProxy {
 
         this.heightAccessor = heightAccessor;
         this.clonedLevelOrigin = origin;
+        this.clonedLevelTick = tick;
         this.clonedLevelChunks = cachedLevelChunks;
     }
 
@@ -64,6 +61,10 @@ public class ClonedClientLevel implements ClientLevelProxy {
 
     public BlockPos getOrigin() {
         return this.clonedLevelOrigin;
+    }
+
+    public long getTick() {
+        return this.clonedLevelTick;
     }
 
     public ClonedLevelChunk getChunk(int x, int z) {

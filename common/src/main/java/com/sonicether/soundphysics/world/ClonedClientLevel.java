@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.multiplayer.ClientChunkCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
@@ -28,28 +27,19 @@ public class ClonedClientLevel implements ClientLevelProxy {
         var cachedLevelChunks = new HashMap<ChunkPos, ClonedLevelChunk>();
         var originChunkPos = new ChunkPos(origin.getX() >> 4, origin.getZ() >> 4);
 
-        synchronized(cache) {
-            for (int x = -range; x < range; x++) {
-                for (int z = -range; z < range; z++) {
-                    var chunkPos = new ChunkPos(originChunkPos.x + x, originChunkPos.z + z);
-                    var chunk = cache.getChunk(chunkPos.x, chunkPos.z, false);
+        for (int x = -range; x < range; x++) {
+            for (int z = -range; z < range; z++) {
+                var chunkPos = new ChunkPos(originChunkPos.x + x, originChunkPos.z + z);
+                var chunk = cache.getChunk(chunkPos.x, chunkPos.z, false);
 
-                    if (chunk == null) {
-                        continue;
-                    }
-
-                    var clonedChunk = new ClonedLevelChunk(level, chunkPos, chunk.getSections());
-                    cachedLevelChunks.put(chunkPos, clonedChunk);
+                if (chunk == null) {
+                    continue;
                 }
+
+                var clonedChunk = new ClonedLevelChunk(level, chunkPos, chunk.getSections());
+                cachedLevelChunks.put(chunkPos, clonedChunk);
             }
         }
-
-        // (1) Somehow get x, z range of all chunks in client level cache.
-        // (2) Iterate through all chunks in client level cache via `cache.getChunk`.
-        // (3) For each chunk, create clone, from `LevelChunk` to `ClonedLevelChunk`.
-
-        // Alternative, manually compute chunk indices as radius around player position
-        // and just try to request all chunks in range from level chunk source.
 
         this.heightAccessor = heightAccessor;
         this.clonedLevelOrigin = origin;

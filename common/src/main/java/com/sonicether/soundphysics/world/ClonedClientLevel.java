@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.multiplayer.ClientChunkCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
@@ -14,63 +13,74 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
+/**
+ * Read-only sparse clone of a client level section, holding a copy of chunks in a 
+ * radius around an origin point. Intended as a drop-in substitute to `ClientLevel` 
+ * for non-write operations.
+ * 
+ * Offers access to level chunks and height data, as well as proxied access to 
+ * block states, fluid states, block entities, and height data.
+ * 
+ * If gated behind an `AtomicReference<ClonedClientLevel>`, can be 
+ * safely accessed from any thread once built.
+ * 
+ * @author Saint (@augustsaintfreytag)
+ */
 public class ClonedClientLevel implements ClientLevelProxy {
     
     private final ClonedLevelHeightAccessor heightAccessor;
     private final HashMap<ChunkPos, ClonedLevelChunk> clonedLevelChunks;
+    private final BlockPos clonedLevelOrigin;
+    private final long clonedLevelTick;
 
-    public ClonedClientLevel(ClientLevel level, BlockPos origin, int range) {
-        ClientChunkCache cache;
-        ClonedLevelHeightAccessor heightAccessor;
-
-        synchronized(level) {
-            cache = level.getChunkSource();
-            heightAccessor = new ClonedLevelHeightAccessor(level);
-        }
+    public ClonedClientLevel(ClientLevel level, BlockPos origin, long tick, int range) {
+        var cache = level.getChunkSource();
+        var heightAccessor = new ClonedLevelHeightAccessor(level);
 
         var cachedLevelChunks = new HashMap<ChunkPos, ClonedLevelChunk>();
         var originChunkPos = new ChunkPos(origin.getX() >> 4, origin.getZ() >> 4);
 
-        synchronized(cache) {
-            for (int x = -range; x < range; x++) {
-                for (int z = -range; z < range; z++) {
-                    var chunkPos = new ChunkPos(originChunkPos.x + x, originChunkPos.z + z);
-                    var chunk = cache.getChunk(chunkPos.x, chunkPos.z, false);
+        for (int x = -range; x < range; x++) {
+            for (int z = -range; z < range; z++) {
+                var chunkPos = new ChunkPos(originChunkPos.x + x, originChunkPos.z + z);
+                var chunk = cache.getChunk(chunkPos.x, chunkPos.z, false);
 
-                    if (chunk == null) {
-                        continue;
-                    }
-
-                    var clonedChunk = new ClonedLevelChunk(level, chunkPos, chunk.getSections());
-                    cachedLevelChunks.put(chunkPos, clonedChunk);
+                if (chunk == null) {
+                    continue;
                 }
+
+                var clonedChunk = new ClonedLevelChunk(level, chunkPos, chunk.getSections());
+                cachedLevelChunks.put(chunkPos, clonedChunk);
             }
         }
 
-        // (1) Somehow get x, z range of all chunks in client level cache.
-        // (2) Iterate through all chunks in client level cache via `cache.getChunk`.
-        // (3) For each chunk, create clone, from `LevelChunk` to `ClonedLevelChunk`.
-
-        // Alternative, manually compute chunk indices as radius around player position
-        // and just try to request all chunks in range from level chunk source.
-
         this.heightAccessor = heightAccessor;
+        this.clonedLevelOrigin = origin;
+        this.clonedLevelTick = tick;
         this.clonedLevelChunks = cachedLevelChunks;
     }
 
     // Properties
 
+    public BlockPos getOrigin() {
+        return clonedLevelOrigin;
+    }
+
+    public long getTick() {
+        return clonedLevelTick;
+    }
+
     public ClonedLevelChunk getChunk(int x, int z) {
         var chunkPos = new ChunkPos(x, z);
-        return this.clonedLevelChunks.get(chunkPos);
+        return clonedLevelChunks.get(chunkPos);
     }
 
     public BlockState getBlockState(@Nonnull BlockPos blockPos) {
-        if (this.isOutsideBuildHeight(blockPos)) {
+        if (isOutsideBuildHeight(blockPos)) {
             return Blocks.VOID_AIR.defaultBlockState();
         } else {
             var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-            var levelChunk = this.clonedLevelChunks.get(chunkPos);
+            var levelChunk = clonedLevelChunks.get(chunkPos);
 
             if (levelChunk == null) {
                 return Blocks.VOID_AIR.defaultBlockState();
@@ -81,11 +91,11 @@ public class ClonedClientLevel implements ClientLevelProxy {
    }
 
     public FluidState getFluidState(@Nonnull BlockPos blockPos) {
-        if (this.isOutsideBuildHeight(blockPos)) {
+        if (isOutsideBuildHeight(blockPos)) {
             return Fluids.EMPTY.defaultFluidState();
         } else {
             var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-            var levelChunk = this.clonedLevelChunks.get(chunkPos);
+            var levelChunk = clonedLevelChunks.get(chunkPos);
 
             if (levelChunk == null) {
                 return Fluids.EMPTY.defaultFluidState();
@@ -96,16 +106,16 @@ public class ClonedClientLevel implements ClientLevelProxy {
     }
 
     public int getHeight() {
-        return this.heightAccessor.getHeight();
+        return heightAccessor.getHeight();
     }
 
     public int getMinBuildHeight() {
-        return this.heightAccessor.getMinBuildHeight();
+        return heightAccessor.getMinBuildHeight();
     }
 
     public BlockEntity getBlockEntity(@Nonnull BlockPos blockPos) {
         var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-        var levelChunk = this.clonedLevelChunks.get(chunkPos);
+        var levelChunk = clonedLevelChunks.get(chunkPos);
 
         if (levelChunk == null) {
             return null;

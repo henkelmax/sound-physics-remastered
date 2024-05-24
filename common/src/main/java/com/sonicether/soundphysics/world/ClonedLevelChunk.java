@@ -28,9 +28,14 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.ticks.LevelChunkTicks;
 import net.minecraft.world.ticks.TickContainerAccess;
 
-// Need: LevelChunk -> BlockEntity
-
-final class ClonedLevelChunk extends ChunkAccess {
+/**
+ * Read-only sparse clone of a client level chunk.
+ * 
+ * Offers access to block states, fluid states, block entities, and height data.
+ * 
+ * @author Saint (@augustsaintfreytag)
+ */
+public class ClonedLevelChunk extends ChunkAccess {
 
     private final LevelChunkTicks<Block> blockTicks;
     private final LevelChunkTicks<Fluid> fluidTicks;
@@ -43,6 +48,7 @@ final class ClonedLevelChunk extends ChunkAccess {
   
         for(int index = 0; index < numberOfHeightMapTypes; ++index) {
            Heightmap.Types types = heightMapTypes[index];
+
            if (ChunkStatus.FULL.heightmapsAfter().contains(types)) {
               this.heightmaps.put(types, new Heightmap(this, types));
            }
@@ -54,12 +60,12 @@ final class ClonedLevelChunk extends ChunkAccess {
 
     @Override
     public BlockEntity getBlockEntity(@Nonnull BlockPos blockPos) {
-        return this.blockEntities.get(blockPos);
+        return blockEntities.get(blockPos);
     }
 
     @Override
     public BlockState getBlockState(@Nonnull BlockPos blockPos) {
-        return this.withLevelChunkSectionAtPosition(blockPos, section -> {
+        return withLevelChunkSectionAtPosition(blockPos, section -> {
             if (section == null || section.hasOnlyAir()) {
                 return Blocks.AIR.defaultBlockState();
             }
@@ -70,7 +76,7 @@ final class ClonedLevelChunk extends ChunkAccess {
 
     @Override
     public FluidState getFluidState(@Nonnull BlockPos blockPos) {
-        return this.withLevelChunkSectionAtPosition(blockPos, section -> {
+        return withLevelChunkSectionAtPosition(blockPos, section -> {
             if (section == null || section.hasOnlyAir()) {
                 return Fluids.EMPTY.defaultFluidState();
             }
@@ -81,10 +87,10 @@ final class ClonedLevelChunk extends ChunkAccess {
 
     private <ReturnType> ReturnType withLevelChunkSectionAtPosition(BlockPos blockPos, Function<LevelChunkSection, ReturnType> block) {
         try {
-            int sectionIndex = this.getSectionIndex(blockPos.getY());
+            int sectionIndex = getSectionIndex(blockPos.getY());
 
-            if (sectionIndex >= 0 && sectionIndex < this.sections.length) {
-                LevelChunkSection section = this.sections[sectionIndex];
+            if (sectionIndex >= 0 && sectionIndex < sections.length) {
+                LevelChunkSection section = sections[sectionIndex];
                 return block.apply(section);
             }
 
@@ -102,54 +108,52 @@ final class ClonedLevelChunk extends ChunkAccess {
     }
 
     @Override
-    public void addEntity(@Nonnull Entity entity) {
-        // Method is deprecated
-        throw new UnsupportedOperationException("Unimplemented method 'addEntity'");
-    }
-
-    @Override
-    public CompoundTag getBlockEntityNbtForSaving(@Nonnull BlockPos blockPos) {
-        throw new UnsupportedOperationException("Unimplemented method 'getBlockEntityNbtForSaving'");
-    }
-
-    @Override
     public TickContainerAccess<Block> getBlockTicks() {
-        return this.blockTicks;
+        return blockTicks;
     }
 
     @Override
     public TickContainerAccess<Fluid> getFluidTicks() {
-        return this.fluidTicks;
-    }
-
-    @Override
-    public ChunkStatus getStatus() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
+        return fluidTicks;
     }
 
     @Override
     public TicksToSave getTicksForSerialization() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTicksForSerialization'");
+        // Implemented but not needed for access by sound physics.
+        return new ChunkAccess.TicksToSave(this.blockTicks, this.fluidTicks);
+    }
+    
+    @Override
+    public ChunkStatus getStatus() {
+        // Implemented but not needed for access by sound physics.
+        return ChunkStatus.FULL;
+    }
+
+    // Unsupported Functionality
+
+    @Override
+    public void addEntity(@Nonnull Entity entity) {
+        throw new UnsupportedOperationException("Can not add entity to read-only level clone.");
+    }
+
+    @Override
+    public CompoundTag getBlockEntityNbtForSaving(@Nonnull BlockPos blockPos) {
+        throw new UnsupportedOperationException("Can not read block entityt NBT data from read-only level clone.");
     }
 
     @Override
     public void removeBlockEntity(@Nonnull BlockPos blockPos) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeBlockEntity'");
+        throw new UnsupportedOperationException("Can not remove entity from read-only level clone.");
     }
 
     @Override
     public void setBlockEntity(@Nonnull BlockEntity blockEntity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBlockEntity'");
+        throw new UnsupportedOperationException("Can not set block entity in read-only level clone.");
     }
 
     @Override
     public BlockState setBlockState(@Nonnull BlockPos blockPos, @Nonnull BlockState blockState, boolean unknownFlag) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBlockState'");
+        throw new UnsupportedOperationException("Can not set block state in read-only level clone.");
     }
 
 }

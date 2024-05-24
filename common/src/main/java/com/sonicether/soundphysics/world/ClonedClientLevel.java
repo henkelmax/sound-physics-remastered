@@ -13,6 +13,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
+/**
+ * Read-only sparse clone of a client level section, holding a copy of chunks in a 
+ * radius around an origin point. Intended as a drop-in substitute to `ClientLevel` 
+ * for non-write operations.
+ * 
+ * Offers access to level chunks and height data, as well as proxied access to 
+ * block states, fluid states, block entities, and height data.
+ * 
+ * If gated behind an `AtomicReference<ClonedClientLevel>`, can be 
+ * safely accessed from any thread once built.
+ * 
+ * @author Saint (@augustsaintfreytag)
+ */
 public class ClonedClientLevel implements ClientLevelProxy {
     
     private final ClonedLevelHeightAccessor heightAccessor;

@@ -10,6 +10,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 
+/**
+ * Utility module to manage creation, invalidation, and updating of client level clones.
+ * 
+ * Level clones are created on a client tick basis and retained for some time.
+ * Any module on any thread may access the cached level clone for read-only world operations.
+ * 
+ * @author Saint (@augustsaintfreytag)
+ */
 public class LevelAccessUtils {
 
     // Configuration

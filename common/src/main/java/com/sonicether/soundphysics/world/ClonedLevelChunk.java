@@ -28,9 +28,14 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.ticks.LevelChunkTicks;
 import net.minecraft.world.ticks.TickContainerAccess;
 
-// Need: LevelChunk -> BlockEntity
-
-final class ClonedLevelChunk extends ChunkAccess {
+/**
+ * Read-only sparse clone of a client level chunk.
+ * 
+ * Offers access to block states, fluid states, block entities, and height data.
+ * 
+ * @author Saint (@augustsaintfreytag)
+ */
+public class ClonedLevelChunk extends ChunkAccess {
 
     private final LevelChunkTicks<Block> blockTicks;
     private final LevelChunkTicks<Fluid> fluidTicks;

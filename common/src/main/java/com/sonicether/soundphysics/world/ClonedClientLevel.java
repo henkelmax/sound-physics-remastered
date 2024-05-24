@@ -50,24 +50,24 @@ public class ClonedClientLevel implements ClientLevelProxy {
     // Properties
 
     public BlockPos getOrigin() {
-        return this.clonedLevelOrigin;
+        return clonedLevelOrigin;
     }
 
     public long getTick() {
-        return this.clonedLevelTick;
+        return clonedLevelTick;
     }
 
     public ClonedLevelChunk getChunk(int x, int z) {
         var chunkPos = new ChunkPos(x, z);
-        return this.clonedLevelChunks.get(chunkPos);
+        return clonedLevelChunks.get(chunkPos);
     }
 
     public BlockState getBlockState(@Nonnull BlockPos blockPos) {
-        if (this.isOutsideBuildHeight(blockPos)) {
+        if (isOutsideBuildHeight(blockPos)) {
             return Blocks.VOID_AIR.defaultBlockState();
         } else {
             var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-            var levelChunk = this.clonedLevelChunks.get(chunkPos);
+            var levelChunk = clonedLevelChunks.get(chunkPos);
 
             if (levelChunk == null) {
                 return Blocks.VOID_AIR.defaultBlockState();
@@ -78,11 +78,11 @@ public class ClonedClientLevel implements ClientLevelProxy {
    }
 
     public FluidState getFluidState(@Nonnull BlockPos blockPos) {
-        if (this.isOutsideBuildHeight(blockPos)) {
+        if (isOutsideBuildHeight(blockPos)) {
             return Fluids.EMPTY.defaultFluidState();
         } else {
             var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-            var levelChunk = this.clonedLevelChunks.get(chunkPos);
+            var levelChunk = clonedLevelChunks.get(chunkPos);
 
             if (levelChunk == null) {
                 return Fluids.EMPTY.defaultFluidState();
@@ -93,16 +93,16 @@ public class ClonedClientLevel implements ClientLevelProxy {
     }
 
     public int getHeight() {
-        return this.heightAccessor.getHeight();
+        return heightAccessor.getHeight();
     }
 
     public int getMinBuildHeight() {
-        return this.heightAccessor.getMinBuildHeight();
+        return heightAccessor.getMinBuildHeight();
     }
 
     public BlockEntity getBlockEntity(@Nonnull BlockPos blockPos) {
         var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-        var levelChunk = this.clonedLevelChunks.get(chunkPos);
+        var levelChunk = clonedLevelChunks.get(chunkPos);
 
         if (levelChunk == null) {
             return null;

@@ -43,6 +43,7 @@ final class ClonedLevelChunk extends ChunkAccess {
   
         for(int index = 0; index < numberOfHeightMapTypes; ++index) {
            Heightmap.Types types = heightMapTypes[index];
+
            if (ChunkStatus.FULL.heightmapsAfter().contains(types)) {
               this.heightmaps.put(types, new Heightmap(this, types));
            }
@@ -54,12 +55,12 @@ final class ClonedLevelChunk extends ChunkAccess {
 
     @Override
     public BlockEntity getBlockEntity(@Nonnull BlockPos blockPos) {
-        return this.blockEntities.get(blockPos);
+        return blockEntities.get(blockPos);
     }
 
     @Override
     public BlockState getBlockState(@Nonnull BlockPos blockPos) {
-        return this.withLevelChunkSectionAtPosition(blockPos, section -> {
+        return withLevelChunkSectionAtPosition(blockPos, section -> {
             if (section == null || section.hasOnlyAir()) {
                 return Blocks.AIR.defaultBlockState();
             }
@@ -70,7 +71,7 @@ final class ClonedLevelChunk extends ChunkAccess {
 
     @Override
     public FluidState getFluidState(@Nonnull BlockPos blockPos) {
-        return this.withLevelChunkSectionAtPosition(blockPos, section -> {
+        return withLevelChunkSectionAtPosition(blockPos, section -> {
             if (section == null || section.hasOnlyAir()) {
                 return Fluids.EMPTY.defaultFluidState();
             }
@@ -81,10 +82,10 @@ final class ClonedLevelChunk extends ChunkAccess {
 
     private <ReturnType> ReturnType withLevelChunkSectionAtPosition(BlockPos blockPos, Function<LevelChunkSection, ReturnType> block) {
         try {
-            int sectionIndex = this.getSectionIndex(blockPos.getY());
+            int sectionIndex = getSectionIndex(blockPos.getY());
 
-            if (sectionIndex >= 0 && sectionIndex < this.sections.length) {
-                LevelChunkSection section = this.sections[sectionIndex];
+            if (sectionIndex >= 0 && sectionIndex < sections.length) {
+                LevelChunkSection section = sections[sectionIndex];
                 return block.apply(section);
             }
 
@@ -102,24 +103,25 @@ final class ClonedLevelChunk extends ChunkAccess {
     }
 
     @Override
+    public TickContainerAccess<Block> getBlockTicks() {
+        return blockTicks;
+    }
+
+    @Override
+    public TickContainerAccess<Fluid> getFluidTicks() {
+        return fluidTicks;
+    }
+
+    // Unsupported Functionality
+
+    @Override
     public void addEntity(@Nonnull Entity entity) {
-        // Method is deprecated
         throw new UnsupportedOperationException("Unimplemented method 'addEntity'");
     }
 
     @Override
     public CompoundTag getBlockEntityNbtForSaving(@Nonnull BlockPos blockPos) {
         throw new UnsupportedOperationException("Unimplemented method 'getBlockEntityNbtForSaving'");
-    }
-
-    @Override
-    public TickContainerAccess<Block> getBlockTicks() {
-        return this.blockTicks;
-    }
-
-    @Override
-    public TickContainerAccess<Fluid> getFluidTicks() {
-        return this.fluidTicks;
     }
 
     @Override

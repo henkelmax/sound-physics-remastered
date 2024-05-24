@@ -14,16 +14,16 @@ public class LevelAccessUtils {
 
     // Configuration
 
-    private static final boolean USE_UNSAFE_LEVEL_ACCESS = false;   // Disable level clone and cache and fall back to original main thread access. (Default: false)
-    private static final int LEVEL_CLONE_RANGE = 4;                 // Cloned number of chunks in radius around player position. (Default: 4 chunks)
-    private static final long LEVEL_CLONE_MAX_RETAIN_TICKS = 20;    // Maximum number of ticks to retain level clone in cache. (Default: 20 ticks / 1 second)
-    private static final long LEVEL_CLONE_MAX_RETAIN_BLOCK_DISTANCE = (LEVEL_CLONE_RANGE * 16) / 4; // Maximum distance player can move from cloned origin before invalidation. (Default: 25% clone radius)
+    private static final boolean USE_UNSAFE_LEVEL_ACCESS = false;           // Disable level clone and cache and fall back to original main thread access. (Default: false)
+    private static final int LEVEL_CLONE_RANGE = 4;                         // Cloned number of chunks in radius around player position. (Default: 4 chunks)
+    private static final long LEVEL_CLONE_MAX_RETAIN_TICKS = 20;            // Maximum number of ticks to retain level clone in cache. (Default: 20 ticks / 1 second)
+    private static final long LEVEL_CLONE_MAX_RETAIN_BLOCK_DISTANCE = 16;   // Maximum distance player can move from cloned origin before invalidation. (Default: 25% clone radius)
 
     // Cache Write
 
     public static void tickLevelCache(ClientLevel clientLevel, Player player) {
         if (USE_UNSAFE_LEVEL_ACCESS) {
-            // Disable all level cloning, let sound physics use direct unsafe main thread access (original behavior).
+            // Disable all level cloning, use direct unsafe main thread access (original behavior).
             return;
         }
 

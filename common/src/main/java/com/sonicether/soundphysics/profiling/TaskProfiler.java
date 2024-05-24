@@ -1,23 +1,24 @@
 package com.sonicether.soundphysics.profiling;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.sonicether.soundphysics.Loggers;
 
 public class TaskProfiler {
 
-    private static final int TASK_RING_BUFFER_SIZE = 100;
+    private static final int TASK_RING_BUFFER_SIZE = 100;   // Maximum number of task durations to store in ring buffer
 
-    private final String identifier;                // Identifier of the profiler for logging
-    private final Deque<Long> durations;            // Durations stored in milliseconds for each task
-    private final AtomicLong tally;                 // Total number of profiling tasks finished
+
+    private final String identifier;                        // Identifier of the profiler for logging
+    private final Deque<Long> durations;                    // Durations stored in milliseconds for each task
+    private final AtomicLong tally;                         // Total number of profiling tasks finished
 
     public TaskProfiler(String identifier) {
         this.identifier = identifier;
-        this.durations = new ArrayDeque<>(TASK_RING_BUFFER_SIZE);
+        this.durations = new ConcurrentLinkedDeque<>();
         this.tally = new AtomicLong(0);
     }
 
@@ -25,7 +26,7 @@ public class TaskProfiler {
         return new TaskHandle();
     }
 
-    public synchronized void addDuration(long duration) {
+    public void addDuration(long duration) {
         if (durations.size() == TASK_RING_BUFFER_SIZE) {
             durations.poll();
         }
@@ -38,20 +39,20 @@ public class TaskProfiler {
         return tally.get();
     }
 
-    public synchronized double getTotalDuration() {
+    public double getTotalDuration() {
         return durations.stream().mapToLong(Long::longValue).sum();
     }
 
-    public synchronized double getAverageDuration() {
+    public double getAverageDuration() {
         return durations.stream().mapToLong(Long::longValue).average().orElse(0);
     }
 
-    public synchronized long getMinDuration() {
-        return durations.stream().max(Long::compareTo).orElse(Long.MIN_VALUE);
+    public long getMinDuration() {
+        return durations.stream().min(Long::compareTo).orElse(Long.MAX_VALUE);
     }
 
-    public synchronized long getMaxDuration() {
-        return durations.stream().min(Long::compareTo).orElse(Long.MAX_VALUE);
+    public long getMaxDuration() {
+        return durations.stream().max(Long::compareTo).orElse(Long.MIN_VALUE);
     }
 
     public void logResults() {
@@ -68,6 +69,7 @@ public class TaskProfiler {
 
         private TaskHandle() {
             this.startTime = System.nanoTime();
+            this.owner = new WeakReference<>(TaskProfiler.this);
         }
 
         public void finish() {

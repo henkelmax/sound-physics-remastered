@@ -1,17 +1,18 @@
 package com.sonicether.soundphysics.config;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sonicether.soundphysics.Loggers;
+
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AllowedSoundConfig extends CommentedPropertyConfig {
 
@@ -35,17 +36,17 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
             try {
                 value = Boolean.parseBoolean(entry.getValue());
             } catch (Exception e) {
-                Loggers.LOGGER.warn("Failed to set allowed sound entry {}", key);
+                Loggers.warn("Failed to set allowed sound entry {}", key);
                 continue;
             }
             SoundEvent soundEvent = null;
             try {
                 soundEvent = BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation(key));
             } catch (Exception e) {
-                Loggers.LOGGER.warn("Failed to set allowed sound entry {}", key, e);
+                Loggers.warn("Failed to set allowed sound entry {}", key, e);
             }
             if (soundEvent == null) {
-                Loggers.LOGGER.warn("Sound event {} not found", key);
+                Loggers.warn("Sound event {} not found", key);
                 continue;
             }
 

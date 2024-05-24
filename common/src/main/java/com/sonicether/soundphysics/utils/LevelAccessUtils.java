@@ -5,6 +5,7 @@ import com.sonicether.soundphysics.profiling.TaskProfiler;
 import com.sonicether.soundphysics.world.CachingClientLevel;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
 import com.sonicether.soundphysics.world.ClonedClientLevel;
+import com.sonicether.soundphysics.world.UnsafeClientLevel;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -94,7 +95,7 @@ public class LevelAccessUtils {
         }
 
         if (USE_UNSAFE_LEVEL_ACCESS) {
-            return (ClientLevelProxy) clientLevel;
+            return new UnsafeClientLevel(clientLevel);
         }
 
         var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;

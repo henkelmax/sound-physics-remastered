@@ -2,6 +2,7 @@ package com.sonicether.soundphysics.config;
 
 import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysics;
+
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 
@@ -159,7 +160,7 @@ public class SoundPhysicsConfig {
     }
 
     public void reloadClient() {
-        Loggers.LOGGER.info("Reloading reverb parameters");
+        Loggers.log("Reloading reverb parameters");
         SoundPhysics.syncReverbParams();
     }
 

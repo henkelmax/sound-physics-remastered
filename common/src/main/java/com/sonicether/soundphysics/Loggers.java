@@ -7,35 +7,60 @@ import org.lwjgl.openal.AL11;
 public class Loggers {
 
     private static final String LOG_PREFIX = "Sound Physics - %s";
-    public static final Logger DEBUG_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Debug"));
-    public static final Logger ENVIRONMENT_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Environment"));
-    public static final Logger OCCLUSION_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Occlusion"));
-    public static final Logger LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "General"));
 
+    private static final Logger DEBUG_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Debug"));
+    private static final Logger PROFILING_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Profiling"));
+    private static final Logger ENVIRONMENT_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Environment"));
+    private static final Logger OCCLUSION_LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "Occlusion"));
+    private static final Logger LOGGER = LogManager.getLogger(String.format(LOG_PREFIX, "General"));
 
-    protected static void logOcclusion(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.occlusionLogging.get()) {
-            return;
-        }
-        OCCLUSION_LOGGER.info(message, args);
+    public static void log(String message, Object... args) {
+        LOGGER.info(message, args);
     }
 
-    protected static void logEnvironment(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.environmentLogging.get()) {
-            return;
-        }
-        ENVIRONMENT_LOGGER.info(message, args);
+    public static void warn(String message, Object... args) {
+        LOGGER.warn(message, args);
     }
 
-    protected static void logDebug(String message, Object... args) {
+    public static void error(String message, Object... args) {
+        LOGGER.error(message, args);
+    }
+
+    public static void logProfiling(String message, Object... args) {
+        if (!SoundPhysicsMod.CONFIG.performanceLogging.get()) {
+            return;
+        }
+        
+        PROFILING_LOGGER.info(message, args);
+    }
+
+    public static void logDebug(String message, Object... args) {
         if (!SoundPhysicsMod.CONFIG.debugLogging.get()) {
             return;
         }
+        
         DEBUG_LOGGER.info(message, args);
+    }
+
+    public static void logOcclusion(String message, Object... args) {
+        if (!SoundPhysicsMod.CONFIG.occlusionLogging.get()) {
+            return;
+        }
+
+        OCCLUSION_LOGGER.info(message, args);
+    }
+
+    public static void logEnvironment(String message, Object... args) {
+        if (!SoundPhysicsMod.CONFIG.environmentLogging.get()) {
+            return;
+        }
+        
+        ENVIRONMENT_LOGGER.info(message, args);
     }
 
     public static void logALError(String errorMessage) {
         int error = AL11.alGetError();
+
         if (error == AL11.AL_NO_ERROR) {
             return;
         }

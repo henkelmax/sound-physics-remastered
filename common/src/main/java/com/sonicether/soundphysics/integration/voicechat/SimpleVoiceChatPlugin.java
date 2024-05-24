@@ -1,22 +1,29 @@
 package com.sonicether.soundphysics.integration.voicechat;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
+import org.lwjgl.openal.EXTThreadLocalContext;
+
 import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
+
 import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.VoicechatApi;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
-import de.maxhenkel.voicechat.api.events.*;
+import de.maxhenkel.voicechat.api.events.ClientSoundEvent;
+import de.maxhenkel.voicechat.api.events.ClientVoicechatConnectionEvent;
+import de.maxhenkel.voicechat.api.events.CreateOpenALContextEvent;
+import de.maxhenkel.voicechat.api.events.EventRegistration;
+import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.openal.EXTThreadLocalContext;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @ForgeVoicechatPlugin
 public class SimpleVoiceChatPlugin implements VoicechatPlugin {
@@ -37,7 +44,7 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
 
     @Override
     public void initialize(VoicechatApi api) {
-        Loggers.LOGGER.info("Initializing Simple Voice Chat integration");
+        Loggers.log("Initializing Simple Voice Chat integration");
         audioChannels.clear();
     }
 
@@ -65,14 +72,14 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
         long oldContext = EXTThreadLocalContext.alcGetThreadContext();
         EXTThreadLocalContext.alcSetThreadContext(event.getContext());
 
-        Loggers.LOGGER.info("Initializing sound physics for voice chat audio");
+        Loggers.log("Initializing sound physics for voice chat audio");
         SoundPhysics.init();
 
         EXTThreadLocalContext.alcSetThreadContext(oldContext);
     }
 
     private void onConnection(ClientVoicechatConnectionEvent event) {
-        Loggers.DEBUG_LOGGER.info("Clearing unused audio channels");
+        Loggers.logDebug("Clearing unused audio channels");
         audioChannels.values().removeIf(AudioChannel::canBeRemoved);
         locationalAudioChannel = event.getVoicechat().createLocationalAudioChannel(OWN_VOICE_ID, event.getVoicechat().createPosition(0D, 0D, 0D));
     }

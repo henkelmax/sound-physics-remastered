@@ -32,6 +32,10 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Boolean> redirectNonOccludedSounds;
     public final ConfigEntry<Boolean> updateMovingSounds;
     public final ConfigEntry<Integer> soundUpdateInterval;
+    public final ConfigEntry<Boolean> unsafeLevelAccess;
+    public final ConfigEntry<Integer> levelCloneRange;
+    public final ConfigEntry<Integer> levelCloneMaxRetainTicks;
+    public final ConfigEntry<Integer> levelCloneMaxRetainBlockDistance;
 
     public final ConfigEntry<Boolean> debugLogging;
     public final ConfigEntry<Boolean> occlusionLogging;
@@ -139,6 +143,20 @@ public class SoundPhysicsConfig {
                         "Lower values mean more frequent reevaluation but also more lag",
                         "This option only takes effect if update_moving_sounds is enabled"
                 );
+        unsafeLevelAccess = builder.booleanEntry("unsafe_level_access", false)
+                .comment(
+                        "Disable level clone and cache. This will fall back to original main thread access.",
+                        "WARNING! Enabling this will cause instability and issues with other mods."
+                );
+        levelCloneRange = builder.integerEntry("level_clone_range", 4, 2, 16)
+                .comment("The radius of chunks to clone for level access");
+        levelCloneMaxRetainTicks = builder.integerEntry("level_clone_max_retain_ticks", 20, 1, Integer.MAX_VALUE,
+                "The maximum number of ticks to retain the cloned level in the cache"
+        );
+        levelCloneMaxRetainBlockDistance = builder.integerEntry("level_clone_max_retain_block_distance", 16, 1, Integer.MAX_VALUE,
+                "The maximum distance a player can move from the cloned origin before invalidation"
+        );
+
 
         debugLogging = builder.booleanEntry("debug_logging", false)
                 .comment("Enables debug logging");

@@ -75,6 +75,7 @@ public class ClonedClientLevel implements ClientLevelProxy {
         return clonedLevelChunks.get(chunkPos);
     }
 
+    @Override
     public BlockState getBlockState(@Nonnull BlockPos blockPos) {
         if (isOutsideBuildHeight(blockPos)) {
             return Blocks.VOID_AIR.defaultBlockState();
@@ -90,6 +91,7 @@ public class ClonedClientLevel implements ClientLevelProxy {
         return levelChunk.getBlockState(blockPos);
    }
 
+    @Override
     public FluidState getFluidState(@Nonnull BlockPos blockPos) {
         if (isOutsideBuildHeight(blockPos)) {
             return Fluids.EMPTY.defaultFluidState();
@@ -105,14 +107,17 @@ public class ClonedClientLevel implements ClientLevelProxy {
         return levelChunk.getFluidState(blockPos);
     }
 
+    @Override
     public int getHeight() {
         return heightAccessor.getHeight();
     }
 
+    @Override
     public int getMinBuildHeight() {
         return heightAccessor.getMinBuildHeight();
     }
 
+    @Override
     public BlockEntity getBlockEntity(@Nonnull BlockPos blockPos) {
         var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
         var levelChunk = clonedLevelChunks.get(chunkPos);

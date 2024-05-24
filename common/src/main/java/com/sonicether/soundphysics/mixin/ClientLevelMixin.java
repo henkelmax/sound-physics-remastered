@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import com.sonicether.soundphysics.utils.LevelAccessUtils;
+import com.sonicether.soundphysics.world.CachingClientLevel;
 import com.sonicether.soundphysics.world.ClonedClientLevel;
 
 import net.minecraft.client.Minecraft;
@@ -23,12 +24,23 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 
 @Mixin(ClientLevel.class)
-public abstract class ClientLevelMixin {
+public abstract class ClientLevelMixin implements CachingClientLevel {
 
     // Properties
 
     @Unique
-    public AtomicReference<ClonedClientLevel> cachedClone;
+    private AtomicReference<ClonedClientLevel> cachedClone = new AtomicReference<>();
+
+    @Unique
+    public ClonedClientLevel getCachedClone() {
+        return this.cachedClone.get();
+    }
+
+    @Unique
+    public void setCachedClone(ClonedClientLevel cachedClone) {
+        this.cachedClone.set(cachedClone);
+        
+    }
 
     // Tick & Cache
 

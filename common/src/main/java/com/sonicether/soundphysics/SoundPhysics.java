@@ -12,7 +12,7 @@ import org.lwjgl.openal.EXTEfx;
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
 import com.sonicether.soundphysics.profiling.TaskProfiler;
-import com.sonicether.soundphysics.profiling.TaskProfiler.TaskHandle;
+import com.sonicether.soundphysics.profiling.TaskProfiler.TaskProfilerHandle;
 import com.sonicether.soundphysics.utils.LevelAccessUtils;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
 
@@ -189,7 +189,7 @@ public class SoundPhysics {
 
         Loggers.logDebug("Playing sound with source id '{}', position x:{}, y:{}, z:{}, \tcategory: '{}' \tname: '{}'", source, posX, posY, posZ, category.toString(), sound);
 
-        TaskHandle profile = profiler.profile();
+        TaskProfilerHandle profile = profiler.profile();
         @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
         profile.finish();
 

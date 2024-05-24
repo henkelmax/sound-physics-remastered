@@ -23,8 +23,8 @@ public class TaskProfiler {
         this.tally = new AtomicInteger(0);
     }
 
-    public TaskHandle profile() {
-        return new TaskHandle();
+    public TaskProfilerHandle profile() {
+        return new TaskProfilerHandle();
     }
 
     public void addDuration(double duration) {
@@ -66,12 +66,12 @@ public class TaskProfiler {
 
     // Handle
 
-    public class TaskHandle {
+    public class TaskProfilerHandle {
         private final long startTime;
         private double duration;
         private WeakReference<TaskProfiler> owner;
 
-        private TaskHandle() {
+        private TaskProfilerHandle() {
             this.startTime = System.nanoTime();
             this.owner = new WeakReference<>(TaskProfiler.this);
         }

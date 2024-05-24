@@ -37,10 +37,10 @@ public class NeoForgeSoundPhysicsMod extends SoundPhysicsMod {
         if (ModList.get().isLoaded("cloth_config")) {
             try {
                 Class.forName("me.shedaniel.clothconfig2.api.ConfigBuilder");
-                Loggers.LOGGER.info("Using Cloth Config GUI");
+                Loggers.log("Using Cloth Config GUI");
                 return true;
             } catch (Exception e) {
-                Loggers.LOGGER.warn("Failed to load Cloth Config: {}", e.getMessage());
+                Loggers.log("Failed to load Cloth Config: {}", e.getMessage());
                 e.printStackTrace();
             }
         }

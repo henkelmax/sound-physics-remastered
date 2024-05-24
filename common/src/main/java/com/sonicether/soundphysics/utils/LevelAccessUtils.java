@@ -1,8 +1,7 @@
 package com.sonicether.soundphysics.utils;
 
-import java.util.concurrent.atomic.AtomicReference;
-
-import com.sonicether.soundphysics.mixin.ClientLevelMixin;
+import com.sonicether.soundphysics.Loggers;
+import com.sonicether.soundphysics.world.CachingClientLevel;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
 import com.sonicether.soundphysics.world.ClonedClientLevel;
 
@@ -27,34 +26,42 @@ public class LevelAccessUtils {
             // Disable all level cloning, let sound physics use direct unsafe main thread access (original behavior).
             return;
         }
-        
-        // Cast client level reference to mixin to access injected level cache property.
-        var clientLevelMixin = (ClientLevelMixin) (Object) clientLevel;
 
         var currentTick = clientLevel.getGameTime();
         var origin = levelOriginFromPlayer(player);
         
-        if (clientLevelMixin.cachedClone == null) {
+        // Cast client level reference to interface to access injected level cache property.
+        var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
+        var clientLevelClone = cachingClientLevel.getCachedClone();
+        
+        if (clientLevelClone == null) {
             // No cache exists, cache first level clone.
+
+            Loggers.LOGGER.info("Creating new level cache, no existing level clone found in client cache.");
             updateLevelCache(clientLevel, origin, LEVEL_CLONE_MAX_RETAIN_TICKS);
             return;
         }
 
-        var lastClonedLevel = clientLevelMixin.cachedClone.get();
-        var ticksSinceLastClone = currentTick - lastClonedLevel.getTick();
-        var distanceSinceLastClone = origin.distSqr(lastClonedLevel.getOrigin());
+        var ticksSinceLastClone = currentTick - clientLevelClone.getTick();
+        var distanceSinceLastClone = origin.distSqr(clientLevelClone.getOrigin());
 
         if (ticksSinceLastClone >= LEVEL_CLONE_MAX_RETAIN_TICKS || distanceSinceLastClone >= LEVEL_CLONE_MAX_RETAIN_BLOCK_DISTANCE) {
             // Cache expired or player travelled too far from last clone origin point, update cache.
+            
+            Loggers.LOGGER.info("Updating level cache, cache expired ({} ticks) or player moved too far ({} block(s)) from last clone origin.", ticksSinceLastClone, distanceSinceLastClone);
             updateLevelCache(clientLevel, origin, currentTick);
+        } else {
+            Loggers.LOGGER.info("Retaining level cache, cache still valid ({} ticks) and player within range ({} block(s)) from last clone origin.", ticksSinceLastClone, distanceSinceLastClone);
         }
     }
 
     private static void updateLevelCache(ClientLevel clientLevel, BlockPos origin, long tick) {
-        var clientLevelMixin = (ClientLevelMixin) (Object) clientLevel;
-        var clonedLevel = new ClonedClientLevel(clientLevel, origin, tick, LEVEL_CLONE_RANGE);
+        Loggers.LOGGER.info("Updating level cache, creating new level clone with origin {} on tick {}.", origin.toString(), tick);
 
-        clientLevelMixin.cachedClone = new AtomicReference<ClonedClientLevel>(clonedLevel);
+        var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
+        var clientLevelClone = new ClonedClientLevel(clientLevel, origin, tick, LEVEL_CLONE_RANGE);
+
+        cachingClientLevel.setCachedClone(clientLevelClone);
     }
 
     // Cache Read
@@ -63,6 +70,7 @@ public class LevelAccessUtils {
         var clientLevel = client.level;
 
         if (clientLevel == null) {
+            Loggers.LOGGER.warn("Can not return client level proxy, client level does not exist.");
             return null;
         }
 
@@ -70,13 +78,16 @@ public class LevelAccessUtils {
             return (ClientLevelProxy) clientLevel;
         }
 
-        var clientLevelMixin = (ClientLevelMixin) (Object) clientLevel;
+        var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
+        var clientLevelClone = cachingClientLevel.getCachedClone();
 
-        if (clientLevelMixin.cachedClone == null) {
+        if (clientLevelClone == null) {
+            Loggers.LOGGER.info("Can not return client level proxy, client level clone has not been cached.");
             return null;
         }
 
-        return clientLevelMixin.cachedClone.get();
+        Loggers.LOGGER.info("Returning client level proxy from cache.");
+        return clientLevelClone;
     }
 
     // Utilities

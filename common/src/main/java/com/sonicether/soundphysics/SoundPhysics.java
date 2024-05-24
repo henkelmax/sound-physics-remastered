@@ -183,13 +183,13 @@ public class SoundPhysics {
             return null;
         }
 
-        Loggers.logDebug("On play sound - Source ID: {} {}, {}, {} \tSound category: {} \tSound name: {}", source, posX, posY, posZ, category.toString(), sound);
+        Loggers.logDebug("Playing sound with source id '{}', position x:{}, y:{}, z:{}, \tcategory: '{}' \tname: '{}'", source, posX, posY, posZ, category.toString(), sound);
 
         long startTime = System.nanoTime();
         @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
         long endTime = System.nanoTime();
 
-        Loggers.logProfiling("Total calculation time for sound {}: {} milliseconds", sound, (double) (endTime - startTime) / 1_000_000D);
+        Loggers.logProfiling("Evaluated environment for sound {} in {} ms", sound, (double) (endTime - startTime) / 1_000_000D);
         
         return newPos;
     }
@@ -225,7 +225,7 @@ public class SoundPhysics {
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
         // Direct sound occlusion
-        
+
         Vec3 playerPos = minecraft.gameRenderer.getMainCamera().getPosition();
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();

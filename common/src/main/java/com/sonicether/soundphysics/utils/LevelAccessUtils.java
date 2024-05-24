@@ -68,10 +68,16 @@ public class LevelAccessUtils {
     private static void updateLevelCache(ClientLevel clientLevel, BlockPos origin, long tick) {
         Loggers.logDebug("Updating level cache, creating new level clone with origin {} on tick {}.", origin.toShortString(), tick);
 
+        long startTime = System.nanoTime();
+        
         var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
         var clientLevelClone = new ClonedClientLevel(clientLevel, origin, tick, LEVEL_CLONE_RANGE);
 
         cachingClientLevel.setCachedClone(clientLevelClone);
+
+        long endTime = System.nanoTime();
+
+        Loggers.logProfiling("Updated client level clone in cache in {} ms", (double) (endTime - startTime) / 1_000_000D);
     }
 
     // Cache Read

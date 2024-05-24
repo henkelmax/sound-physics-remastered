@@ -1,10 +1,21 @@
 package com.sonicether.soundphysics;
 
-import com.mojang.math.Vector3f;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
+
+import org.joml.Vector3f;
+import org.lwjgl.openal.AL11;
+import org.lwjgl.openal.ALC10;
+import org.lwjgl.openal.EXTEfx;
+
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -14,12 +25,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.openal.AL11;
-import org.lwjgl.openal.ALC10;
-import org.lwjgl.openal.EXTEfx;
-
-import javax.annotation.Nullable;
-import java.util.regex.Pattern;
 
 import static com.sonicether.soundphysics.Loggers.*;
 
@@ -44,17 +49,21 @@ public class SoundPhysics {
     private static int sendFilter1;
     private static int sendFilter2;
     private static int sendFilter3;
-    private static Minecraft mc;
+
+    private static Minecraft minecraft;
+    private static TaskProfiler profiler;
 
     private static SoundSource lastSoundCategory;
     private static String lastSoundName;
     private static int maxAuxSends;
 
     public static void init() {
-        LOGGER.info("Initializing Sound Physics");
+        Loggers.log("Initializing Sound Physics");
         setupEFX();
-        LOGGER.info("EFX ready");
-        mc = Minecraft.getInstance();
+        Loggers.log("EFX ready");
+
+        minecraft = Minecraft.getInstance();
+        profiler = new TaskProfiler("Sound Physics");
     }
 
     public static void syncReverbParams() {
@@ -71,67 +80,68 @@ public class SoundPhysics {
         //Get current context and device
         long currentContext = ALC10.alcGetCurrentContext();
         long currentDevice = ALC10.alcGetContextsDevice(currentContext);
+
         if (ALC10.alcIsExtensionPresent(currentDevice, "ALC_EXT_EFX")) {
-            LOGGER.info("EFX Extension recognized");
+            Loggers.log("EFX Extension recognized");
         } else {
-            LOGGER.error("EFX Extension not found on current device. Aborting.");
+            Loggers.error("EFX Extension not found on current device. Aborting.");
             return;
         }
 
         maxAuxSends = ALC10.alcGetInteger(currentDevice, EXTEfx.ALC_MAX_AUXILIARY_SENDS);
-        LOGGER.info("Max auxiliary sends: {}", maxAuxSends);
+        Loggers.log("Max auxiliary sends: {}", maxAuxSends);
 
         // Create auxiliary effect slots
         auxFXSlot0 = EXTEfx.alGenAuxiliaryEffectSlots();
-        LOGGER.info("Aux slot {} created", auxFXSlot0);
+        Loggers.log("Aux slot {} created", auxFXSlot0);
         EXTEfx.alAuxiliaryEffectSloti(auxFXSlot0, EXTEfx.AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL11.AL_TRUE);
 
         auxFXSlot1 = EXTEfx.alGenAuxiliaryEffectSlots();
-        LOGGER.info("Aux slot {} created", auxFXSlot1);
+        Loggers.log("Aux slot {} created", auxFXSlot1);
         EXTEfx.alAuxiliaryEffectSloti(auxFXSlot1, EXTEfx.AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL11.AL_TRUE);
 
         auxFXSlot2 = EXTEfx.alGenAuxiliaryEffectSlots();
-        LOGGER.info("Aux slot {} created", auxFXSlot2);
+        Loggers.log("Aux slot {} created", auxFXSlot2);
         EXTEfx.alAuxiliaryEffectSloti(auxFXSlot2, EXTEfx.AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL11.AL_TRUE);
 
         auxFXSlot3 = EXTEfx.alGenAuxiliaryEffectSlots();
-        LOGGER.info("Aux slot {} created", auxFXSlot3);
+        Loggers.log("Aux slot {} created", auxFXSlot3);
         EXTEfx.alAuxiliaryEffectSloti(auxFXSlot3, EXTEfx.AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL11.AL_TRUE);
-        logALError("Failed creating auxiliary effect slots");
+        Loggers.logALError("Failed creating auxiliary effect slots");
 
         reverb0 = EXTEfx.alGenEffects();
         EXTEfx.alEffecti(reverb0, EXTEfx.AL_EFFECT_TYPE, EXTEfx.AL_EFFECT_EAXREVERB);
-        logALError("Failed creating reverb effect slot 0");
+        Loggers.logALError("Failed creating reverb effect slot 0");
         reverb1 = EXTEfx.alGenEffects();
         EXTEfx.alEffecti(reverb1, EXTEfx.AL_EFFECT_TYPE, EXTEfx.AL_EFFECT_EAXREVERB);
-        logALError("Failed creating reverb effect slot 1");
+        Loggers.logALError("Failed creating reverb effect slot 1");
         reverb2 = EXTEfx.alGenEffects();
         EXTEfx.alEffecti(reverb2, EXTEfx.AL_EFFECT_TYPE, EXTEfx.AL_EFFECT_EAXREVERB);
-        logALError("Failed creating reverb effect slot 2");
+        Loggers.logALError("Failed creating reverb effect slot 2");
         reverb3 = EXTEfx.alGenEffects();
         EXTEfx.alEffecti(reverb3, EXTEfx.AL_EFFECT_TYPE, EXTEfx.AL_EFFECT_EAXREVERB);
-        logALError("Failed creating reverb effect slot 3");
+        Loggers.logALError("Failed creating reverb effect slot 3");
 
         directFilter0 = EXTEfx.alGenFilters();
         EXTEfx.alFilteri(directFilter0, EXTEfx.AL_FILTER_TYPE, EXTEfx.AL_FILTER_LOWPASS);
-        logDebug("directFilter0: {}", directFilter0);
+        Loggers.logDebug("directFilter0: {}", directFilter0);
 
         sendFilter0 = EXTEfx.alGenFilters();
         EXTEfx.alFilteri(sendFilter0, EXTEfx.AL_FILTER_TYPE, EXTEfx.AL_FILTER_LOWPASS);
-        logDebug("filter0: {}", sendFilter0);
+        Loggers.logDebug("filter0: {}", sendFilter0);
 
         sendFilter1 = EXTEfx.alGenFilters();
         EXTEfx.alFilteri(sendFilter1, EXTEfx.AL_FILTER_TYPE, EXTEfx.AL_FILTER_LOWPASS);
-        logDebug("filter1: {}", sendFilter1);
+        Loggers.logDebug("filter1: {}", sendFilter1);
 
         sendFilter2 = EXTEfx.alGenFilters();
         EXTEfx.alFilteri(sendFilter2, EXTEfx.AL_FILTER_TYPE, EXTEfx.AL_FILTER_LOWPASS);
-        logDebug("filter2: {}", sendFilter2);
+        Loggers.logDebug("filter2: {}", sendFilter2);
 
         sendFilter3 = EXTEfx.alGenFilters();
         EXTEfx.alFilteri(sendFilter3, EXTEfx.AL_FILTER_TYPE, EXTEfx.AL_FILTER_LOWPASS);
-        logDebug("filter3: {}", sendFilter3);
-        logALError("Error creating lowpass filters");
+        Loggers.logDebug("filter3: {}", sendFilter3);
+        Loggers.logALError("Error creating lowpass filters");
 
         syncReverbParams();
     }
@@ -175,38 +185,24 @@ public class SoundPhysics {
             return null;
         }
 
-        logDebug("On play sound - Source ID: {} {}, {}, {} \tSound category: {} \tSound name: {}", source, posX, posY, posZ, category.toString(), sound);
+        Loggers.logDebug("Playing sound with source id '{}', position x:{}, y:{}, z:{}, \tcategory: '{}' \tname: '{}'", source, posX, posY, posZ, category.toString(), sound);
 
-        long startTime = System.nanoTime();
+        TaskProfilerHandle profile = profiler.profile();
         @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
-        if (SoundPhysicsMod.CONFIG.performanceLogging.get()) {
-            LOGGER.info("Total calculation time for sound {}: {} milliseconds", sound, (double) (System.nanoTime() - startTime) / 1_000_000D);
-        }
+        profile.finish();
+
+        Loggers.logProfiling("Evaluated environment for sound {} in {} ms", sound, profile.getDuration());
+        profiler.onTally(() -> profiler.logResults());
+
         return newPos;
-    }
-
-    private static float getBlockReflectivity(BlockPos blockPos) {
-        if (mc.level == null) {
-            return SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get();
-        }
-        BlockState blockState = mc.level.getBlockState(blockPos);
-        return SoundPhysicsMod.REFLECTIVITY_CONFIG.getBlockDefinitionValue(blockState);
-    }
-
-    private static Vec3 reflect(Vec3 dir, Vec3 normal) {
-        //dir - 2.0 * dot(normal, dir) * normal
-        double dot = dir.dot(normal) * 2D;
-
-        double x = dir.x - dot * normal.x;
-        double y = dir.y - dot * normal.y;
-        double z = dir.z - dot * normal.z;
-
-        return new Vec3(x, y, z);
     }
 
     @Nullable
     private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
-        if (mc.player == null || mc.level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
+        LocalPlayer player = minecraft.player;
+        ClientLevel level = minecraft.level;
+
+        if (player == null || level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }
@@ -231,23 +227,25 @@ public class SoundPhysics {
         float directCutoff;
         float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
 
-        //Direct sound occlusion
-        Vec3 playerPos = mc.gameRenderer.getMainCamera().getPosition();
+        // Direct sound occlusion
+
+        Vec3 playerPos = minecraft.gameRenderer.getMainCamera().getPosition();
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
         BlockPos soundBlockPos = new BlockPos(soundPos.x, soundPos.y, soundPos.z);
 
-        logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
+        Loggers.logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
 
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 
         directCutoff = (float) Math.exp(-occlusionAccumulation * absorptionCoeff);
         float directGain = auxOnly ? 0F : (float) Math.pow(directCutoff, 0.1D);
 
-        logOcclusion("Direct cutoff: {}, direct gain: {}", directCutoff, directGain);
+        Loggers.logOcclusion("Direct cutoff: {}, direct gain: {}", directCutoff, directGain);
 
-        // Calculate reverb parameters for this sound
+        // Calculate reverb parameters
+
         float sendGain0 = 0F;
         float sendGain1 = 0F;
         float sendGain2 = 0F;
@@ -258,11 +256,12 @@ public class SoundPhysics {
         float sendCutoff2 = 1F;
         float sendCutoff3 = 1F;
 
-        if (mc.player.isUnderWater()) {
+        if (minecraft.player.isUnderWater()) {
             directCutoff *= 1F - SoundPhysicsMod.CONFIG.underwaterFilter.get();
         }
 
         // Shoot rays around sound
+
         float maxDistance = 256F;
 
         int numRays = SoundPhysicsMod.CONFIG.environmentEvaluationRayCount.get();
@@ -277,6 +276,7 @@ public class SoundPhysics {
         float gAngle = PHI * (float) Math.PI * 2F;
 
         Vec3 directSharedAirspaceVector = getSharedAirspace(soundPos, playerPos);
+
         if (directSharedAirspaceVector != null) {
             audioDirection.addDirectAirspace(directSharedAirspaceVector);
         }
@@ -290,7 +290,7 @@ public class SoundPhysics {
 
             Vec3 rayEnd = new Vec3(soundPos.x + rayDir.x * maxDistance, soundPos.y + rayDir.y * maxDistance, soundPos.z + rayDir.z * maxDistance);
 
-            BlockHitResult rayHit = raycast(soundPos, rayEnd, soundBlockPos);
+            BlockHitResult rayHit = runRaycast(soundPos, rayEnd, soundBlockPos);
 
             if (rayHit.getType() == HitResult.Type.BLOCK) {
                 double rayLength = soundPos.distanceTo(rayHit.getLocation());
@@ -316,7 +316,7 @@ public class SoundPhysics {
                     Vec3 newRayStart = lastHitPos;
                     Vec3 newRayEnd = new Vec3(newRayStart.x + newRayDir.x * maxDistance, newRayStart.y + newRayDir.y * maxDistance, newRayStart.z + newRayDir.z * maxDistance);
 
-                    BlockHitResult newRayHit = raycast(newRayStart, newRayEnd, lastHitBlock);
+                    BlockHitResult newRayHit = runRaycast(newRayStart, newRayEnd, lastHitBlock);
 
                     float blockReflectivity = getBlockReflectivity(lastHitBlock);
                     float energyTowardsPlayer = 0.25F * (blockReflectivity * 0.75F + 0.25F);
@@ -366,19 +366,21 @@ public class SoundPhysics {
                 }
             }
         }
+
         for (int i = 0; i < bounceReflectivityRatio.length; i++) {
             bounceReflectivityRatio[i] = bounceReflectivityRatio[i] / numRays;
-            logEnvironment("Bounce reflectivity {}: {}", i, bounceReflectivityRatio[i]);
+            Loggers.logEnvironment("Bounce reflectivity {}: {}", i, bounceReflectivityRatio[i]);
         }
 
         @Nullable Vec3 newSoundPos = audioDirection.evaluateSoundPosition(soundPos, playerPos);
+
         if (newSoundPos != null) {
             setSoundPos(sourceID, newSoundPos);
         }
 
         float sharedAirspace = audioDirection.getSharedAirspaces() * 64F * rcpTotalRays;
 
-        logEnvironment("Shared airspace: {} ({})", sharedAirspace, audioDirection.getSharedAirspaces());
+        Loggers.logEnvironment("Shared airspace: {} ({})", sharedAirspace, audioDirection.getSharedAirspaces());
 
         float sharedAirspaceWeight0 = Mth.clamp(sharedAirspace / 20F, 0F, 1F);
         float sharedAirspaceWeight1 = Mth.clamp(sharedAirspace / 15F, 0F, 1F);
@@ -393,10 +395,10 @@ public class SoundPhysics {
         // Attempt to preserve directionality when airspace is shared by allowing some of the dry signal through but filtered
         float averageSharedAirspace = (sharedAirspaceWeight0 + sharedAirspaceWeight1 + sharedAirspaceWeight2 + sharedAirspaceWeight3) * 0.25F;
         directCutoff = Math.max((float) Math.pow(averageSharedAirspace, 0.5D) * 0.2F, directCutoff);
-
         directGain = auxOnly ? 0F : (float) Math.pow(directCutoff, 0.1D);
 
         sendGain1 *= bounceReflectivityRatio[1];
+
         if (bounceReflectivityRatio.length > 2) {
             sendGain2 *= (float) Math.pow(bounceReflectivityRatio[2], 3D);
         }
@@ -414,16 +416,18 @@ public class SoundPhysics {
         sendGain2 *= (float) Math.pow(sendCutoff2, 0.1D);
         sendGain3 *= (float) Math.pow(sendCutoff3, 0.1D);
 
-        logEnvironment("Final environment settings: {}, {}, {}, {}", sendGain0, sendGain1, sendGain2, sendGain3);
+        Loggers.logEnvironment("Final environment settings: {}, {}, {}, {}", sendGain0, sendGain1, sendGain2, sendGain3);
 
-        assert mc.player != null;
-        if (mc.player.isUnderWater()) {
+        assert minecraft.player != null;
+        if (minecraft.player.isUnderWater()) {
             sendCutoff0 *= 0.4F;
             sendCutoff1 *= 0.4F;
             sendCutoff2 *= 0.4F;
             sendCutoff3 *= 0.4F;
         }
+
         setEnvironment(sourceID, sendGain0, sendGain1, sendGain2, sendGain3, sendCutoff0, sendCutoff1, sendCutoff2, sendCutoff3, directCutoff, directGain);
+
         return newSoundPos;
     }
 
@@ -435,18 +439,42 @@ public class SoundPhysics {
         return AMBIENT_PATTERN.matcher(sound).matches();
     }
 
+    private static float getBlockReflectivity(BlockPos blockPos) {
+        var levelProxy = getLevelProxy();
+
+        if (levelProxy == null) {
+            return SoundPhysicsMod.CONFIG.defaultBlockReflectivity.get();
+        }
+
+        BlockState blockState = levelProxy.getBlockState(blockPos);
+        return SoundPhysicsMod.REFLECTIVITY_CONFIG.getBlockDefinitionValue(blockState);
+    }
+
+    private static Vec3 reflect(Vec3 dir, Vec3 normal) {
+        //dir - 2.0 * dot(normal, dir) * normal
+        double dot = dir.dot(normal) * 2D;
+
+        double x = dir.x - dot * normal.x;
+        double y = dir.y - dot * normal.y;
+        double z = dir.z - dot * normal.z;
+
+        return new Vec3(x, y, z);
+    }
+
     private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, String sound) {
         if (SoundPhysicsMod.CONFIG.strictOcclusion.get()) {
             return Math.min(runOcclusion(soundPos, playerPos), SoundPhysicsMod.CONFIG.maxOcclusion.get());
         }
         boolean isBlock = category == SoundSource.BLOCKS || BLOCK_PATTERN.matcher(sound).matches();
         double variationFactor = SoundPhysicsMod.CONFIG.occlusionVariation.get();
+
         if (isBlock) {
             variationFactor = Math.max(variationFactor, 0.501D);
         }
-        double occlusionAccMin = Double.MAX_VALUE;
 
+        double occlusionAccMin = Double.MAX_VALUE;
         occlusionAccMin = Math.min(occlusionAccMin, runOcclusion(soundPos, playerPos));
+
         if (variationFactor > 0D) {
             for (int x = -1; x <= 1; x += 2) {
                 for (int y = -1; y <= 1; y += 2) {
@@ -462,11 +490,18 @@ public class SoundPhysics {
     }
 
     private static double runOcclusion(Vec3 soundPos, Vec3 playerPos) {
+        ClientLevelProxy levelProxy = getLevelProxy();
+
+        if (levelProxy == null) {
+            return 0D;
+        }
+
         double occlusionAccumulation = 0D;
         Vec3 rayOrigin = soundPos;
+
         BlockPos lastBlockPos = new BlockPos(soundPos.x, soundPos.y, soundPos.z);
         for (int i = 0; i < SoundPhysicsMod.CONFIG.maxOcclusionRays.get(); i++) {
-            BlockHitResult rayHit = raycast(rayOrigin, playerPos, lastBlockPos);
+            BlockHitResult rayHit = runRaycast(rayOrigin, playerPos, lastBlockPos);
 
             lastBlockPos = rayHit.getBlockPos();
 
@@ -474,33 +509,55 @@ public class SoundPhysics {
                 RaycastRenderer.addOcclusionRay(rayOrigin, playerPos.add(0D, -0.1D, 0D), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F));
                 break;
             }
+
             RaycastRenderer.addOcclusionRay(rayOrigin, rayHit.getLocation(), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F));
 
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
-            BlockState blockHit = mc.level.getBlockState(blockHitPos);
+
+            BlockState blockHit = levelProxy.getBlockState(blockHitPos);
             float blockOcclusion = SoundPhysicsMod.OCCLUSION_CONFIG.getBlockDefinitionValue(blockHit);
 
             // Regardless to whether we hit from inside or outside
             Vec3 dirVec = rayOrigin.subtract(blockHitPos.getX() + 0.5D, blockHitPos.getY() + 0.5D, blockHitPos.getZ() + 0.5D);
             Direction sideHit = Direction.getNearest(dirVec.x, dirVec.y, dirVec.z);
 
-            if (!blockHit.isFaceSturdy(mc.level, rayHit.getBlockPos(), sideHit)) {
+            if (!blockHit.isFaceSturdy(levelProxy, rayHit.getBlockPos(), sideHit)) {
                 blockOcclusion *= SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor.get();
             }
 
-            logOcclusion("{} \t{},{},{}", blockHit.getBlock().getDescriptionId(), rayOrigin.x, rayOrigin.y, rayOrigin.z);
+            Loggers.logOcclusion("{} \t{},{},{}", blockHit.getBlock().getDescriptionId(), rayOrigin.x, rayOrigin.y, rayOrigin.z);
 
-            //Accumulate density
+            // Accumulate density
             occlusionAccumulation += blockOcclusion;
 
             if (occlusionAccumulation > SoundPhysicsMod.CONFIG.maxOcclusion.get()) {
-                logOcclusion("Max occlusion reached after {} steps", i + 1);
+                Loggers.logOcclusion("Max occlusion reached after {} steps", i + 1);
                 break;
             }
         }
 
         return occlusionAccumulation;
+    }
+
+    public static BlockHitResult runRaycast(Vec3 start, Vec3 end, @Nullable BlockPos ignore) {
+        var levelProxy = getLevelProxy();
+
+        if (levelProxy == null) {
+            Vec3 dir = end.subtract(start);
+            return BlockHitResult.miss(end, Direction.getNearest(dir.x, dir.y, dir.z), new BlockPos((int) end.x, (int) end.y, (int) end.z));
+        }
+
+        return levelProxy.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, minecraft.player));
+    }
+
+    /**
+     * Returns a proxy to access the client level with a thread-safe level clone if configured.
+     * May return null if caching is enabled but no cache has been created yet on the main thread.
+     * May return an unsafe client level cast to a level proxy if caching is disabled.
+     */
+    private static ClientLevelProxy getLevelProxy() {
+        return LevelAccessUtils.getClientLevelProxy(minecraft);
     }
 
     /**
@@ -526,7 +583,7 @@ public class SoundPhysics {
      */
     @Nullable
     private static Vec3 getSharedAirspace(Vec3 soundPosition, Vec3 listenerPosition) {
-        BlockHitResult finalRayHit = raycast(soundPosition, listenerPosition, null);
+        BlockHitResult finalRayHit = runRaycast(soundPosition, listenerPosition, null);
         if (finalRayHit.getType() == HitResult.Type.MISS) {
             RaycastRenderer.addSoundBounceRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), ChatFormatting.WHITE.getColor());
             return soundPosition.subtract(listenerPosition);
@@ -552,37 +609,37 @@ public class SoundPhysics {
             EXTEfx.alFilterf(sendFilter0, EXTEfx.AL_LOWPASS_GAIN, sendGain0);
             EXTEfx.alFilterf(sendFilter0, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff0);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot0, 3, sendFilter0);
-            logALError("Set environment filter0:");
+            Loggers.logALError("Set environment filter0:");
         }
 
         if (maxAuxSends >= 3) {
             EXTEfx.alFilterf(sendFilter1, EXTEfx.AL_LOWPASS_GAIN, sendGain1);
             EXTEfx.alFilterf(sendFilter1, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff1);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot1, 2, sendFilter1);
-            logALError("Set environment filter1:");
+            Loggers.logALError("Set environment filter1:");
         }
 
         if (maxAuxSends >= 2) {
             EXTEfx.alFilterf(sendFilter2, EXTEfx.AL_LOWPASS_GAIN, sendGain2);
             EXTEfx.alFilterf(sendFilter2, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff2);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot2, 1, sendFilter2);
-            logALError("Set environment filter2:");
+            Loggers.logALError("Set environment filter2:");
         }
 
         if (maxAuxSends >= 1) {
             EXTEfx.alFilterf(sendFilter3, EXTEfx.AL_LOWPASS_GAIN, sendGain3);
             EXTEfx.alFilterf(sendFilter3, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff3);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot3, 0, sendFilter3);
-            logALError("Set environment filter3:");
+            Loggers.logALError("Set environment filter3:");
         }
 
         EXTEfx.alFilterf(directFilter0, EXTEfx.AL_LOWPASS_GAIN, directGain);
         EXTEfx.alFilterf(directFilter0, EXTEfx.AL_LOWPASS_GAINHF, directCutoff);
         AL11.alSourcei(sourceID, EXTEfx.AL_DIRECT_FILTER, directFilter0);
-        logALError("Set environment directFilter0:");
+        Loggers.logALError("Set environment directFilter0:");
 
         AL11.alSourcef(sourceID, EXTEfx.AL_AIR_ABSORPTION_FACTOR, SoundPhysicsMod.CONFIG.airAbsorption.get());
-        logALError("Set environment airAbsorption:");
+        Loggers.logALError("Set environment airAbsorption:");
     }
 
     private static void setSoundPos(int sourceID, Vec3 pos) {
@@ -594,38 +651,30 @@ public class SoundPhysics {
      */
     protected static void setReverbParams(ReverbParams r, int auxFXSlot, int reverbSlot) {
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DENSITY, r.density);
-        logALError("Error while assigning reverb density: " + r.density);
+        Loggers.logALError("Error while assigning reverb density: " + r.density);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DIFFUSION, r.diffusion);
-        logALError("Error while assigning reverb diffusion: " + r.diffusion);
+        Loggers.logALError("Error while assigning reverb diffusion: " + r.diffusion);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_GAIN, r.gain);
-        logALError("Error while assigning reverb gain: " + r.gain);
+        Loggers.logALError("Error while assigning reverb gain: " + r.gain);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_GAINHF, r.gainHF);
-        logALError("Error while assigning reverb gainHF: " + r.gainHF);
+        Loggers.logALError("Error while assigning reverb gainHF: " + r.gainHF);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DECAY_TIME, r.decayTime);
-        logALError("Error while assigning reverb decayTime: " + r.decayTime);
+        Loggers.logALError("Error while assigning reverb decayTime: " + r.decayTime);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DECAY_HFRATIO, r.decayHFRatio);
-        logALError("Error while assigning reverb decayHFRatio: " + r.decayHFRatio);
+        Loggers.logALError("Error while assigning reverb decayHFRatio: " + r.decayHFRatio);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_REFLECTIONS_GAIN, r.reflectionsGain);
-        logALError("Error while assigning reverb reflectionsGain: " + r.reflectionsGain);
+        Loggers.logALError("Error while assigning reverb reflectionsGain: " + r.reflectionsGain);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_LATE_REVERB_GAIN, r.lateReverbGain);
-        logALError("Error while assigning reverb lateReverbGain: " + r.lateReverbGain);
+        Loggers.logALError("Error while assigning reverb lateReverbGain: " + r.lateReverbGain);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_LATE_REVERB_DELAY, r.lateReverbDelay);
-        logALError("Error while assigning reverb lateReverbDelay: " + r.lateReverbDelay);
+        Loggers.logALError("Error while assigning reverb lateReverbDelay: " + r.lateReverbDelay);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_AIR_ABSORPTION_GAINHF, r.airAbsorptionGainHF);
-        logALError("Error while assigning reverb airAbsorptionGainHF: " + r.airAbsorptionGainHF);
+        Loggers.logALError("Error while assigning reverb airAbsorptionGainHF: " + r.airAbsorptionGainHF);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, r.roomRolloffFactor);
-        logALError("Error while assigning reverb roomRolloffFactor: " + r.roomRolloffFactor);
+        Loggers.logALError("Error while assigning reverb roomRolloffFactor: " + r.roomRolloffFactor);
 
         // Attach updated effect object
         EXTEfx.alAuxiliaryEffectSloti(auxFXSlot, EXTEfx.AL_EFFECTSLOT_EFFECT, reverbSlot);
-    }
-
-    public static BlockHitResult raycast(Vec3 start, Vec3 end, @Nullable BlockPos ignore) {
-        if (mc.level == null) {
-            Vec3 dir = end.subtract(start);
-            return BlockHitResult.miss(end, Direction.getNearest(dir.x, dir.y, dir.z), new BlockPos((int) end.x, (int) end.y, (int) end.z));
-        }
-        return mc.level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, mc.player));
     }
 
 }

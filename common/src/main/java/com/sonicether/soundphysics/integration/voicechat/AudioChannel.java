@@ -32,8 +32,8 @@ public class AudioChannel {
             return;
         }
 
-
         SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, CATEGORY_TEMPLATE.formatted(category == null ? CATEGORY_VOICECHAT : category));
+
         if (auxOnly) {
             SoundPhysics.onPlayReverb(soundPos.x(), soundPos.y(), soundPos.z(), source);
         } else {

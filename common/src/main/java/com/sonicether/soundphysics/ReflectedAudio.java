@@ -11,10 +11,14 @@ public class ReflectedAudio {
 
     // SoundDirection / Travel length
     private final List<Map.Entry<Vec3, Double>> airspaceDirections;
+
     @Nullable
     private Map.Entry<Vec3, Double> directDirection;
+    
     private final double occlusion;
+    
     private final String sound;
+    
     private int sharedAirspaces;
 
     public ReflectedAudio(double occlusion, String sound) {

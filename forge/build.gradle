@@ -28,8 +28,8 @@ minecraft.reobf = false
 
 dependencies {
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-    runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
-    //implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
+    runtimeOnly "maven.modrinth:simple-voice-chat:forge-${voicechat_version}"
+    //implementation "me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}") {
         transitive = false
     }

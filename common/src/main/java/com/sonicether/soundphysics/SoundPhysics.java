@@ -4,7 +4,10 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import org.joml.Vector3f;
+import com.mojang.math.Vector3f;
+import com.sonicether.soundphysics.profiling.TaskProfiler;
+import com.sonicether.soundphysics.utils.LevelAccessUtils;
+import com.sonicether.soundphysics.world.ClientLevelProxy;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;
@@ -25,8 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
-import static com.sonicether.soundphysics.Loggers.*;
 
 public class SoundPhysics {
 
@@ -187,7 +188,7 @@ public class SoundPhysics {
 
         Loggers.logDebug("Playing sound with source id '{}', position x:{}, y:{}, z:{}, \tcategory: '{}' \tname: '{}'", source, posX, posY, posZ, category.toString(), sound);
 
-        TaskProfilerHandle profile = profiler.profile();
+        TaskProfiler.TaskProfilerHandle profile = profiler.profile();
         @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
         profile.finish();
 

@@ -1,6 +1,7 @@
 package com.sonicether.soundphysics.world;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,7 +10,7 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
@@ -30,9 +31,9 @@ import net.minecraft.world.ticks.TickContainerAccess;
 
 /**
  * Read-only sparse clone of a client level chunk.
- * 
+ * <p>
  * Offers access to block states, fluid states, block entities, and height data.
- * 
+ *
  * @author Saint (@augustsaintfreytag)
  */
 public class ClonedLevelChunk extends ChunkAccess {
@@ -41,19 +42,19 @@ public class ClonedLevelChunk extends ChunkAccess {
     private final LevelChunkTicks<Fluid> fluidTicks;
 
     public ClonedLevelChunk(Level level, ChunkPos chunkPos, @Nullable LevelChunkSection[] levelChunkSections) {
-        super(chunkPos, null, new ClonedLevelHeightAccessor(level), level.registryAccess().registryOrThrow(Registries.BIOME), 0, levelChunkSections, null);
+        super(chunkPos, null, new ClonedLevelHeightAccessor(level), BuiltinRegistries.BIOME, 0, levelChunkSections, null);
 
         Heightmap.Types[] heightMapTypes = Heightmap.Types.values();
         int numberOfHeightMapTypes = heightMapTypes.length;
-  
-        for(int index = 0; index < numberOfHeightMapTypes; ++index) {
-           Heightmap.Types types = heightMapTypes[index];
 
-           if (ChunkStatus.FULL.heightmapsAfter().contains(types)) {
-              this.heightmaps.put(types, new Heightmap(this, types));
-           }
+        for (int index = 0; index < numberOfHeightMapTypes; ++index) {
+            Heightmap.Types types = heightMapTypes[index];
+
+            if (ChunkStatus.FULL.heightmapsAfter().contains(types)) {
+                this.heightmaps.put(types, new Heightmap(this, types));
+            }
         }
-  
+
         this.blockTicks = new LevelChunkTicks<Block>();
         this.fluidTicks = new LevelChunkTicks<Fluid>();
     }
@@ -122,11 +123,16 @@ public class ClonedLevelChunk extends ChunkAccess {
         // Implemented but not needed for access by sound physics.
         return new ChunkAccess.TicksToSave(this.blockTicks, this.fluidTicks);
     }
-    
+
     @Override
     public ChunkStatus getStatus() {
         // Implemented but not needed for access by sound physics.
         return ChunkStatus.FULL;
+    }
+
+    @Override
+    public Stream<BlockPos> getLights() {
+        return Stream.empty();
     }
 
     // Unsupported Functionality

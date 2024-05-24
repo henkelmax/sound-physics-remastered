@@ -1,1 +1,6 @@
-- Updated to 1.20.6
+- Fixed thread safety issues
+- Fixed compatibility with Create
+- Improved performance
+- Added performance profiling
+
+Thanks to @augustsaintfreytag

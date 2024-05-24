@@ -9,6 +9,7 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -19,8 +20,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -30,9 +31,9 @@ import net.minecraft.world.ticks.TickContainerAccess;
 
 /**
  * Read-only sparse clone of a client level chunk.
- * 
+ * <p>
  * Offers access to block states, fluid states, block entities, and height data.
- * 
+ *
  * @author Saint (@augustsaintfreytag)
  */
 public class ClonedLevelChunk extends ChunkAccess {
@@ -45,15 +46,15 @@ public class ClonedLevelChunk extends ChunkAccess {
 
         Heightmap.Types[] heightMapTypes = Heightmap.Types.values();
         int numberOfHeightMapTypes = heightMapTypes.length;
-  
-        for(int index = 0; index < numberOfHeightMapTypes; ++index) {
-           Heightmap.Types types = heightMapTypes[index];
 
-           if (ChunkStatus.FULL.heightmapsAfter().contains(types)) {
-              this.heightmaps.put(types, new Heightmap(this, types));
-           }
+        for (int index = 0; index < numberOfHeightMapTypes; ++index) {
+            Heightmap.Types types = heightMapTypes[index];
+
+            if (ChunkStatus.FULL.heightmapsAfter().contains(types)) {
+                this.heightmaps.put(types, new Heightmap(this, types));
+            }
         }
-  
+
         this.blockTicks = new LevelChunkTicks<Block>();
         this.fluidTicks = new LevelChunkTicks<Fluid>();
     }
@@ -122,7 +123,7 @@ public class ClonedLevelChunk extends ChunkAccess {
         // Implemented but not needed for access by sound physics.
         return new ChunkAccess.TicksToSave(this.blockTicks, this.fluidTicks);
     }
-    
+
     @Override
     public ChunkStatus getStatus() {
         // Implemented but not needed for access by sound physics.
@@ -137,8 +138,8 @@ public class ClonedLevelChunk extends ChunkAccess {
     }
 
     @Override
-    public CompoundTag getBlockEntityNbtForSaving(@Nonnull BlockPos blockPos) {
-        throw new UnsupportedOperationException("Can not read block entityt NBT data from read-only level clone.");
+    public CompoundTag getBlockEntityNbtForSaving(BlockPos blockPos, HolderLookup.Provider provider) {
+        throw new UnsupportedOperationException("Can not read block entity NBT data from read-only level clone.");
     }
 
     @Override

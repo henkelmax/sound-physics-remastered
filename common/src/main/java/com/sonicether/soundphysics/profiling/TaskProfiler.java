@@ -9,12 +9,12 @@ import com.sonicether.soundphysics.Loggers;
 
 public class TaskProfiler {
 
-    private static final int TASK_RING_BUFFER_SIZE = 100;   // Maximum number of task durations to store in ring buffer
-    private static final int TASK_RING_TALLY_SIZE = 100;    // Maximum number of tasks to run before tallying results
+    private static final int TASK_RING_BUFFER_SIZE = 100;      // Maximum number of task durations to store in ring buffer
+    private static final int TASK_RING_TALLY_SIZE = 100;       // Maximum number of tasks to run before tallying results
 
 
-    private final String identifier;                        // Identifier of the profiler for logging
-    private final Deque<Double> durations;                  // Durations stored in milliseconds for each task
+    private final String identifier;                           // Identifier of the profiler for logging
+    private final Deque<Double> durations;                     // Durations stored in milliseconds for each task
     private final AtomicInteger tally;                         // Total number of profiling tasks finished before report is fetched
 
     public TaskProfiler(String identifier) {

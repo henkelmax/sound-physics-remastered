@@ -1,6 +1,17 @@
 package com.sonicether.soundphysics.config.blocksound;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
 import com.sonicether.soundphysics.Loggers;
+
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.Registry;
@@ -10,11 +21,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.*;
 
 public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
 
@@ -46,12 +52,12 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
             try {
                 value = Float.parseFloat(entry.getValue());
             } catch (NumberFormatException e) {
-                Loggers.LOGGER.warn("Failed to parse value of {}", key);
+                Loggers.warn("Failed to parse value of {}", key);
                 continue;
             }
             BlockDefinition blockDefinition = loadBlockDefinition(key);
             if (blockDefinition == null) {
-                Loggers.LOGGER.warn("Block definition {} not found", key);
+                Loggers.warn("Block definition {} not found", key);
                 continue;
             }
 

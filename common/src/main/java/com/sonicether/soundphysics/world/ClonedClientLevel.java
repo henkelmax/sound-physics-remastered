@@ -78,31 +78,31 @@ public class ClonedClientLevel implements ClientLevelProxy {
     public BlockState getBlockState(@Nonnull BlockPos blockPos) {
         if (isOutsideBuildHeight(blockPos)) {
             return Blocks.VOID_AIR.defaultBlockState();
-        } else {
-            var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-            var levelChunk = clonedLevelChunks.get(chunkPos);
-
-            if (levelChunk == null) {
-                return Blocks.VOID_AIR.defaultBlockState();
-            }
-
-            return levelChunk.getBlockState(blockPos);
         }
+
+        var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
+        var levelChunk = clonedLevelChunks.get(chunkPos);
+
+        if (levelChunk == null) {
+            return Blocks.VOID_AIR.defaultBlockState();
+        }
+
+        return levelChunk.getBlockState(blockPos);
    }
 
     public FluidState getFluidState(@Nonnull BlockPos blockPos) {
         if (isOutsideBuildHeight(blockPos)) {
             return Fluids.EMPTY.defaultFluidState();
-        } else {
-            var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
-            var levelChunk = clonedLevelChunks.get(chunkPos);
-
-            if (levelChunk == null) {
-                return Fluids.EMPTY.defaultFluidState();
-            }
-
-            return levelChunk.getFluidState(blockPos);
         }
+
+        var chunkPos = new ChunkPos(blockPos.getX() >> 4, blockPos.getZ() >> 4);
+        var levelChunk = clonedLevelChunks.get(chunkPos);
+
+        if (levelChunk == null) {
+            return Fluids.EMPTY.defaultFluidState();
+        }
+
+        return levelChunk.getFluidState(blockPos);
     }
 
     public int getHeight() {

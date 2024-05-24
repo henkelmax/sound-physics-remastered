@@ -1,6 +1,7 @@
 package com.sonicether.soundphysics.utils;
 
 import com.sonicether.soundphysics.Loggers;
+import com.sonicether.soundphysics.profiling.TaskProfiler;
 import com.sonicether.soundphysics.world.CachingClientLevel;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
 import com.sonicether.soundphysics.world.ClonedClientLevel;
@@ -26,6 +27,8 @@ public class LevelAccessUtils {
     private static final int LEVEL_CLONE_RANGE = 4;                         // Cloned number of chunks in radius around player position. (Default: 4 chunks)
     private static final long LEVEL_CLONE_MAX_RETAIN_TICKS = 20;            // Maximum number of ticks to retain level clone in cache. (Default: 20 ticks / 1 second)
     private static final long LEVEL_CLONE_MAX_RETAIN_BLOCK_DISTANCE = 16;   // Maximum distance player can move from cloned origin before invalidation. (Default: 25% clone radius)
+
+    private static final TaskProfiler profiler = new TaskProfiler("Level Caching");
 
     // Cache Write
 
@@ -68,16 +71,16 @@ public class LevelAccessUtils {
     private static void updateLevelCache(ClientLevel clientLevel, BlockPos origin, long tick) {
         Loggers.logDebug("Updating level cache, creating new level clone with origin {} on tick {}.", origin.toShortString(), tick);
 
-        long startTime = System.nanoTime();
-        
+        var profile = profiler.profile();
         var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
         var clientLevelClone = new ClonedClientLevel(clientLevel, origin, tick, LEVEL_CLONE_RANGE);
 
         cachingClientLevel.setCachedClone(clientLevelClone);
 
-        long endTime = System.nanoTime();
+        profile.finish();
 
-        Loggers.logProfiling("Updated client level clone in cache in {} ms", (double) (endTime - startTime) / 1_000_000D);
+        Loggers.logProfiling("Updated client level clone in cache in {} ms", profile.getDuration());
+        profiler.onTally(() -> profiler.logResults());
     }
 
     // Cache Read

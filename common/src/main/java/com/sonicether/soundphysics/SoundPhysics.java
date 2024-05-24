@@ -11,6 +11,8 @@ import org.lwjgl.openal.EXTEfx;
 
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
+import com.sonicether.soundphysics.profiling.TaskProfiler;
+import com.sonicether.soundphysics.profiling.TaskProfiler.TaskHandle;
 import com.sonicether.soundphysics.utils.LevelAccessUtils;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
 
@@ -51,6 +53,7 @@ public class SoundPhysics {
     private static int sendFilter3;
 
     private static Minecraft minecraft;
+    private static TaskProfiler profiler;
 
     private static SoundSource lastSoundCategory;
     private static String lastSoundName;
@@ -62,6 +65,7 @@ public class SoundPhysics {
         Loggers.log("EFX ready");
 
         minecraft = Minecraft.getInstance();
+        profiler = new TaskProfiler("Sound Physics");
     }
 
     public static void syncReverbParams() {
@@ -185,11 +189,12 @@ public class SoundPhysics {
 
         Loggers.logDebug("Playing sound with source id '{}', position x:{}, y:{}, z:{}, \tcategory: '{}' \tname: '{}'", source, posX, posY, posZ, category.toString(), sound);
 
-        long startTime = System.nanoTime();
+        TaskHandle profile = profiler.profile();
         @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
-        long endTime = System.nanoTime();
+        profile.finish();
 
-        Loggers.logProfiling("Evaluated environment for sound {} in {} ms", sound, (double) (endTime - startTime) / 1_000_000D);
+        Loggers.logProfiling("Evaluated environment for sound {} in {} ms", sound, profile.getDuration());
+        profiler.onTally(() -> profiler.logResults());
         
         return newPos;
     }

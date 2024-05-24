@@ -85,7 +85,7 @@ public class ClonedLevelChunk extends ChunkAccess {
         });
     }
 
-    private <ReturnType> ReturnType withLevelChunkSectionAtPosition(BlockPos blockPos, Function<LevelChunkSection, ReturnType> block) {
+    private <T> T withLevelChunkSectionAtPosition(BlockPos blockPos, Function<LevelChunkSection, T> block) {
         try {
             int sectionIndex = getSectionIndex(blockPos.getY());
 

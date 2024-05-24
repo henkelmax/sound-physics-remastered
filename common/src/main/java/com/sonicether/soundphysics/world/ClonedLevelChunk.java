@@ -112,41 +112,43 @@ final class ClonedLevelChunk extends ChunkAccess {
         return fluidTicks;
     }
 
+    @Override
+    public TicksToSave getTicksForSerialization() {
+        // Implemented but not needed for access by sound physics.
+        return new ChunkAccess.TicksToSave(this.blockTicks, this.fluidTicks);
+    }
+    
+    @Override
+    public ChunkStatus getStatus() {
+        // Implemented but not needed for access by sound physics.
+        return ChunkStatus.FULL;
+    }
+
     // Unsupported Functionality
 
     @Override
     public void addEntity(@Nonnull Entity entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'addEntity'");
+        throw new UnsupportedOperationException("Can not add entity to read-only level clone.");
     }
 
     @Override
     public CompoundTag getBlockEntityNbtForSaving(@Nonnull BlockPos blockPos) {
-        throw new UnsupportedOperationException("Unimplemented method 'getBlockEntityNbtForSaving'");
-    }
-
-    @Override
-    public ChunkStatus getStatus() {
-        throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
-    }
-
-    @Override
-    public TicksToSave getTicksForSerialization() {
-        throw new UnsupportedOperationException("Unimplemented method 'getTicksForSerialization'");
+        throw new UnsupportedOperationException("Can not read block entityt NBT data from read-only level clone.");
     }
 
     @Override
     public void removeBlockEntity(@Nonnull BlockPos blockPos) {
-        throw new UnsupportedOperationException("Unimplemented method 'removeBlockEntity'");
+        throw new UnsupportedOperationException("Can not remove entity from read-only level clone.");
     }
 
     @Override
     public void setBlockEntity(@Nonnull BlockEntity blockEntity) {
-        throw new UnsupportedOperationException("Unimplemented method 'setBlockEntity'");
+        throw new UnsupportedOperationException("Can not set block entity in read-only level clone.");
     }
 
     @Override
     public BlockState setBlockState(@Nonnull BlockPos blockPos, @Nonnull BlockState blockState, boolean unknownFlag) {
-        throw new UnsupportedOperationException("Unimplemented method 'setBlockState'");
+        throw new UnsupportedOperationException("Can not set block state in read-only level clone.");
     }
 
 }

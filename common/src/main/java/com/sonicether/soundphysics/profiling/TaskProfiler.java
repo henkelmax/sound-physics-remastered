@@ -10,6 +10,7 @@ import com.sonicether.soundphysics.Loggers;
 public class TaskProfiler {
 
     private static final int TASK_RING_BUFFER_SIZE = 100;   // Maximum number of task durations to store in ring buffer
+    private static final int TASK_RING_TALLY_SIZE = 100;    // Maximum number of tasks to run before tallying results
 
 
     private final String identifier;                        // Identifier of the profiler for logging
@@ -58,6 +59,12 @@ public class TaskProfiler {
     public void logResults() {
         Loggers.logProfiling("Profile for task '{}', total: {} ms, average: {} ms, min: {} ms, max: {} ms", 
             identifier, getTotalDuration(), getAverageDuration(), getMinDuration(), getMaxDuration());
+    }
+
+    public void onTally(Runnable callback) {
+        if (this.getTally() % TASK_RING_TALLY_SIZE == 0) {
+            callback.run();
+        }
     }
 
     // Handle

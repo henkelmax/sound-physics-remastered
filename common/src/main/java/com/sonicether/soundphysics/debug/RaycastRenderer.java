@@ -29,9 +29,11 @@ public class RaycastRenderer {
             }
             return;
         }
+
         long gameTime = mc.level.getGameTime();
         synchronized (rays) {
             rays.removeIf(ray -> (gameTime - ray.tickCreated) > ray.lifespan || (gameTime - ray.tickCreated) < 0L);
+        
             for (Ray ray : rays) {
                 renderRay(ray, poseStack, bufferSource, x, y, z);
             }
@@ -42,6 +44,7 @@ public class RaycastRenderer {
         if (!SoundPhysicsMod.CONFIG.renderSoundBounces.get()) {
             return;
         }
+        
         addRay(start, end, color, false);
     }
 
@@ -49,6 +52,7 @@ public class RaycastRenderer {
         if (!SoundPhysicsMod.CONFIG.renderOcclusion.get()) {
             return;
         }
+        
         addRay(start, end, color, true);
     }
 
@@ -56,6 +60,7 @@ public class RaycastRenderer {
         if (mc.player.position().distanceTo(start) > 32D && mc.player.position().distanceTo(end) > 32D) {
             return;
         }
+        
         synchronized (rays) {
             rays.add(new Ray(start, end, color, throughWalls));
         }

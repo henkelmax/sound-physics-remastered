@@ -16,7 +16,9 @@
     "LibraryMixin",
     "ChannelAccessor",
     "ClientLevelMixin",
-    "LocalPlayerMixin"
+    "LocalPlayerMixin",
+    "MinecraftMixin",
+    "ClientPacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

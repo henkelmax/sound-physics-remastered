@@ -15,12 +15,13 @@ import com.sonicether.soundphysics.utils.LevelAccessUtils;
 import com.sonicether.soundphysics.world.CachingClientLevel;
 import com.sonicether.soundphysics.world.ClonedClientLevel;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+
+import javax.annotation.Nullable;
 
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin implements CachingClientLevel {
@@ -31,12 +32,13 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
     private final AtomicReference<ClonedClientLevel> cachedClone = new AtomicReference<>();
 
     @Unique
+    @Nullable
     public ClonedClientLevel sound_physics_remastered$getCachedClone() {
         return cachedClone.get();
     }
 
     @Unique
-    public void sound_physics_remastered$setCachedClone(ClonedClientLevel clonedClientLevel) {
+    public void sound_physics_remastered$setCachedClone(@Nullable ClonedClientLevel clonedClientLevel) {
         cachedClone.set(clonedClientLevel);
     }
 
@@ -47,12 +49,7 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
         // Note: Mods may use mixins to inject logic that runs after this level clone operation,
         // any changes made on tick would not be included. Sound and level caching mixins could be
         // split and assigned different priorities to address this.
-
-        var client = Minecraft.getInstance();
-        var clientLevel = (ClientLevel) (Object) this;
-        var player = client.player;
-
-        LevelAccessUtils.tickLevelCache(clientLevel, player);
+        LevelAccessUtils.tickLevelCache((ClientLevel) (Object) this);
     }
 
     // Sounds

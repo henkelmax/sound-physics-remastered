@@ -1,2 +1,3 @@
 - Disable thunder sound evaluation by default
 - Disable goat horn sound evaluation by default
+- Fixed audio positioning when eating or drinking

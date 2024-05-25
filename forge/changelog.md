@@ -1,6 +1,2 @@
-- Fixed thread safety issues
-- Fixed compatibility with Create
-- Improved performance
-- Added performance profiling
-
-Thanks to @augustsaintfreytag
+- Fixed sounds getting muffled when they shouldn't
+- Fixed raycast block exclusion regression

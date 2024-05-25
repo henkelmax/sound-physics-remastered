@@ -11,7 +11,8 @@ import com.sonicether.soundphysics.world.UnsafeClientLevel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
+
+import javax.annotation.Nullable;
 
 /**
  * Utility module to manage creation, invalidation, and updating of client level clones.
@@ -23,18 +24,29 @@ import net.minecraft.world.entity.player.Player;
  */
 public class LevelAccessUtils {
 
-    private static final TaskProfiler profiler = new TaskProfiler("Level Caching");
+    private static final TaskProfiler PROFILER = new TaskProfiler("Level Caching");
+    private static final Minecraft MC = Minecraft.getInstance();
 
     // Cache Write
 
-    public static void tickLevelCache(ClientLevel clientLevel, Player player) {
+    public static void onLoadLevel(ClientLevel clientLevel) {
+        Loggers.logDebug("Creating initial level cache");
+        updateLevelCache(clientLevel, levelOriginFromPlayer(), clientLevel.getGameTime());
+    }
+
+    public static void onUnloadLevel(ClientLevel clientLevel) {
+        Loggers.logDebug("Removing level cache due to level unload");
+        ((CachingClientLevel) clientLevel).sound_physics_remastered$setCachedClone(null);
+    }
+
+    public static void tickLevelCache(ClientLevel clientLevel) {
         if (SoundPhysicsMod.CONFIG.unsafeLevelAccess.get()) {
             // Disable all level cloning, use direct unsafe main thread access (original behavior).
             return;
         }
 
         var currentTick = clientLevel.getGameTime();
-        var origin = levelOriginFromPlayer(player);
+        var origin = levelOriginFromPlayer();
 
         // Cast client level reference to interface to access injected level cache property.
         var cachingClientLevel = (CachingClientLevel) clientLevel;
@@ -66,7 +78,7 @@ public class LevelAccessUtils {
     private static void updateLevelCache(ClientLevel clientLevel, BlockPos origin, long tick) {
         Loggers.logDebug("Updating level cache, creating new level clone with origin {} on tick {}.", origin.toShortString(), tick);
 
-        var profile = profiler.profile();
+        var profile = PROFILER.profile();
         var cachingClientLevel = (CachingClientLevel) clientLevel;
         var clientLevelClone = new ClonedClientLevel(clientLevel, origin, tick, SoundPhysicsMod.CONFIG.levelCloneRange.get());
 
@@ -75,11 +87,12 @@ public class LevelAccessUtils {
         profile.finish();
 
         Loggers.logProfiling("Updated client level clone in cache in {} ms", profile.getDuration());
-        profiler.onTally(profiler::logResults);
+        PROFILER.onTally(PROFILER::logResults);
     }
 
     // Cache Read
 
+    @Nullable
     public static ClientLevelProxy getClientLevelProxy(Minecraft client) {
         var clientLevel = client.level;
 
@@ -105,9 +118,8 @@ public class LevelAccessUtils {
 
     // Utilities
 
-    private static BlockPos levelOriginFromPlayer(Player player) {
-        var playerPos = player.position();
+    private static BlockPos levelOriginFromPlayer() {
+        var playerPos = MC.player.position();
         return new BlockPos((int) playerPos.x, (int) playerPos.y, (int) playerPos.z);
     }
-
 }

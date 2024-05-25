@@ -49,5 +49,6 @@
     "modmenu": "*",
     "cloth-config2": ">=${cloth_config_version}",
     "voicechat": ">=${minecraft_version}-${voicechat_api_version}"
-  }
+  },
+  "accessWidener": "sound_physics_remastered.accesswidener"
 }

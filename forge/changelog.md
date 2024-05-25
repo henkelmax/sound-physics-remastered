@@ -1,2 +1,3 @@
 - Fixed sounds getting muffled when they shouldn't
 - Fixed raycast block exclusion regression
+- Fixed occlusion debug rendering

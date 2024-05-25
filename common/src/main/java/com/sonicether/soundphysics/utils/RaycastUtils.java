@@ -2,6 +2,7 @@ package com.sonicether.soundphysics.utils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +19,7 @@ public class RaycastUtils {
     public static BlockHitResult rayCast(@Nullable BlockGetter blockGetter, Vec3 from, Vec3 to, @Nullable BlockPos ignore) {
         if (blockGetter == null) {
             Vec3 vec = from.subtract(to);
-            return BlockHitResult.miss(to, Direction.getNearest(vec.x, vec.y, vec.z), BlockPos.containing(to));
+            return BlockHitResult.miss(to, Direction.getNearest(vec.x, vec.y, vec.z), new BlockPos(Mth.floor(to.x), Mth.floor(to.y), Mth.floor(to.z)));
         }
         return BlockGetter.traverseBlocks(from, to, blockGetter, (g, pos) -> {
             if (pos.equals(ignore)) {
@@ -41,7 +42,7 @@ public class RaycastUtils {
             return blockDistance <= fluidDistance ? blockHitResult : fluidHitResult;
         }, (g) -> {
             Vec3 vec = from.subtract(to);
-            return BlockHitResult.miss(to, Direction.getNearest(vec.x, vec.y, vec.z), BlockPos.containing(to));
+            return BlockHitResult.miss(to, Direction.getNearest(vec.x, vec.y, vec.z), new BlockPos(Mth.floor(to.x), Mth.floor(to.y), Mth.floor(to.z)));
         });
     }
 

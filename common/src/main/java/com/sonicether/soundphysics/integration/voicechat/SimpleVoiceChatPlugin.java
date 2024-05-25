@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import de.maxhenkel.voicechat.api.events.*;
 import org.lwjgl.openal.EXTThreadLocalContext;
 
 import com.sonicether.soundphysics.Loggers;
@@ -17,11 +18,6 @@ import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.VoicechatApi;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
-import de.maxhenkel.voicechat.api.events.ClientSoundEvent;
-import de.maxhenkel.voicechat.api.events.ClientVoicechatConnectionEvent;
-import de.maxhenkel.voicechat.api.events.CreateOpenALContextEvent;
-import de.maxhenkel.voicechat.api.events.EventRegistration;
-import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 
@@ -29,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 public class SimpleVoiceChatPlugin implements VoicechatPlugin {
 
     private static final UUID OWN_VOICE_ID = UUID.randomUUID();
+    public static String OWN_VOICE_CATEGORY = "own_voice";
 
     private final Map<UUID, AudioChannel> audioChannels;
     private ClientLocationalAudioChannel locationalAudioChannel;
@@ -54,6 +51,16 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
         registration.registerEvent(OpenALSoundEvent.class, this::onOpenALSound);
         registration.registerEvent(ClientVoicechatConnectionEvent.class, this::onConnection);
         registration.registerEvent(ClientSoundEvent.class, this::onClientSound);
+        registration.registerEvent(VoicechatServerStartedEvent.class, this::onServerStarted);
+    }
+
+    private void onServerStarted(VoicechatServerStartedEvent event) {
+        var ownVoice = event.getVoicechat().volumeCategoryBuilder()
+                .setId(OWN_VOICE_CATEGORY)
+                .setName("Own voice")
+                .setDescription("The volume of your own voice")
+                .build();
+        event.getVoicechat().registerVolumeCategory(ownVoice);
     }
 
     private void onClientSound(ClientSoundEvent event) {
@@ -64,6 +71,7 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
             return;
         }
         Vec3 position = Minecraft.getInstance().player.position();
+        locationalAudioChannel.setCategory(OWN_VOICE_CATEGORY);
         locationalAudioChannel.setLocation(event.getVoicechat().createPosition(position.x, position.y, position.z));
         locationalAudioChannel.play(event.getRawAudio());
     }

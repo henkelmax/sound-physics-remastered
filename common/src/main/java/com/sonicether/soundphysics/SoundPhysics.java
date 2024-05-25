@@ -195,7 +195,7 @@ public class SoundPhysics {
 
         Loggers.logProfiling("Evaluated environment for sound {} in {} ms", sound, profile.getDuration());
         profiler.onTally(() -> profiler.logResults());
-        
+
         return newPos;
     }
 
@@ -368,7 +368,7 @@ public class SoundPhysics {
                 }
             }
         }
-        
+
         for (int i = 0; i < bounceReflectivityRatio.length; i++) {
             bounceReflectivityRatio[i] = bounceReflectivityRatio[i] / numRays;
             Loggers.logEnvironment("Bounce reflectivity {}: {}", i, bounceReflectivityRatio[i]);
@@ -427,7 +427,7 @@ public class SoundPhysics {
             sendCutoff2 *= 0.4F;
             sendCutoff3 *= 0.4F;
         }
-        
+
         setEnvironment(sourceID, sendGain0, sendGain1, sendGain2, sendGain3, sendCutoff0, sendCutoff1, sendCutoff2, sendCutoff3, directCutoff, directGain);
 
         return newSoundPos;
@@ -440,7 +440,7 @@ public class SoundPhysics {
     public static boolean isAmbientSound(String sound) {
         return AMBIENT_PATTERN.matcher(sound).matches();
     }
-    
+
     private static float getBlockReflectivity(BlockPos blockPos) {
         var levelProxy = getLevelProxy();
 
@@ -473,7 +473,7 @@ public class SoundPhysics {
         if (isBlock) {
             variationFactor = Math.max(variationFactor, 0.501D);
         }
-        
+
         double occlusionAccMin = Double.MAX_VALUE;
         occlusionAccMin = Math.min(occlusionAccMin, runOcclusion(soundPos, playerPos));
 
@@ -500,7 +500,7 @@ public class SoundPhysics {
 
         double occlusionAccumulation = 0D;
         Vec3 rayOrigin = soundPos;
-        
+
         BlockPos lastBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
 
         for (int i = 0; i < SoundPhysicsMod.CONFIG.maxOcclusionRays.get(); i++) {
@@ -517,7 +517,7 @@ public class SoundPhysics {
 
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
-            
+
             BlockState blockHit = levelProxy.getBlockState(blockHitPos);
             float blockOcclusion = SoundPhysicsMod.OCCLUSION_CONFIG.getBlockDefinitionValue(blockHit);
 
@@ -545,7 +545,7 @@ public class SoundPhysics {
 
     public static BlockHitResult runRaycast(Vec3 start, Vec3 end, @Nullable BlockPos ignore) {
         var levelProxy = getLevelProxy();
-        
+
         if (levelProxy == null) {
             Vec3 dir = end.subtract(start);
             return BlockHitResult.miss(end, Direction.getNearest(dir.x, dir.y, dir.z), new BlockPos((int) end.x, (int) end.y, (int) end.z));
@@ -560,7 +560,7 @@ public class SoundPhysics {
      * May return an unsafe client level cast to a level proxy if caching is disabled.
      */
     private static ClientLevelProxy getLevelProxy() {
-        return LevelAccessUtils.getClientLevelProxy(minecraft);        
+        return LevelAccessUtils.getClientLevelProxy(minecraft);
     }
 
     /**

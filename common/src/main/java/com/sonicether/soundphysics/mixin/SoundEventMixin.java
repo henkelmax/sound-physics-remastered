@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class SoundEventMixin {
 
     @ModifyConstant(method = "getRange", constant = @Constant(floatValue = 16F), expect = 2)
-    private static float allowance1(float value) {
+    private float allowance1(float value) {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return value;
         }

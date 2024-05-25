@@ -2,8 +2,8 @@ package com.sonicether.soundphysics.world;
 
 public interface CachingClientLevel {
 
-    public ClonedClientLevel getCachedClone();
+    ClonedClientLevel getCachedClone();
 
-    public void setCachedClone(ClonedClientLevel cachedClone);
+    void setCachedClone(ClonedClientLevel cachedClone);
 
 }

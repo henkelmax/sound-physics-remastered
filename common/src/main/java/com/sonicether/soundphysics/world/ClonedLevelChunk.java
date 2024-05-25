@@ -134,27 +134,27 @@ public class ClonedLevelChunk extends ChunkAccess {
 
     @Override
     public void addEntity(@Nonnull Entity entity) {
-        throw new UnsupportedOperationException("Can not add entity to read-only level clone.");
+        throw new UnsupportedOperationException("Can not add entity to read-only level clone");
     }
 
     @Override
     public CompoundTag getBlockEntityNbtForSaving(BlockPos blockPos, HolderLookup.Provider provider) {
-        throw new UnsupportedOperationException("Can not read block entity NBT data from read-only level clone.");
+        throw new UnsupportedOperationException("Can not read block entity NBT data from read-only level clone");
     }
 
     @Override
     public void removeBlockEntity(@Nonnull BlockPos blockPos) {
-        throw new UnsupportedOperationException("Can not remove entity from read-only level clone.");
+        throw new UnsupportedOperationException("Can not remove entity from read-only level clone");
     }
 
     @Override
     public void setBlockEntity(@Nonnull BlockEntity blockEntity) {
-        throw new UnsupportedOperationException("Can not set block entity in read-only level clone.");
+        throw new UnsupportedOperationException("Can not set block entity in read-only level clone");
     }
 
     @Override
     public BlockState setBlockState(@Nonnull BlockPos blockPos, @Nonnull BlockState blockState, boolean unknownFlag) {
-        throw new UnsupportedOperationException("Can not set block state in read-only level clone.");
+        throw new UnsupportedOperationException("Can not set block state in read-only level clone");
     }
 
 }

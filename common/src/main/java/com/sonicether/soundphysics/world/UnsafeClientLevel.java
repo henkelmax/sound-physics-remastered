@@ -41,6 +41,4 @@ public class UnsafeClientLevel implements ClientLevelProxy {
         return clientLevel.getMinBuildHeight();
     }
 
-    
-
 }

@@ -39,7 +39,7 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
     @Unique
     public void setCachedClone(ClonedClientLevel cachedClone) {
         this.cachedClone.set(cachedClone);
-        
+
     }
 
     // Tick & Cache
@@ -64,7 +64,7 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return;
         }
-        
+
         SoundEvent value = holder.value();
         if (SoundEvents.BOAT_PADDLE_WATER.equals(value)) {
             ci.cancel();

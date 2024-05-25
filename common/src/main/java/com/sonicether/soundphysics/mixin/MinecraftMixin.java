@@ -34,7 +34,7 @@ public class MinecraftMixin {
         }
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
+    @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
     private void disconnect(Screen screen, CallbackInfo ci) {
         if (level != null) {
             LevelAccessUtils.onUnloadLevel(level);

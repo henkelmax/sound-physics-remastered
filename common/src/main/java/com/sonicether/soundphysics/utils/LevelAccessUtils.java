@@ -37,8 +37,8 @@ public class LevelAccessUtils {
         var origin = levelOriginFromPlayer(player);
 
         // Cast client level reference to interface to access injected level cache property.
-        var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
-        var clientLevelClone = cachingClientLevel.getCachedClone();
+        var cachingClientLevel = (CachingClientLevel) clientLevel;
+        var clientLevelClone = cachingClientLevel.sound_physics_remastered$getCachedClone();
 
         if (clientLevelClone == null) {
             // No cache exists, cache first level clone.
@@ -67,15 +67,15 @@ public class LevelAccessUtils {
         Loggers.logDebug("Updating level cache, creating new level clone with origin {} on tick {}.", origin.toShortString(), tick);
 
         var profile = profiler.profile();
-        var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
+        var cachingClientLevel = (CachingClientLevel) clientLevel;
         var clientLevelClone = new ClonedClientLevel(clientLevel, origin, tick, SoundPhysicsMod.CONFIG.levelCloneRange.get());
 
-        cachingClientLevel.setCachedClone(clientLevelClone);
+        cachingClientLevel.sound_physics_remastered$setCachedClone(clientLevelClone);
 
         profile.finish();
 
         Loggers.logProfiling("Updated client level clone in cache in {} ms", profile.getDuration());
-        profiler.onTally(() -> profiler.logResults());
+        profiler.onTally(profiler::logResults);
     }
 
     // Cache Read
@@ -92,8 +92,8 @@ public class LevelAccessUtils {
             return new UnsafeClientLevel(clientLevel);
         }
 
-        var cachingClientLevel = (CachingClientLevel) (Object) clientLevel;
-        var clientLevelClone = cachingClientLevel.getCachedClone();
+        var cachingClientLevel = (CachingClientLevel) clientLevel;
+        var clientLevelClone = cachingClientLevel.sound_physics_remastered$getCachedClone();
 
         if (clientLevelClone == null) {
             Loggers.warn("Can not return client level proxy, client level clone has not been cached. This might only occur once on load.");

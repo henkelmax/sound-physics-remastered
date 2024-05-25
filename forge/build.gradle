@@ -30,3 +30,9 @@ dependencies {
     runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
     implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
 }
+
+//TODO Fix shared buildscript
+shadowJar.dependsOn('reobfJar')
+reobf {
+    shadowJar {}
+}

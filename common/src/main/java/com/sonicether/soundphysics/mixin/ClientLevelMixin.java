@@ -28,17 +28,16 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
     // Properties
 
     @Unique
-    private AtomicReference<ClonedClientLevel> cachedClone = new AtomicReference<>();
+    private final AtomicReference<ClonedClientLevel> cachedClone = new AtomicReference<>();
 
     @Unique
-    public ClonedClientLevel getCachedClone() {
-        return this.cachedClone.get();
+    public ClonedClientLevel sound_physics_remastered$getCachedClone() {
+        return cachedClone.get();
     }
 
     @Unique
-    public void setCachedClone(ClonedClientLevel cachedClone) {
-        this.cachedClone.set(cachedClone);
-
+    public void sound_physics_remastered$setCachedClone(ClonedClientLevel clonedClientLevel) {
+        cachedClone.set(clonedClientLevel);
     }
 
     // Tick & Cache

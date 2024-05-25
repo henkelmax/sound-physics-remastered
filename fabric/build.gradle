@@ -22,6 +22,10 @@ repositories {
     maven { url = 'https://maven.terraformersmc.com/releases' }
 }
 
+loom {
+    accessWidenerPath = project(':common').file("src/main/resources/sound_physics_remastered.accesswidener")
+}
+
 dependencies {
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
     modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${voicechat_version}"

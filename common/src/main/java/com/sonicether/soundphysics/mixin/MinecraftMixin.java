@@ -2,7 +2,6 @@ package com.sonicether.soundphysics.mixin;
 
 import com.sonicether.soundphysics.utils.LevelAccessUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,7 +25,7 @@ public class MinecraftMixin {
     public LocalPlayer player;
 
     @Inject(method = "setLevel", at = @At("HEAD"))
-    private void setLevel(ClientLevel clientLevel, ReceivingLevelScreen.Reason reason, CallbackInfo ci) {
+    private void setLevel(ClientLevel clientLevel, CallbackInfo ci) {
         if (level != null) {
             LevelAccessUtils.onUnloadLevel(level);
         }
@@ -35,8 +34,8 @@ public class MinecraftMixin {
         }
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At("HEAD"))
-    private void disconnect(Screen screen, boolean bl, CallbackInfo ci) {
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
+    private void disconnect(Screen screen, CallbackInfo ci) {
         if (level != null) {
             LevelAccessUtils.onUnloadLevel(level);
         }

@@ -40,6 +40,9 @@ public class LevelAccessUtils {
     }
 
     public static void tickLevelCache(ClientLevel clientLevel) {
+        if (!SoundPhysicsMod.CONFIG.enabled.get()) {
+            return;
+        }
         if (SoundPhysicsMod.CONFIG.unsafeLevelAccess.get()) {
             // Disable all level cloning, use direct unsafe main thread access (original behavior).
             return;

@@ -1,12 +1,11 @@
 package com.sonicether.soundphysics.debug;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.sonicether.soundphysics.SoundPhysicsMod;
+import com.sonicether.soundphysics.utils.RenderTypeUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -72,12 +71,13 @@ public class RaycastRenderer {
         int green = getGreen(ray.color);
         int blue = getBlue(ray.color);
 
+        VertexConsumer consumer;
         if (ray.throughWalls) {
-            //TODO Fix rays through walls not rendering properly
-            RenderSystem.disableDepthTest();
+            consumer = bufferSource.getBuffer(RenderTypeUtils.DEBUG_LINE_STRIP_SEETHROUGH);
+        } else {
+            consumer = bufferSource.getBuffer(RenderTypeUtils.DEBUG_LINE_STRIP);
         }
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.debugLineStrip(1D));
         Matrix4f matrix4f = poseStack.last().pose();
 
         consumer.vertex(matrix4f, (float) (ray.start.x - x), (float) (ray.start.y - y), (float) (ray.start.z - z)).color(red, green, blue, 255).endVertex();

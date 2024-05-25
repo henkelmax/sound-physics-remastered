@@ -30,9 +30,9 @@ import net.minecraft.world.ticks.TickContainerAccess;
 
 /**
  * Read-only sparse clone of a client level chunk.
- * 
+ *
  * Offers access to block states, fluid states, block entities, and height data.
- * 
+ *
  * @author Saint (@augustsaintfreytag)
  */
 public class ClonedLevelChunk extends ChunkAccess {
@@ -45,7 +45,7 @@ public class ClonedLevelChunk extends ChunkAccess {
 
         Heightmap.Types[] heightMapTypes = Heightmap.Types.values();
         int numberOfHeightMapTypes = heightMapTypes.length;
-  
+
         for(int index = 0; index < numberOfHeightMapTypes; ++index) {
            Heightmap.Types types = heightMapTypes[index];
 
@@ -53,7 +53,7 @@ public class ClonedLevelChunk extends ChunkAccess {
               this.heightmaps.put(types, new Heightmap(this, types));
            }
         }
-  
+
         this.blockTicks = new LevelChunkTicks<Block>();
         this.fluidTicks = new LevelChunkTicks<Fluid>();
     }
@@ -122,7 +122,7 @@ public class ClonedLevelChunk extends ChunkAccess {
         // Implemented but not needed for access by sound physics.
         return new ChunkAccess.TicksToSave(this.blockTicks, this.fluidTicks);
     }
-    
+
     @Override
     public ChunkStatus getStatus() {
         // Implemented but not needed for access by sound physics.
@@ -133,27 +133,27 @@ public class ClonedLevelChunk extends ChunkAccess {
 
     @Override
     public void addEntity(@Nonnull Entity entity) {
-        throw new UnsupportedOperationException("Can not add entity to read-only level clone.");
+        throw new UnsupportedOperationException("Can not add entity to read-only level clone");
     }
 
     @Override
     public CompoundTag getBlockEntityNbtForSaving(@Nonnull BlockPos blockPos) {
-        throw new UnsupportedOperationException("Can not read block entityt NBT data from read-only level clone.");
+        throw new UnsupportedOperationException("Can not read block entity NBT data from read-only level clone");
     }
 
     @Override
     public void removeBlockEntity(@Nonnull BlockPos blockPos) {
-        throw new UnsupportedOperationException("Can not remove entity from read-only level clone.");
+        throw new UnsupportedOperationException("Can not remove entity from read-only level clone");
     }
 
     @Override
     public void setBlockEntity(@Nonnull BlockEntity blockEntity) {
-        throw new UnsupportedOperationException("Can not set block entity in read-only level clone.");
+        throw new UnsupportedOperationException("Can not set block entity in read-only level clone");
     }
 
     @Override
     public BlockState setBlockState(@Nonnull BlockPos blockPos, @Nonnull BlockState blockState, boolean unknownFlag) {
-        throw new UnsupportedOperationException("Can not set block state in read-only level clone.");
+        throw new UnsupportedOperationException("Can not set block state in read-only level clone");
     }
 
 }

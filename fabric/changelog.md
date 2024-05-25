@@ -1,3 +1,4 @@
 - Disable thunder sound evaluation by default
 - Disable goat horn sound evaluation by default
 - Fixed audio positioning when eating or drinking
+- Fixed level cache being updated when mod is disabled

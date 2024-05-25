@@ -30,7 +30,7 @@ public class Loggers {
         if (!SoundPhysicsMod.CONFIG.performanceLogging.get()) {
             return;
         }
-        
+
         PROFILING_LOGGER.info(message, args);
     }
 
@@ -38,7 +38,7 @@ public class Loggers {
         if (!SoundPhysicsMod.CONFIG.debugLogging.get()) {
             return;
         }
-        
+
         DEBUG_LOGGER.info(message, args);
     }
 
@@ -54,7 +54,7 @@ public class Loggers {
         if (!SoundPhysicsMod.CONFIG.environmentLogging.get()) {
             return;
         }
-        
+
         ENVIRONMENT_LOGGER.info(message, args);
     }
 

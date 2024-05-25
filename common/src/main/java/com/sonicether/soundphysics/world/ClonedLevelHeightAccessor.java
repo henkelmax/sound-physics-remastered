@@ -5,7 +5,7 @@ import net.minecraft.world.level.LevelHeightAccessor;
 
 /**
  * Read-only sparse clone of a client level height accessor.
- * 
+ *
  * @author Saint (@augustsaintfreytag)
  */
 public class ClonedLevelHeightAccessor implements LevelHeightAccessor {
@@ -25,5 +25,5 @@ public class ClonedLevelHeightAccessor implements LevelHeightAccessor {
     public int getMinBuildHeight() {
         return this.minBuildHeight;
     }
-    
+
 }

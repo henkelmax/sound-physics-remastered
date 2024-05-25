@@ -14,11 +14,11 @@ public class ReflectedAudio {
 
     @Nullable
     private Map.Entry<Vec3, Double> directDirection;
-    
+
     private final double occlusion;
-    
+
     private final String sound;
-    
+
     private int sharedAirspaces;
 
     public ReflectedAudio(double occlusion, String sound) {

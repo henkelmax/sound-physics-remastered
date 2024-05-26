@@ -64,6 +64,11 @@ public class ClothConfigIntegration {
                 SoundPhysicsMod.CONFIG.reverbBrightness
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_distance"),
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_distance.description"),
+                SoundPhysicsMod.CONFIG.reverbDistance
+        ));
+        general.addEntry(fromConfigEntry(entryBuilder,
                 Component.translatable("cloth_config.sound_physics_remastered.block_absorption"),
                 Component.translatable("cloth_config.sound_physics_remastered.block_absorption.description"),
                 SoundPhysicsMod.CONFIG.blockAbsorption

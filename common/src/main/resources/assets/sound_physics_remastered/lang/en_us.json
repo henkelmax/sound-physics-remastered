@@ -19,6 +19,8 @@
   "cloth_config.sound_physics_remastered.reverb_gain.description": "The volume of simulated reverberations.",
   "cloth_config.sound_physics_remastered.reverb_brightness": "Reverb brightness",
   "cloth_config.sound_physics_remastered.reverb_brightness.description": "The brightness of reverberation. Higher values result in more high frequencies in reverberation. Lower values give a more muffled sound to the reverb.",
+  "cloth_config.sound_physics_remastered.reverb_distance": "Reverb Distance",
+  "cloth_config.sound_physics_remastered.reverb_distance.description": "The distance of reverb relative to the sound distance.",
   "cloth_config.sound_physics_remastered.block_absorption": "Block absorption",
   "cloth_config.sound_physics_remastered.block_absorption.description": "The amount of sound that will be absorbed when traveling through blocks.",
   "cloth_config.sound_physics_remastered.occlusion_variation": "Occlusion variation",

@@ -423,7 +423,7 @@ public class SoundPhysics {
         // We should look into this
         float soundDistance = (float) playerPos.distanceTo(soundPos);
         float maxSoundDistance = AL10.alGetSourcef(sourceID, AL10.AL_MAX_DISTANCE);
-        float sendGainMultiplier = 1F - Math.min(soundDistance / (maxSoundDistance * 1.5F), 1F);
+        float sendGainMultiplier = 1F - Math.min(soundDistance / (maxSoundDistance * SoundPhysicsMod.CONFIG.reverbDistance.get()), 1F);
         sendGain0 = sendGainMultiplier * sendGain0;
         sendGain1 = sendGainMultiplier * sendGain1;
         sendGain2 = sendGainMultiplier * sendGain2;

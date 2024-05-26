@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.utils.RaycastUtils;
 import org.joml.Vector3f;
+import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;
@@ -25,7 +26,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -418,6 +418,16 @@ public class SoundPhysics {
         sendGain1 *= (float) Math.pow(sendCutoff1, 0.1D);
         sendGain2 *= (float) Math.pow(sendCutoff2, 0.1D);
         sendGain3 *= (float) Math.pow(sendCutoff3, 0.1D);
+
+        // I don't know how else to fix reverb not being attenuated by distance
+        // We should look into this
+        float soundDistance = (float) playerPos.distanceTo(soundPos);
+        float maxSoundDistance = AL10.alGetSourcef(sourceID, AL10.AL_MAX_DISTANCE);
+        float sendGainMultiplier = 1F - Math.min(soundDistance / (maxSoundDistance * 1.5F), 1F);
+        sendGain0 = sendGainMultiplier * sendGain0;
+        sendGain1 = sendGainMultiplier * sendGain1;
+        sendGain2 = sendGainMultiplier * sendGain2;
+        sendGain3 = sendGainMultiplier * sendGain3;
 
         Loggers.logEnvironment("Final environment settings: {}, {}, {}, {}", sendGain0, sendGain1, sendGain2, sendGain3);
 

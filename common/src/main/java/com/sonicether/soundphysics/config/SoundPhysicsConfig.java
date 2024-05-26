@@ -13,6 +13,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Float> attenuationFactor;
     public final ConfigEntry<Float> reverbGain;
     public final ConfigEntry<Float> reverbBrightness;
+    public final ConfigEntry<Float> reverbDistance;
     public final ConfigEntry<Float> blockAbsorption;
     public final ConfigEntry<Float> occlusionVariation;
     public final ConfigEntry<Float> defaultBlockReflectivity;
@@ -68,6 +69,9 @@ public class SoundPhysicsConfig {
                         "Higher values result in more high frequencies in reverberation",
                         "Lower values give a more muffled sound to the reverb"
                 );
+        reverbDistance = builder
+                .floatEntry("reverb_distance", 1.5F, 0.1F, 16F)
+                .comment("The distance of reverb relative to the sound distance");
         blockAbsorption = builder.floatEntry("block_absorption", 1F, 0.1F, 4F)
                 .comment("The amount of sound that will be absorbed when traveling through blocks");
         occlusionVariation = builder.floatEntry("occlusion_variation", 0.35F, 0F, 16F)

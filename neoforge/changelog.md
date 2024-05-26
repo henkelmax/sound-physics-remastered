@@ -3,3 +3,4 @@
 - Fixed audio positioning when eating or drinking
 - Fixed level cache being updated when mod is disabled
 - Fixed reverb attenuation
+- Added reverb distance config option

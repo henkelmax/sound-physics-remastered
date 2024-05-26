@@ -10,7 +10,6 @@ import com.sonicether.soundphysics.Loggers;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -96,7 +95,7 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
         map.put(SoundEvents.WEATHER_RAIN.getLocation().toString(), false);
         map.put(SoundEvents.WEATHER_RAIN_ABOVE.getLocation().toString(), false);
         map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.getLocation().toString(), false);
-        SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.key().location().toString(), false));
+        SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.getLocation().toString(), false));
 
         return map;
     }

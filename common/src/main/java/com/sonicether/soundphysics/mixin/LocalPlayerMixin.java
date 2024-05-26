@@ -24,7 +24,7 @@ public abstract class LocalPlayerMixin extends Entity {
             return;
         }
         ci.cancel();
-        level().playLocalSound(this, soundEvent, getSoundSource(), volume, pitch);
+        level().playSound((LocalPlayer) (Object) this, this, soundEvent, getSoundSource(), volume, pitch);
     }
 
 }

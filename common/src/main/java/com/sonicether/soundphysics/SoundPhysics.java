@@ -482,7 +482,7 @@ public class SoundPhysics {
         double variationFactor = SoundPhysicsMod.CONFIG.occlusionVariation.get();
 
         if (isBlock) {
-            variationFactor = Math.max(variationFactor, 0.501D);
+            variationFactor = Math.max(variationFactor, 0.49D);
         }
 
         double occlusionAccMin = Double.MAX_VALUE;

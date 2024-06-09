@@ -236,7 +236,7 @@ public class SoundPhysics {
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
-        BlockPos soundBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
+        BlockPos soundBlockPos = BlockPos.containing(soundPos);
 
         Loggers.logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
 
@@ -512,7 +512,7 @@ public class SoundPhysics {
         double occlusionAccumulation = 0D;
         Vec3 rayOrigin = soundPos;
 
-        BlockPos lastBlockPos = new BlockPos((int) soundPos.x, (int) soundPos.y, (int) soundPos.z);
+        BlockPos lastBlockPos = BlockPos.containing(soundPos);
 
         for (int i = 0; i < SoundPhysicsMod.CONFIG.maxOcclusionRays.get(); i++) {
             BlockHitResult rayHit = RaycastUtils.rayCast(getLevelProxy(), rayOrigin, playerPos, lastBlockPos);

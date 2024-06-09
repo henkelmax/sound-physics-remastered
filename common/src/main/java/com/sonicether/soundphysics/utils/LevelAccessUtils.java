@@ -123,6 +123,6 @@ public class LevelAccessUtils {
 
     private static BlockPos levelOriginFromPlayer() {
         var playerPos = MC.player.position();
-        return new BlockPos((int) playerPos.x, (int) playerPos.y, (int) playerPos.z);
+        return new BlockPos(playerPos.x, playerPos.y, playerPos.z);
     }
 }

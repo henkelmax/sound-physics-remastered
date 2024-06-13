@@ -125,7 +125,7 @@ public class ClonedLevelChunk extends ChunkAccess {
     }
 
     @Override
-    public ChunkStatus getStatus() {
+    public ChunkStatus getPersistedStatus() {
         // Implemented but not needed for access by sound physics.
         return ChunkStatus.FULL;
     }

@@ -41,10 +41,11 @@ public class BlockIdDefinition extends BlockDefinition {
         if (!configString.contains(":")) {
             return null;
         }
-        if (!ResourceLocation.isValidResourceLocation(configString)) {
+        ResourceLocation resourceLocation = ResourceLocation.tryParse(configString);
+        if (resourceLocation == null) {
             return null;
         }
-        return new BlockIdDefinition(BuiltInRegistries.BLOCK.get(new ResourceLocation(configString)));
+        return new BlockIdDefinition(BuiltInRegistries.BLOCK.get(resourceLocation));
     }
 
     @Override

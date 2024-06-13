@@ -80,8 +80,8 @@ public class RaycastRenderer {
 
         Matrix4f matrix4f = poseStack.last().pose();
 
-        consumer.vertex(matrix4f, (float) (ray.start.x - x), (float) (ray.start.y - y), (float) (ray.start.z - z)).color(red, green, blue, 255).endVertex();
-        consumer.vertex(matrix4f, (float) (ray.end.x - x), (float) (ray.end.y - y), (float) (ray.end.z - z)).color(red, green, blue, 255).endVertex();
+        consumer.addVertex(matrix4f, (float) (ray.start.x - x), (float) (ray.start.y - y), (float) (ray.start.z - z)).setColor(red, green, blue, 255);
+        consumer.addVertex(matrix4f, (float) (ray.end.x - x), (float) (ray.end.y - y), (float) (ray.end.z - z)).setColor(red, green, blue, 255);
 
         poseStack.popPose();
     }

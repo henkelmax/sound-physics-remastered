@@ -27,5 +27,7 @@ repositories {
 dependencies {
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
     runtimeOnly "maven.modrinth:simple-voice-chat:neoforge-${voicechat_version}"
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    // TODO Add back once ClothConfig is updated
+    // implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
 }

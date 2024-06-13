@@ -43,10 +43,11 @@ public class BlockTagDefinition extends BlockDefinition {
             return null;
         }
         String id = configString.substring(1).trim();
-        if (!ResourceLocation.isValidResourceLocation(id)) {
+        ResourceLocation resourceLocation = ResourceLocation.tryParse(id);
+        if (resourceLocation == null) {
             return null;
         }
-        return new BlockTagDefinition(TagKey.create(Registries.BLOCK, new ResourceLocation(id)));
+        return new BlockTagDefinition(TagKey.create(Registries.BLOCK, resourceLocation));
     }
 
     @Override

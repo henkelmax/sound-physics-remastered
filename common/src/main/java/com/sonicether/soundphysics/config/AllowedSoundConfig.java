@@ -39,9 +39,14 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
                 Loggers.warn("Failed to set allowed sound entry {}", key);
                 continue;
             }
+            ResourceLocation resourceLocation = ResourceLocation.tryParse(key);
+            if (resourceLocation == null) {
+                Loggers.warn("Failed to set allowed sound entry {}", key);
+                continue;
+            }
             SoundEvent soundEvent = null;
             try {
-                soundEvent = BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation(key));
+                soundEvent = BuiltInRegistries.SOUND_EVENT.get(resourceLocation);
             } catch (Exception e) {
                 Loggers.warn("Failed to set allowed sound entry {}", key, e);
             }

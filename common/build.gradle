@@ -9,12 +9,4 @@ repositories {
 
 dependencies {
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
-        transitive = false
-    }
-}
-
-tasks.register('prepareWorkspace') {
-
 }

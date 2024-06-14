@@ -25,12 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+    compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
     runtimeOnly "maven.modrinth:simple-voice-chat:forge-${voicechat_version}"
-    //implementation "me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"
-    implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}") {
-        transitive = false
-    }
-
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }

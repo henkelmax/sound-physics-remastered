@@ -1,18 +1,9 @@
 package com.sonicether.soundphysics.integration;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import com.sonicether.soundphysics.config.blocksound.BlockDefinition;
-
-import de.maxhenkel.configbuilder.entry.BooleanConfigEntry;
-import de.maxhenkel.configbuilder.entry.ConfigEntry;
-import de.maxhenkel.configbuilder.entry.DoubleConfigEntry;
-import de.maxhenkel.configbuilder.entry.FloatConfigEntry;
-import de.maxhenkel.configbuilder.entry.IntegerConfigEntry;
-import de.maxhenkel.configbuilder.entry.StringConfigEntry;
+import de.maxhenkel.configbuilder.entry.*;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -20,6 +11,9 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.FloatListEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ClothConfigIntegration {
 

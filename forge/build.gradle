@@ -24,12 +24,9 @@ repositories {
     maven { url = 'https://maven.shedaniel.me/' }
 }
 
-minecraft.reobf = false
-
 dependencies {
     compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
     runtimeOnly "maven.modrinth:simple-voice-chat:forge-${voicechat_version}"
-    //implementation "me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}") {
         transitive = false
     }

@@ -69,9 +69,9 @@
   "cloth_config.sound_physics_remastered.environment_logging.description": "在日志中记录有关环境计算的信息。",
   "cloth_config.sound_physics_remastered.performance_logging": "性能记录",
   "cloth_config.sound_physics_remastered.performance_logging.description": "在日志中记录有关计算耗费的时间的信息。",
-  "cloth_config.sound_physics_remastered.render_sound_bounces": "渲染声音反弹",
+  "cloth_config.sound_physics_remastered.render_sound_bounces": "渲染反弹",
   "cloth_config.sound_physics_remastered.render_sound_bounces.description": "如果启用，声音的路径将在游戏中渲染。",
   "cloth_config.sound_physics_remastered.render_occlusion": "渲染阻塞",
-  "cloth_config.sound_physics_remastered.render_occlusion.description": "如果启用，阻塞将在游戏中渲染。",
+  "cloth_config.sound_physics_remastered.render_occlusion.description": "如果启用，声音被阻塞的位置将在游戏中渲染。",
   "modmenu.descriptionTranslation.sound_physics_remastered": "为穿过方块的声音提供逼真的衰减、混响和吸收效果。"
 }

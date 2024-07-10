@@ -1,1 +1,1 @@
-MixinConnector: com.sonicether.soundphysics.MixinConnector
+MixinConfigs: sound_physics_remastered.mixins.json

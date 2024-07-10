@@ -1,1 +1,1 @@
-- Fixed jar getting reobfuscated
+- Fixed crash with latest Forge version

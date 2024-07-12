@@ -1,1 +1,1 @@
-- Improved sound occlusion behind one block walls
+- Updated Simplified Chinese translation

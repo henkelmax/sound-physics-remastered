@@ -1,1 +1,1 @@
-- Updated Simplified Chinese translation
+- Fixed crash when clicking mod config button

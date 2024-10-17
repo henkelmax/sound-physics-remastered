@@ -113,7 +113,7 @@ public class ClonedClientLevel implements ClientLevelProxy {
     }
 
     @Override
-    public int getMinBuildHeight() {
+    public int getMinY() {
         return heightAccessor.getMinBuildHeight();
     }
 

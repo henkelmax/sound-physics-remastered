@@ -1,5 +1,6 @@
 package com.sonicether.soundphysics.world;
 
+import java.util.ArrayList;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -38,11 +39,12 @@ import net.minecraft.world.ticks.TickContainerAccess;
  */
 public class ClonedLevelChunk extends ChunkAccess {
 
+    private final ChunkAccess.PackedTicks packedTicks;
     private final LevelChunkTicks<Block> blockTicks;
     private final LevelChunkTicks<Fluid> fluidTicks;
 
     public ClonedLevelChunk(Level level, ChunkPos chunkPos, @Nullable LevelChunkSection[] levelChunkSections) {
-        super(chunkPos, null, new ClonedLevelHeightAccessor(level), level.registryAccess().registryOrThrow(Registries.BIOME), 0, levelChunkSections, null);
+        super(chunkPos, null, new ClonedLevelHeightAccessor(level), level.registryAccess().lookupOrThrow(Registries.BIOME), 0, levelChunkSections, null);
 
         Heightmap.Types[] heightMapTypes = Heightmap.Types.values();
         int numberOfHeightMapTypes = heightMapTypes.length;
@@ -51,12 +53,13 @@ public class ClonedLevelChunk extends ChunkAccess {
             Heightmap.Types types = heightMapTypes[index];
 
             if (ChunkStatus.FULL.heightmapsAfter().contains(types)) {
-                this.heightmaps.put(types, new Heightmap(this, types));
+                heightmaps.put(types, new Heightmap(this, types));
             }
         }
 
-        this.blockTicks = new LevelChunkTicks<Block>();
-        this.fluidTicks = new LevelChunkTicks<Fluid>();
+        packedTicks = new ChunkAccess.PackedTicks(new ArrayList<>(), new ArrayList<>());
+        blockTicks = new LevelChunkTicks<>();
+        fluidTicks = new LevelChunkTicks<>();
     }
 
     @Override
@@ -119,9 +122,8 @@ public class ClonedLevelChunk extends ChunkAccess {
     }
 
     @Override
-    public TicksToSave getTicksForSerialization() {
-        // Implemented but not needed for access by sound physics.
-        return new ChunkAccess.TicksToSave(this.blockTicks, this.fluidTicks);
+    public PackedTicks getTicksForSerialization(long l) {
+        return packedTicks;
     }
 
     @Override

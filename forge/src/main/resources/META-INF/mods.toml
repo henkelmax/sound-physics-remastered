@@ -22,7 +22,7 @@ side = "BOTH"
 [[dependencies.sound_physics_remastered]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21,1.21.1]"
+versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.sound_physics_remastered]]
@@ -34,6 +34,6 @@ side = "BOTH"
 [[dependencies.sound_physics_remastered]]
 modId = "voicechat"
 mandatory = false
-versionRange = "[1.21-2.3.0,)"
+versionRange = "[${minecraft_version}-${voicechat_api_version},)"
 ordering = "AFTER"
 side = "BOTH"

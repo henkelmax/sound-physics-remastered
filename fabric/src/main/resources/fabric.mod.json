@@ -38,15 +38,12 @@
   ],
   "depends": {
     "fabricloader": "${fabric_loader_dependency}",
-    "minecraft": [
-      "1.21",
-      "1.21.1"
-    ],
+    "minecraft": "${minecraft_dependency}",
     "java": ">=${java_version}"
   },
   "breaks": {
     "soundphysics": "*",
-    "voicechat": "<1.21-2.3.0"
+    "voicechat": "<${minecraft_version}-${voicechat_api_version}"
   },
   "suggests": {
     "modmenu": "*",

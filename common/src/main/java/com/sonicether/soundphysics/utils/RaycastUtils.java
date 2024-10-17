@@ -17,7 +17,7 @@ public class RaycastUtils {
 
     public static BlockHitResult rayCast(@Nullable BlockGetter blockGetter, Vec3 from, Vec3 to, @Nullable BlockPos ignore) {
         if (blockGetter == null) {
-            return BlockHitResult.miss(to, Direction.getNearest(from.subtract(to)), BlockPos.containing(to));
+            return BlockHitResult.miss(to, Direction.getApproximateNearest(from.subtract(to)), BlockPos.containing(to));
         }
         return BlockGetter.traverseBlocks(from, to, blockGetter, (g, pos) -> {
             if (pos.equals(ignore)) {
@@ -39,7 +39,7 @@ public class RaycastUtils {
             double fluidDistance = from.distanceToSqr(fluidHitResult.getLocation());
             return blockDistance <= fluidDistance ? blockHitResult : fluidHitResult;
         }, (g) -> {
-            return BlockHitResult.miss(to, Direction.getNearest(from.subtract(to)), BlockPos.containing(to));
+            return BlockHitResult.miss(to, Direction.getApproximateNearest(from.subtract(to)), BlockPos.containing(to));
         });
     }
 

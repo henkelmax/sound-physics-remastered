@@ -11,6 +11,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Boolean> enabled;
 
     public final ConfigEntry<Float> attenuationFactor;
+    public final ConfigEntry<Float> reverbAttenuationDistance;
     public final ConfigEntry<Float> reverbGain;
     public final ConfigEntry<Float> reverbBrightness;
     public final ConfigEntry<Float> reverbDistance;
@@ -60,6 +61,9 @@ public class SoundPhysicsConfig {
                         "This setting requires you to be in singleplayer or having the mod installed on the server",
                         "1.0 is the physically correct value"
                 );
+        reverbAttenuationDistance = builder
+                .floatEntry("reverb_attenuation_distance", 32F, 0F, 512F)
+                .comment("The distance at which reverb attenuation starts");
         reverbGain = builder
                 .floatEntry("reverb_gain", 1F, 0.1F, 2F)
                 .comment("The volume of simulated reverberations");

@@ -1,1 +1,1 @@
-- Fixed crash when clicking mod config button
+- Updated to 1.21.3

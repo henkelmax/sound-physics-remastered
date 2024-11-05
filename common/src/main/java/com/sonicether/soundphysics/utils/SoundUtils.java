@@ -9,7 +9,7 @@ public class SoundUtils {
     private static final Pattern STEP_PATTERN = Pattern.compile(".*step.*");
 
     public static double calculateEntitySoundYOffset(float standingEyeHeight, SoundEvent sound) {
-        if (STEP_PATTERN.matcher(sound.getLocation().getPath()).matches()) {
+        if (STEP_PATTERN.matcher(sound.location().getPath()).matches()) {
             return 0D;
         }
         return standingEyeHeight;

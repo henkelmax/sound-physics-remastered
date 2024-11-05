@@ -534,7 +534,7 @@ public class SoundPhysics {
 
             // Regardless to whether we hit from inside or outside
             Vec3 dirVec = rayOrigin.subtract(blockHitPos.getX() + 0.5D, blockHitPos.getY() + 0.5D, blockHitPos.getZ() + 0.5D);
-            Direction sideHit = Direction.getNearest(dirVec.x, dirVec.y, dirVec.z);
+            Direction sideHit = Direction.getApproximateNearest(dirVec.x, dirVec.y, dirVec.z);
 
             if (!blockHit.isFaceSturdy(levelProxy, rayHit.getBlockPos(), sideHit)) {
                 blockOcclusion *= SoundPhysicsMod.CONFIG.nonFullBlockOcclusionFactor.get();

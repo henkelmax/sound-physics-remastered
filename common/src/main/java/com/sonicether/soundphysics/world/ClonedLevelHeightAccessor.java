@@ -11,19 +11,25 @@ import net.minecraft.world.level.LevelHeightAccessor;
 public class ClonedLevelHeightAccessor implements LevelHeightAccessor {
 
     private final int height;
-    private final int minBuildHeight;
+    private final int getMinY;
 
     public ClonedLevelHeightAccessor(Level level) {
-        this.height = level.getHeight();
-        this.minBuildHeight = level.getMinBuildHeight();
+        height = level.getHeight();
+        getMinY = level.getMinY();
     }
 
+    @Override
     public int getHeight() {
-        return this.height;
+        return height;
+    }
+
+    @Override
+    public int getMinY() {
+        return getMinY;
     }
 
     public int getMinBuildHeight() {
-        return this.minBuildHeight;
+        return getMinY;
     }
 
 }

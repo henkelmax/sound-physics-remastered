@@ -11,9 +11,9 @@ import net.minecraftforge.fml.loading.FMLLoader;
 @Mod(SoundPhysicsMod.MODID)
 public class ForgeSoundPhysicsMod extends SoundPhysicsMod {
 
-    public ForgeSoundPhysicsMod() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+    public ForgeSoundPhysicsMod(FMLJavaModLoadingContext context) {
+        context.getModEventBus().addListener(this::commonSetup);
+        context.getModEventBus().addListener(this::clientSetup);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

@@ -11,6 +11,7 @@ processResources {
         expand 'java_version': java_version,
                 'mod_version': mod_version,
                 'minecraft_version': minecraft_version,
+                'minecraft_dependency': minecraft_dependency,
                 'fabric_loader_dependency': fabric_loader_dependency,
                 'cloth_config_version': cloth_config_version,
                 'voicechat_api_version': voicechat_api_version

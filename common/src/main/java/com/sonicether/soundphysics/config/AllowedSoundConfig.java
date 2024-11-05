@@ -9,6 +9,7 @@ import com.sonicether.soundphysics.Loggers;
 
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -46,7 +47,7 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
             }
             SoundEvent soundEvent = null;
             try {
-                soundEvent = BuiltInRegistries.SOUND_EVENT.get(resourceLocation);
+                soundEvent = BuiltInRegistries.SOUND_EVENT.get(resourceLocation).map(Holder.Reference::value).orElse(null);
             } catch (Exception e) {
                 Loggers.warn("Failed to set allowed sound entry {}", key, e);
             }
@@ -88,18 +89,18 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
     }
 
     public AllowedSoundConfig setAllowed(SoundEvent soundEvent, boolean allowed) {
-        return setAllowed(soundEvent.getLocation().toString(), allowed);
+        return setAllowed(soundEvent.location().toString(), allowed);
     }
 
     public Map<String, Boolean> createDefaultMap() {
         Map<String, Boolean> map = new HashMap<>();
         for (SoundEvent event : BuiltInRegistries.SOUND_EVENT) {
-            map.put(event.getLocation().toString(), true);
+            map.put(event.location().toString(), true);
         }
 
-        map.put(SoundEvents.WEATHER_RAIN.getLocation().toString(), false);
-        map.put(SoundEvents.WEATHER_RAIN_ABOVE.getLocation().toString(), false);
-        map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.getLocation().toString(), false);
+        map.put(SoundEvents.WEATHER_RAIN.location().toString(), false);
+        map.put(SoundEvents.WEATHER_RAIN_ABOVE.location().toString(), false);
+        map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.location().toString(), false);
         SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.key().location().toString(), false));
 
         return map;

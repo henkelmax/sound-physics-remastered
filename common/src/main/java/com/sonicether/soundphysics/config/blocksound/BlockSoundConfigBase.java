@@ -139,7 +139,7 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
                 Registry<T> registry = (Registry<T>) registryOptional.get();
                 Optional<ResourceKey<T>> maybeKey = registry.getResourceKey(entry);
                 if (maybeKey.isPresent()) {
-                    return registry.getHolderOrThrow(maybeKey.get()).is(tagKey);
+                    return registry.getOrThrow(maybeKey.get()).is(tagKey);
                 }
             }
         }

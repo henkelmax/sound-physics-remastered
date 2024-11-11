@@ -1,22 +1,13 @@
 package com.sonicether.soundphysics;
 
-import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
-
-import com.sonicether.soundphysics.utils.RaycastUtils;
 import com.mojang.math.Vector3f;
-import com.sonicether.soundphysics.profiling.TaskProfiler;
-import com.sonicether.soundphysics.utils.LevelAccessUtils;
-import com.sonicether.soundphysics.world.ClientLevelProxy;
-import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.AL11;
-import org.lwjgl.openal.ALC10;
-import org.lwjgl.openal.EXTEfx;
-
 import com.sonicether.soundphysics.config.ReverbParams;
 import com.sonicether.soundphysics.debug.RaycastRenderer;
-
+import com.sonicether.soundphysics.profiling.TaskProfiler;
+import com.sonicether.soundphysics.utils.LevelAccessUtils;
+import com.sonicether.soundphysics.utils.RaycastUtils;
+import com.sonicether.soundphysics.utils.SoundCountCache;
+import com.sonicether.soundphysics.world.ClientLevelProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -29,6 +20,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.AL11;
+import org.lwjgl.openal.ALC10;
+import org.lwjgl.openal.EXTEfx;
+
+import javax.annotation.Nullable;
+import java.util.regex.Pattern;
 
 public class SoundPhysics {
 
@@ -216,7 +214,7 @@ public class SoundPhysics {
             }
         }
 
-        if (!SoundPhysicsMod.ALLOWED_SOUND_CONFIG.isAllowed(sound)) {
+        if (SoundCountCache.getCountAndIncrement(sound) >= SoundPhysicsMod.MAX_SOUNDS_PER_TICK_CONFIG.getMaxCount(sound)) {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }

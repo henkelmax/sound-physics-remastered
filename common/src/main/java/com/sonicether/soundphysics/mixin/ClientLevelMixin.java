@@ -1,21 +1,19 @@
 package com.sonicether.soundphysics.mixin;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BooleanSupplier;
-
+import com.sonicether.soundphysics.utils.LevelAccessUtils;
+import com.sonicether.soundphysics.utils.SoundCountCache;
+import com.sonicether.soundphysics.world.CachingClientLevel;
+import com.sonicether.soundphysics.world.ClonedClientLevel;
+import net.minecraft.client.multiplayer.ClientLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.sonicether.soundphysics.utils.LevelAccessUtils;
-import com.sonicether.soundphysics.world.CachingClientLevel;
-import com.sonicether.soundphysics.world.ClonedClientLevel;
-
-import net.minecraft.client.multiplayer.ClientLevel;
-
 import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin implements CachingClientLevel {
@@ -40,6 +38,6 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
         // any changes made on tick would not be included. Sound and level caching mixins could be
         // split and assigned different priorities to address this.
         LevelAccessUtils.tickLevelCache((ClientLevel) (Object) this);
+        SoundCountCache.resetAllCounts();
     }
-
 }

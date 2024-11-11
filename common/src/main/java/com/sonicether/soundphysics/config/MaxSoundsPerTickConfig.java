@@ -39,7 +39,7 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
                     boolean is_enabled = Boolean.parseBoolean(entry.getValue()); // Convert allowedSounds to maxSoundsPerTick
                     value = is_enabled ? -1 : 0;
                 } catch (Exception e) {
-                    Loggers.warn("Failed to set max sound count pe tick entry {}", key);
+                    Loggers.warn("Failed to set max sounds per tick entry {}", key);
                     continue;
                 }
             }
@@ -47,7 +47,7 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
             try {
                 soundEvent = Registry.SOUND_EVENT.get(new ResourceLocation(key));
             } catch (Exception e) {
-                Loggers.warn("Failed to set max sound count pe tick entry {}", key, e);
+                Loggers.warn("Failed to set max sounds per tick entry {}", key, e);
             }
             if (soundEvent == null) {
                 Loggers.warn("Sound event {} not found", key);
@@ -100,10 +100,10 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
             map.put(event.getLocation().toString(), -1);
         }
 
-        map.put(SoundEvents.WEATHER_RAIN.getLocation().toString(), -1);
-        map.put(SoundEvents.WEATHER_RAIN_ABOVE.getLocation().toString(), -1);
-        map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.getLocation().toString(), -1);
-        SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.getLocation().toString(), -1));
+        map.put(SoundEvents.WEATHER_RAIN.getLocation().toString(), 0);
+        map.put(SoundEvents.WEATHER_RAIN_ABOVE.getLocation().toString(), 0);
+        map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.getLocation().toString(), 0);
+        SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.getLocation().toString(), 0));
 
         return map;
     }

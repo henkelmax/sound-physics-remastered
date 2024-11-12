@@ -7,6 +7,7 @@ import com.sonicether.soundphysics.config.SoundPhysicsConfig;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -41,10 +42,15 @@ public abstract class SoundPhysicsMod {
 
         try {
             Files.move(oldPath, newPath);
-            Loggers.log(oldPath.getFileName() + "file renamed to " + newPath.getFileName());
+            Loggers.warn(oldPath.getFileName() + " file renamed to " + newPath.getFileName());
         } catch (NoSuchFileException ignored) {
+        } catch (FileAlreadyExistsException ignored) {
+            try {
+                Files.delete(oldPath); // If max_sounds_per_tick was already generated but allowed_sounds for some reason returned(by user, etc) we should delete it
+                Loggers.warn(oldPath.getFileName() + " was deleted due to " + newPath.getFileName() + " already exists.");
+            } catch (IOException ignored1) {}
         } catch (IOException e) {
-            Loggers.error("Error renaming file: " + e.getMessage());
+            Loggers.error("Error renaming file: " + e);
         }
     }
 

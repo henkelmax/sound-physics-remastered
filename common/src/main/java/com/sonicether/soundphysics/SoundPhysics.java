@@ -6,7 +6,7 @@ import com.sonicether.soundphysics.debug.RaycastRenderer;
 import com.sonicether.soundphysics.profiling.TaskProfiler;
 import com.sonicether.soundphysics.utils.LevelAccessUtils;
 import com.sonicether.soundphysics.utils.RaycastUtils;
-import com.sonicether.soundphysics.utils.SoundCountCache;
+import com.sonicether.soundphysics.utils.SoundsPerTickCounter;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -214,7 +214,7 @@ public class SoundPhysics {
             }
         }
 
-        if (SoundCountCache.getCountAndIncrement(sound) >= SoundPhysicsMod.MAX_SOUNDS_PER_TICK_CONFIG.getMaxCount(sound)) {
+        if (SoundsPerTickCounter.getCountAndIncrement(sound) >= SoundPhysicsMod.MAX_SOUNDS_PER_TICK_CONFIG.getMaxCount(sound)) {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }

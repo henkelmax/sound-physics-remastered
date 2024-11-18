@@ -1,7 +1,7 @@
 package com.sonicether.soundphysics.mixin;
 
 import com.sonicether.soundphysics.utils.LevelAccessUtils;
-import com.sonicether.soundphysics.utils.SoundCountCache;
+import com.sonicether.soundphysics.utils.SoundsPerTickCounter;
 import com.sonicether.soundphysics.world.CachingClientLevel;
 import com.sonicether.soundphysics.world.ClonedClientLevel;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -38,6 +38,6 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
         // any changes made on tick would not be included. Sound and level caching mixins could be
         // split and assigned different priorities to address this.
         LevelAccessUtils.tickLevelCache((ClientLevel) (Object) this);
-        SoundCountCache.resetAllCounts();
+        SoundsPerTickCounter.resetAllCounts();
     }
 }

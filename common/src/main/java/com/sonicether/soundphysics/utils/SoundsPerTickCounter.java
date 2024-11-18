@@ -3,12 +3,12 @@ package com.sonicether.soundphysics.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SoundCountCache {
+public class SoundsPerTickCounter {
 
     // Static map to store sound counts, shared across the application
     private static final Map<String, Integer> soundCounts = new HashMap<>();
 
-    private SoundCountCache() {}
+    private SoundsPerTickCounter() {}
 
     /**
      * Returns the current count of how many times the specified sound has been encountered, then increments it.

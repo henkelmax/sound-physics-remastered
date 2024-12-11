@@ -1,1 +1,2 @@
-- Updated to 1.21.4
+- Fixed issues with sounds being played far away
+- Fixed lag when being far away from 0, 0

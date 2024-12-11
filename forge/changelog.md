@@ -1,1 +1,2 @@
-- Updated Simplified Chinese translation
+- Fixed issues with sounds being played far away
+- Fixed lag when being far away from 0, 0

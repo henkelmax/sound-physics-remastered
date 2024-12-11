@@ -33,6 +33,7 @@ public class SoundPhysicsConfig {
     public final ConfigEntry<Boolean> redirectNonOccludedSounds;
     public final ConfigEntry<Boolean> updateMovingSounds;
     public final ConfigEntry<Integer> soundUpdateInterval;
+    public final ConfigEntry<Double> maxSoundProcessingDistance;
     public final ConfigEntry<Boolean> unsafeLevelAccess;
     public final ConfigEntry<Integer> levelCloneRange;
     public final ConfigEntry<Integer> levelCloneMaxRetainTicks;
@@ -146,6 +147,10 @@ public class SoundPhysicsConfig {
                         "The interval in ticks that moving sounds are reevaluated",
                         "Lower values mean more frequent reevaluation but also more lag",
                         "This option only takes effect if update_moving_sounds is enabled"
+                );
+        maxSoundProcessingDistance = builder.doubleEntry("max_sound_processing_distance", 512D, 0D, Double.MAX_VALUE)
+                .comment(
+                        "The maximum distance a sound can be processed"
                 );
         unsafeLevelAccess = builder.booleanEntry("unsafe_level_access", false)
                 .comment(

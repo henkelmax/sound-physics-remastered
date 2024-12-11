@@ -209,6 +209,13 @@ public class SoundPhysics {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }
+        Vec3 soundPos = new Vec3(posX, posY, posZ);
+        double distance = player.position().distanceTo(soundPos);
+        if (distance > SoundPhysicsMod.CONFIG.maxSoundProcessingDistance.get()) {
+            Loggers.logDebug("Sound {} is too far away from player ({} blocks)", sound, distance);
+            setDefaultEnvironment(sourceID, auxOnly);
+            return null;
+        }
 
         if (!SoundPhysicsMod.CONFIG.updateMovingSounds.get()) {
             if (category == SoundSource.RECORDS) {
@@ -233,7 +240,6 @@ public class SoundPhysics {
         // Direct sound occlusion
 
         Vec3 playerPos = minecraft.gameRenderer.getMainCamera().getPosition();
-        Vec3 soundPos = new Vec3(posX, posY, posZ);
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
         BlockPos soundBlockPos = BlockPos.containing(soundPos);

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.sonicether.soundphysics.Loggers;
 
+import com.sonicether.soundphysics.integration.voicechat.AudioChannel;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.Holder;
@@ -45,20 +46,25 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
                 Loggers.warn("Failed to set allowed sound entry {}", key);
                 continue;
             }
-            SoundEvent soundEvent = null;
-            try {
-                soundEvent = BuiltInRegistries.SOUND_EVENT.get(resourceLocation).map(Holder.Reference::value).orElse(null);
-            } catch (Exception e) {
-                Loggers.warn("Failed to set allowed sound entry {}", key, e);
-            }
-            if (soundEvent == null) {
-                Loggers.warn("Sound event {} not found", key);
-                continue;
+
+            if (!resourceLocation.getNamespace().equals(AudioChannel.CATEGORY_VOICECHAT)) {
+                logIfUnknownSound(resourceLocation);
             }
 
-            setAllowed(soundEvent, value);
+            setAllowed(resourceLocation.toString(), value);
         }
         saveSync();
+    }
+
+    private void logIfUnknownSound(ResourceLocation resourceLocation) {
+        try {
+            SoundEvent soundEvent = BuiltInRegistries.SOUND_EVENT.get(resourceLocation).map(Holder.Reference::value).orElse(null);
+            if (soundEvent == null) {
+                Loggers.log("Unknown sound in allowed sound config: {}", resourceLocation);
+            }
+        } catch (Exception e) {
+            Loggers.warn("Failed to parse allowed sound entry {}", resourceLocation, e);
+        }
     }
 
     @Override
@@ -86,10 +92,6 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
     public AllowedSoundConfig setAllowed(String soundEvent, boolean allowed) {
         allowedSounds.put(soundEvent, allowed);
         return this;
-    }
-
-    public AllowedSoundConfig setAllowed(SoundEvent soundEvent, boolean allowed) {
-        return setAllowed(soundEvent.location().toString(), allowed);
     }
 
     public Map<String, Boolean> createDefaultMap() {

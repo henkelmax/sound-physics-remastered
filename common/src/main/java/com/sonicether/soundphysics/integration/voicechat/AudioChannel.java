@@ -10,7 +10,7 @@ import java.util.UUID;
 public class AudioChannel {
 
     private static final String CATEGORY_TEMPLATE = "voicechat:%s";
-    private static final String CATEGORY_VOICECHAT = "voicechat";
+    public static final String CATEGORY_VOICECHAT = "voicechat";
 
     private final UUID channelId;
     private long lastUpdate;

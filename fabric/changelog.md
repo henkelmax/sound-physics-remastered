@@ -1,1 +1,1 @@
-- Fixed allowed sounds getting removed from the config file
+- Order configs alphabetically

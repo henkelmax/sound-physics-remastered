@@ -29,7 +29,7 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
     public void load() throws IOException {
         super.load();
 
-        allowedSounds = createDefaultMap();
+        Map<String, Boolean> map = createDefaultMap();
 
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             String key = entry.getKey();
@@ -50,8 +50,11 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
                 logIfUnknownSound(resourceLocation);
             }
 
-            setAllowed(resourceLocation.toString(), value);
+            map.put(resourceLocation.toString(), value);
         }
+
+        allowedSounds = ConfigUtils.sortMap(map);
+
         saveSync();
     }
 
@@ -86,11 +89,6 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
 
     public boolean isAllowed(String soundEvent) {
         return allowedSounds.getOrDefault(soundEvent, true);
-    }
-
-    public AllowedSoundConfig setAllowed(String soundEvent, boolean allowed) {
-        allowedSounds.put(soundEvent, allowed);
-        return this;
     }
 
     public Map<String, Boolean> createDefaultMap() {

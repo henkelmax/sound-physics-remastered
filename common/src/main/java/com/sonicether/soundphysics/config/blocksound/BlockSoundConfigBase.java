@@ -2,16 +2,13 @@ package com.sonicether.soundphysics.config.blocksound;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.Loggers;
 
+import com.sonicether.soundphysics.config.ConfigUtils;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import net.minecraft.core.Registry;
@@ -41,8 +38,8 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
 
     @Override
     public void load() throws IOException {
-        configMap = new LinkedHashMap<>();
-        addDefaults(configMap);
+        Map<BlockDefinition, Float> map = new HashMap<>();
+        addDefaults(map);
 
         super.load();
 
@@ -61,8 +58,9 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
                 continue;
             }
 
-            configMap.put(blockDefinition, value);
+            map.put(blockDefinition, value);
         }
+        configMap = ConfigUtils.sortMap(map);
         invalidateCaches();
         saveSync();
     }

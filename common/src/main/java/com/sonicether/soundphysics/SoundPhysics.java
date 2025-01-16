@@ -356,7 +356,7 @@ public class SoundPhysics {
                         }
                     }
                     // Bandaid solution for distance based attenuation
-                    if (Math.max(totalRayDistance, 0D) <= SoundPhysicsMod.CONFIG.reverbAttenuationDistance.get()) {
+                    if (totalRayDistance < SoundPhysicsMod.CONFIG.reverbAttenuationDistance.get()) {
                         continue;
                     }
 

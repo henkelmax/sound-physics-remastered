@@ -63,8 +63,11 @@ public class SoundPhysicsConfig {
                         "1.0 is the physically correct value"
                 );
         reverbAttenuationDistance = builder
-                .floatEntry("reverb_attenuation_distance", 32F, 0F, 512F)
-                .comment("The distance at which reverb attenuation starts");
+                .floatEntry("reverb_attenuation_distance", 0F, 0F, 512F)
+                .comment(
+                        "The ray distance at which reverb starts",
+                        "0.0 disables reverb attenuation"
+                );
         reverbGain = builder
                 .floatEntry("reverb_gain", 1F, 0.1F, 2F)
                 .comment("The volume of simulated reverberations");

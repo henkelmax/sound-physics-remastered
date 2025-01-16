@@ -16,7 +16,7 @@
   "cloth_config.sound_physics_remastered.attenuation_factor": "Attenuation factor",
   "cloth_config.sound_physics_remastered.attenuation_factor.description": "Affects how quiet a sound gets based on distance. Lower values mean distant sounds are louder. This setting requires you to be in singleplayer or having the mod installed on the server. 1.0 is the physically correct value.",
   "cloth_config.sound_physics_remastered.reverb_attenuation_distance": "Reverb attenuation distance",
-  "cloth_config.sound_physics_remastered.reverb_attenuation_distance.description": "The distance at which reverb attenuation starts.",
+  "cloth_config.sound_physics_remastered.reverb_attenuation_distance.description": "The ray distance at which reverb starts.\n0.0 disables reverb attenuation.",
   "cloth_config.sound_physics_remastered.reverb_gain": "Reverb gain",
   "cloth_config.sound_physics_remastered.reverb_gain.description": "The volume of simulated reverberations.",
   "cloth_config.sound_physics_remastered.reverb_brightness": "Reverb brightness",

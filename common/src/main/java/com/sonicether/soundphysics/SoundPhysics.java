@@ -355,6 +355,10 @@ public class SoundPhysics {
                             audioDirection.addSharedAirspace(sharedAirspaceVector, totalRayDistance);
                         }
                     }
+                    // Bandaid solution for distance based attenuation
+                    if (Math.max(totalRayDistance, 0D) <= SoundPhysicsMod.CONFIG.reverbAttenuationDistance.get()) {
+                        continue;
+                    }
 
                     float reflectionDelay = (float) Math.max(totalRayDistance, 0D) * 0.12F * blockReflectivity;
 

@@ -48,6 +48,11 @@ public class ClothConfigIntegration {
                 SoundPhysicsMod.CONFIG.attenuationFactor
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_attenuation_distance"),
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_attenuation_distance.description"),
+                SoundPhysicsMod.CONFIG.reverbAttenuationDistance
+        ));
+        general.addEntry(fromConfigEntry(entryBuilder,
                 Component.translatable("cloth_config.sound_physics_remastered.reverb_gain"),
                 Component.translatable("cloth_config.sound_physics_remastered.reverb_gain.description"),
                 SoundPhysicsMod.CONFIG.reverbGain

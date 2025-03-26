@@ -1,3 +1,2 @@
-- Order configs alphabetically
-- Added reverb attenuation distance config option
-- Added Traditional Chinese translation
+- Updated Chinese Simplified translation
+- Added Mexican Spanish translation

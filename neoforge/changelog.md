@@ -1,3 +1,1 @@
-- Order configs alphabetically
-- Added reverb attenuation distance config option
-- Added Traditional Chinese translation
+- Updated to 1.21.5

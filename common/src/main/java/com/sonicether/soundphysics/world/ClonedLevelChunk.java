@@ -150,13 +150,13 @@ public class ClonedLevelChunk extends ChunkAccess {
     }
 
     @Override
-    public void setBlockEntity(@Nonnull BlockEntity blockEntity) {
-        throw new UnsupportedOperationException("Can not set block entity in read-only level clone");
+    public @Nullable BlockState setBlockState(BlockPos blockPos, BlockState blockState, int i) {
+        throw new UnsupportedOperationException("Can not set block state in read-only level clone");
     }
 
     @Override
-    public BlockState setBlockState(@Nonnull BlockPos blockPos, @Nonnull BlockState blockState, boolean unknownFlag) {
-        throw new UnsupportedOperationException("Can not set block state in read-only level clone");
+    public void setBlockEntity(@Nonnull BlockEntity blockEntity) {
+        throw new UnsupportedOperationException("Can not set block entity in read-only level clone");
     }
 
 }

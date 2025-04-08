@@ -19,9 +19,9 @@ public class LibraryMixin {
     private void modifyContext(Args args) {
         int[] original = toArray(((IntBuffer) args.get(1)).duplicate());
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer buffer = stack.mallocInt(original.length + 2);
+            IntBuffer buffer = stack.mallocInt(original.length + 3);
             buffer.put(original, 0, original.length - 1);
-            buffer.put(EXTEfx.ALC_MAX_AUXILIARY_SENDS).put(4);
+            buffer.put(EXTEfx.ALC_MAX_AUXILIARY_SENDS).put(4).put(0);
             args.set(1, buffer.put(0).flip());
         }
     }

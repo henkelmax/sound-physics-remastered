@@ -17,10 +17,16 @@ public class LibraryMixin {
 
     @ModifyArgs(method = "init", at = @At(value = "INVOKE", target = "Lorg/lwjgl/openal/ALC10;alcCreateContext(JLjava/nio/IntBuffer;)J"))
     private void modifyContext(Args args) {
-        int[] original = toArray(((IntBuffer) args.get(1)).duplicate());
+        IntBuffer oldBuffer = args.get(1);
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer buffer = stack.mallocInt(original.length + 3);
-            buffer.put(original, 0, original.length - 1);
+            IntBuffer buffer;
+            if (oldBuffer != null) {
+                int[] original = toArray(oldBuffer.duplicate());
+                buffer = stack.mallocInt(original.length + 3);
+                buffer.put(original, 0, original.length - 1);
+            } else {
+                buffer = stack.mallocInt(4);
+            }
             buffer.put(EXTEfx.ALC_MAX_AUXILIARY_SENDS).put(4).put(0);
             args.set(1, buffer.put(0).flip());
         }

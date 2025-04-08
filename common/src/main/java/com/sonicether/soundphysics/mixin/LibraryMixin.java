@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 
-@Mixin(value = Library.class, remap = false)
+@Mixin(value = Library.class)
 public class LibraryMixin {
 
     @ModifyArgs(method = "init", at = @At(value = "INVOKE", target = "Lorg/lwjgl/openal/ALC10;alcCreateContext(JLjava/nio/IntBuffer;)J"))

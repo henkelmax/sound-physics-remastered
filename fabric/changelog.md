@@ -1,2 +1,1 @@
-- Used original OpenAL context int buffer
-- Potentially improved mixin compatibility with other mods
+- Fixed mixin error

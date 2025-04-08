@@ -1,3 +1,2 @@
-- Updated to 1.21.5
-- Updated Chinese Simplified translation
-- Added Mexican Spanish translation
+- Used original OpenAL context int buffer
+- Potentially improved mixin compatibility with other mods

@@ -197,6 +197,34 @@ public class ClothConfigIntegration {
             occlusion.addEntry(e);
         }
 
+        ConfigCategory sound_absorption = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.sound_absorption"));
+
+        Map<String, Float> defaultSoundAbsorptionMap = SoundPhysicsMod.SOUND_ABSORPTION_CONFIG.createDefaultMap();
+
+        for (Map.Entry<String, Float> entry : SoundPhysicsMod.SOUND_ABSORPTION_CONFIG.getMap().entrySet()) {
+            FloatListEntry e = entryBuilder
+                    .startFloatField(Component.nullToEmpty(entry.getKey()), entry.getValue())
+                    .setMin(0.01F)
+                    .setMax(10F)
+                    .setDefaultValue(defaultSoundAbsorptionMap.getOrDefault(entry.getKey(), 1F))
+                    .setSaveConsumer(value -> SoundPhysicsMod.SOUND_ABSORPTION_CONFIG.setValue(entry.getKey(), value)).build();
+            sound_absorption.addEntry(e);
+        }
+
+        ConfigCategory sound_reflectivity = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.sound_reflectivity"));
+
+        Map<String, Float> defaultSoundReflectivityMap = SoundPhysicsMod.SOUND_REFLECTIVITY_CONFIG.createDefaultMap();
+
+        for (Map.Entry<String, Float> entry : SoundPhysicsMod.SOUND_REFLECTIVITY_CONFIG.getMap().entrySet()) {
+            FloatListEntry e = entryBuilder
+                    .startFloatField(Component.nullToEmpty(entry.getKey()), entry.getValue())
+                    .setMin(0.01F)
+                    .setMax(10F)
+                    .setDefaultValue(defaultSoundReflectivityMap.getOrDefault(entry.getKey(), 1F))
+                    .setSaveConsumer(value -> SoundPhysicsMod.SOUND_REFLECTIVITY_CONFIG.setValue(entry.getKey(), value)).build();
+            sound_reflectivity.addEntry(e);
+        }
+
         ConfigCategory logging = builder.getOrCreateCategory(Component.translatable("cloth_config.sound_physics_remastered.category.debug"));
 
         logging.addEntry(fromConfigEntry(entryBuilder,
@@ -236,6 +264,8 @@ public class ClothConfigIntegration {
             SoundPhysicsMod.REFLECTIVITY_CONFIG.save();
             SoundPhysicsMod.OCCLUSION_CONFIG.save();
             SoundPhysicsMod.ALLOWED_SOUND_CONFIG.save();
+            SoundPhysicsMod.SOUND_ABSORPTION_CONFIG.save();
+            SoundPhysicsMod.SOUND_REFLECTIVITY_CONFIG.save();
             SoundPhysicsMod.CONFIG.reloadClient();
         });
 

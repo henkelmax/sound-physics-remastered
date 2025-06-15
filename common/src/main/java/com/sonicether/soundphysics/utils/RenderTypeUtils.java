@@ -17,14 +17,14 @@ public class RenderTypeUtils {
     public static final RenderType DEBUG_LINE_STRIP = RenderType.debugLineStrip(1D);
 
     static {
-        DEBUG_LINE_STRIP_PIPELINE_SEETHROUGH = RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
-                        .withLocation("pipeline/debug_line_strip_seethrough")
-                        .withVertexShader("core/position_color")
-                        .withFragmentShader("core/position_color")
-                        .withCull(false)
-                        .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.DEBUG_LINE_STRIP)
-                        .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-                        .build();
+        DEBUG_LINE_STRIP_PIPELINE_SEETHROUGH = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+                .withLocation("pipeline/debug_line_strip_seethrough")
+                .withVertexShader("core/position_color")
+                .withFragmentShader("core/position_color")
+                .withCull(false)
+                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.DEBUG_LINE_STRIP)
+                .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+                .build();
 
         DEBUG_LINE_STRIP_SEETHROUGH = RenderType.create(
                 "debug_line_strip_seethrough",

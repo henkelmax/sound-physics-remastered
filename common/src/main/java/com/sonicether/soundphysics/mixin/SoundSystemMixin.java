@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
@@ -30,11 +31,11 @@ public class SoundSystemMixin {
     }
 
     @Inject(method = "play", at = @At(value = "FIELD", target = "Lnet/minecraft/client/sounds/SoundEngine;instanceBySource:Lcom/google/common/collect/Multimap;"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void play(SoundInstance sound, CallbackInfo ci, WeighedSoundEvents weightedSoundSet, ResourceLocation identifier, Sound sound2, float f, float g, SoundSource soundCategory) {
-        SoundPhysics.setLastSoundCategoryAndName(soundCategory, sound.getLocation().toString());
+    private void play(SoundInstance soundInstance, CallbackInfoReturnable<SoundEngine.PlayResult> cir, WeighedSoundEvents weighedSoundEvents, ResourceLocation resourceLocation, Sound sound, float f, float g, SoundSource soundSource) {
+        SoundPhysics.setLastSoundCategoryAndName(soundSource, sound.getLocation().toString());
     }
 
-    @Inject(method = "tickNonPaused", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;getSoundSourceVolume(Lnet/minecraft/sounds/SoundSource;)F"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "tickInGameSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;isStopped()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void tickNonPaused(CallbackInfo ci, Iterator<?> iterator, Map.Entry<SoundInstance, ChannelAccess.ChannelHandle> map, ChannelAccess.ChannelHandle channelHandle, SoundInstance sound) {
         if (!SoundPhysicsMod.CONFIG.updateMovingSounds.get()) {
             return;

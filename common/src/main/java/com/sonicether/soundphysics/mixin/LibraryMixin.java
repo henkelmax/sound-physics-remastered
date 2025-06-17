@@ -15,7 +15,7 @@ import java.util.Arrays;
 @Mixin(value = Library.class)
 public class LibraryMixin {
 
-    @ModifyArgs(method = "init", at = @At(value = "INVOKE", target = "Lorg/lwjgl/openal/ALC10;alcCreateContext(JLjava/nio/IntBuffer;)J"))
+    @ModifyArgs(method = "init", at = @At(value = "INVOKE", target = "Lorg/lwjgl/openal/ALC10;alcCreateContext(JLjava/nio/IntBuffer;)J"), remap = false)
     private void modifyContext(Args args) {
         int[] original = toArray(((IntBuffer) args.get(1)).duplicate());
         try (MemoryStack stack = MemoryStack.stackPush()) {

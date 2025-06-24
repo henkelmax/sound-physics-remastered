@@ -235,7 +235,7 @@ public class SoundPhysics {
         }
 
         float directCutoff;
-        float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * 3D);
+        float absorptionCoeff = (float) (SoundPhysicsMod.CONFIG.blockAbsorption.get() * SoundPhysicsMod.SOUND_ABSORPTION_CONFIG.getValue(sound) * 3D);
 
         // Direct sound occlusion
 
@@ -327,7 +327,7 @@ public class SoundPhysics {
 
                     BlockHitResult newRayHit = RaycastUtils.rayCast(getLevelProxy(), newRayStart, newRayEnd, lastHitBlock);
 
-                    float blockReflectivity = getBlockReflectivity(lastHitBlock);
+                    float blockReflectivity = getBlockReflectivity(lastHitBlock) * SoundPhysicsMod.SOUND_REFLECTIVITY_CONFIG.getValue(sound);
                     float energyTowardsPlayer = 0.25F * (blockReflectivity * 0.75F + 0.25F);
 
                     if (newRayHit.getType() == HitResult.Type.MISS) {

@@ -1,1 +1,1 @@
-- Fixed mixin error
+- Fixed logger crash if config is not initialized yet

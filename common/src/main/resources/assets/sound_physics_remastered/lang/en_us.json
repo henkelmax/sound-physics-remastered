@@ -5,6 +5,8 @@
   "cloth_config.sound_physics_remastered.category.performance": "Performance",
   "cloth_config.sound_physics_remastered.category.reflectivity": "Block Reflectivities",
   "cloth_config.sound_physics_remastered.category.occlusion": "Block Occlusion Factors",
+  "cloth_config.sound_physics_remastered.category.sound_absorption": "Sound Occlusion Factors",
+  "cloth_config.sound_physics_remastered.category.sound_reflectivity": "Sound Reflectivity Factors",
   "cloth_config.sound_physics_remastered.category.debug": "Debug",
 
   "cloth_config.sound_physics_remastered.enabled": "Enable Sound Physics",

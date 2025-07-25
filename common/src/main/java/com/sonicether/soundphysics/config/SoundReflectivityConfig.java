@@ -1,12 +1,6 @@
 package com.sonicether.soundphysics.config;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.sonicether.soundphysics.Loggers;
-
 import com.sonicether.soundphysics.integration.voicechat.AudioChannel;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
@@ -15,11 +9,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 
-public class AllowedSoundConfig extends CommentedPropertyConfig {
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
-    private Map<String, Boolean> allowedSounds;
+public class SoundReflectivityConfig extends CommentedPropertyConfig {
 
-    public AllowedSoundConfig(Path path) {
+    private Map<String, Float> soundReflectivities;
+
+    public SoundReflectivityConfig(Path path) {
         super(new CommentedProperties(false));
         this.path = path;
         reload();
@@ -29,13 +28,13 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
     public void load() throws IOException {
         super.load();
 
-        Map<String, Boolean> map = createDefaultMap();
+        Map<String, Float> map = createDefaultMap();
 
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             String key = entry.getKey();
-            boolean value;
+            float value;
             try {
-                value = Boolean.parseBoolean(entry.getValue());
+                value = Float.parseFloat(entry.getValue());
             } catch (Exception e) {
                 Loggers.warn("Failed to set allowed sound entry {}", key);
                 continue;
@@ -55,7 +54,7 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
             map.put(resourceLocation.toString(), value);
         }
 
-        allowedSounds = ConfigUtils.sortMap(map);
+        soundReflectivities = ConfigUtils.sortMap(map);
 
         saveSync();
     }
@@ -75,34 +74,40 @@ public class AllowedSoundConfig extends CommentedPropertyConfig {
     public void saveSync() {
         properties.clear();
 
-        properties.addHeaderComment("Allowed sounds");
-        properties.addHeaderComment("Set to 'false' to disable sound physics for that sound");
+        properties.addHeaderComment("Sound specific absorption multipliers");
 
-        for (Map.Entry<String, Boolean> entry : allowedSounds.entrySet()) {
+        for (Map.Entry<String, Float> entry : soundReflectivities.entrySet()) {
             properties.set(entry.getKey(), String.valueOf(entry.getValue()));
         }
 
         super.saveSync();
     }
 
-    public Map<String, Boolean> getAllowedSounds() {
-        return allowedSounds;
+    public Map<String, Float> getMap() {
+        return soundReflectivities;
     }
 
-    public boolean isAllowed(String soundEvent) {
-        return allowedSounds.getOrDefault(soundEvent, true);
+    public float getValue(String soundEvent) {
+        return soundReflectivities.getOrDefault(soundEvent, 1.0F);
     }
 
-    public Map<String, Boolean> createDefaultMap() {
-        Map<String, Boolean> map = new HashMap<>();
+    public Map<String, Float> createDefaultMap() {
+        Map<String, Float> map = new HashMap<>();
         for (SoundEvent event : BuiltInRegistries.SOUND_EVENT) {
-            map.put(event.getLocation().toString(), true);
+            map.put(event.getLocation().toString(), 1.0F);
         }
 
-        map.put(SoundEvents.WEATHER_RAIN.getLocation().toString(), false);
-        map.put(SoundEvents.WEATHER_RAIN_ABOVE.getLocation().toString(), false);
+        map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.getLocation().toString(), 2.5F);
+        map.put(SoundEvents.GENERIC_EXPLODE.getLocation().toString(), 2.5F);
+        SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.key().location().toString(), 1.5F));
 
         return map;
+    }
+
+    public void setValue(String key, float value) {
+        Map<String, Float> map = soundReflectivities;
+        map.put(key, value);
+        soundReflectivities = map;
     }
 
 }

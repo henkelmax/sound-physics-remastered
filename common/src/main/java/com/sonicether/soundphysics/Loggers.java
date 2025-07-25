@@ -27,7 +27,7 @@ public class Loggers {
     }
 
     public static void logProfiling(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.performanceLogging.get()) {
+        if (SoundPhysicsMod.CONFIG != null && !SoundPhysicsMod.CONFIG.performanceLogging.get()) {
             return;
         }
 
@@ -35,7 +35,7 @@ public class Loggers {
     }
 
     public static void logDebug(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.debugLogging.get()) {
+        if (SoundPhysicsMod.CONFIG != null && !SoundPhysicsMod.CONFIG.debugLogging.get()) {
             return;
         }
 
@@ -43,7 +43,7 @@ public class Loggers {
     }
 
     public static void logOcclusion(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.occlusionLogging.get()) {
+        if (SoundPhysicsMod.CONFIG != null && !SoundPhysicsMod.CONFIG.occlusionLogging.get()) {
             return;
         }
 
@@ -51,7 +51,7 @@ public class Loggers {
     }
 
     public static void logEnvironment(String message, Object... args) {
-        if (!SoundPhysicsMod.CONFIG.environmentLogging.get()) {
+        if (SoundPhysicsMod.CONFIG != null && !SoundPhysicsMod.CONFIG.environmentLogging.get()) {
             return;
         }
 

@@ -1,1 +1,1 @@
-- Updated to 1.21.8
+- Fixed logger crash if config is not initialized yet

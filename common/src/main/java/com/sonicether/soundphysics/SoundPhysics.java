@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.material.FluidState;
 
 public class SoundPhysics {
 
@@ -244,6 +245,8 @@ public class SoundPhysics {
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
         BlockPos soundBlockPos = BlockPos.containing(soundPos);
+        FluidState soundFluidState = getLevelProxy().getFluidState(soundBlockPos);
+        boolean sourceIsUnderwater = soundFluidState.is(net.minecraft.world.level.material.Fluids.WATER);
 
         Loggers.logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
 
@@ -266,7 +269,7 @@ public class SoundPhysics {
         float sendCutoff2 = 1F;
         float sendCutoff3 = 1F;
 
-        if (minecraft.player.isUnderWater()) {
+        if (minecraft.player.isUnderWater() || sourceIsUnderwater) {
             directCutoff *= 1F - SoundPhysicsMod.CONFIG.underwaterFilter.get();
         }
 
@@ -443,7 +446,7 @@ public class SoundPhysics {
         Loggers.logEnvironment("Final environment settings: {}, {}, {}, {}", sendGain0, sendGain1, sendGain2, sendGain3);
 
         assert minecraft.player != null;
-        if (minecraft.player.isUnderWater()) {
+        if (minecraft.player.isUnderWater() || sourceIsUnderwater) {
             sendCutoff0 *= 0.4F;
             sendCutoff1 *= 0.4F;
             sendCutoff2 *= 0.4F;

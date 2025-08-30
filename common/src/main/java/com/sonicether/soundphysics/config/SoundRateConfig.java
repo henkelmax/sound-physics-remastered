@@ -81,10 +81,10 @@ public class SoundRateConfig extends CommentedPropertyConfig {
     public void saveSync() {
         properties.clear();
 
-        properties.addHeaderComment("Max sounds per second.");
-        properties.addHeaderComment("Set to '-1' for an unlimited number of sounds per second processed.");
+        properties.addHeaderComment("Max sounds per tick.");
+        properties.addHeaderComment("Set to '-1' for an unlimited number of sounds per tick processed.");
         properties.addHeaderComment("Set to '0' to disable sound physics for that sound.");
-        properties.addHeaderComment("Set to '>=1' to configure the maximum number of sounds per second processed.");
+        properties.addHeaderComment("Set to '>=1' to configure the maximum number of sounds per tick processed.");
         properties.addHeaderComment("This can help prevent lag when some mod or mechanism produces hundreds of sounds per tick.");
 
         for (Map.Entry<ResourceLocation, Integer> entry : soundRateConfig.entrySet()) {

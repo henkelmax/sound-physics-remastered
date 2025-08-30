@@ -227,7 +227,7 @@ public class SoundPhysics {
             }
         }
 
-        if (SoundRateCounter.getCountAndIncrement(sound) >= SoundPhysicsMod.SOUND_RATE_CONFIG.getMaxCount(sound)) {
+        if (SoundRateCounter.incrementAndCheckLimit(sound)) {
             Loggers.logDebug("Sound {} skipped due to sound rate limit", sound);
             setDefaultEnvironment(sourceID, auxOnly);
             return null;

@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class SoundRateConfig extends CommentedPropertyConfig {
 
-    private Map<String, Integer> soundRateConfig;
+    private Map<ResourceLocation, Integer> soundRateConfig;
 
     public SoundRateConfig(Path path) {
         super(new CommentedProperties(false));
@@ -29,7 +29,7 @@ public class SoundRateConfig extends CommentedPropertyConfig {
     public void load() throws IOException {
         super.load();
 
-        Map<String, Integer> map = createDefaultMap();
+        Map<ResourceLocation, Integer> map = createDefaultMap();
 
         for (String key : properties.keySet()) {
             String valueString = properties.get(key);
@@ -54,11 +54,11 @@ public class SoundRateConfig extends CommentedPropertyConfig {
                 continue;
             }
 
-            if (!resourceLocation.getNamespace().equals(AudioChannel.CATEGORY_VOICECHAT)) {
+            if (!AudioChannel.isVoicechatSound(resourceLocation)) {
                 logIfUnknownSound(resourceLocation);
             }
 
-            map.put(resourceLocation.toString(), value);
+            map.put(resourceLocation, value);
         }
         soundRateConfig = ConfigUtils.sortMap(map);
 
@@ -86,32 +86,32 @@ public class SoundRateConfig extends CommentedPropertyConfig {
         properties.addHeaderComment("Set to '>=1' to configure the maximum number of sounds per second processed.");
         properties.addHeaderComment("This can help prevent lag when some mod or mechanism produces hundreds of sounds per tick.");
 
-        for (Map.Entry<String, Integer> entry : soundRateConfig.entrySet()) {
-            properties.set(entry.getKey(), String.valueOf(entry.getValue()));
+        for (Map.Entry<ResourceLocation, Integer> entry : soundRateConfig.entrySet()) {
+            properties.set(entry.getKey().toString(), String.valueOf(entry.getValue()));
         }
 
         super.saveSync();
     }
 
-    public Map<String, Integer> getSoundRateConfig() {
+    public Map<ResourceLocation, Integer> getSoundRateConfig() {
         return soundRateConfig;
     }
 
-    public Integer getMaxCount(String soundEvent) {
+    public Integer getMaxCount(ResourceLocation soundEvent) {
         int count = soundRateConfig.getOrDefault(soundEvent, -1);
         return count <= -1 ? Integer.MAX_VALUE : count;
     }
 
-    public Map<String, Integer> createDefaultMap() {
-        Map<String, Integer> map = new HashMap<>();
+    public Map<ResourceLocation, Integer> createDefaultMap() {
+        Map<ResourceLocation, Integer> map = new HashMap<>();
         for (SoundEvent event : BuiltInRegistries.SOUND_EVENT) {
-            map.put(event.location().toString(), -1);
+            map.put(event.location(), -1);
         }
 
-        map.put(SoundEvents.WEATHER_RAIN.location().toString(), 0);
-        map.put(SoundEvents.WEATHER_RAIN_ABOVE.location().toString(), 0);
-        map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.location().toString(), 0);
-        SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.key().location().toString(), 0));
+        map.put(SoundEvents.WEATHER_RAIN.location(), 0);
+        map.put(SoundEvents.WEATHER_RAIN_ABOVE.location(), 0);
+        map.put(SoundEvents.LIGHTNING_BOLT_THUNDER.location(), 0);
+        SoundEvents.GOAT_HORN_SOUND_VARIANTS.forEach(r -> map.put(r.key().location(), 0));
 
         return map;
     }

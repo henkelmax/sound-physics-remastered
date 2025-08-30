@@ -32,7 +32,7 @@ public class SoundSystemMixin {
 
     @Inject(method = "play", at = @At(value = "FIELD", target = "Lnet/minecraft/client/sounds/SoundEngine;instanceBySource:Lcom/google/common/collect/Multimap;"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void play(SoundInstance soundInstance, CallbackInfoReturnable<SoundEngine.PlayResult> cir, WeighedSoundEvents weighedSoundEvents, ResourceLocation resourceLocation, Sound sound, float f, float g, SoundSource soundSource) {
-        SoundPhysics.setLastSoundCategoryAndName(soundSource, sound.getLocation().toString());
+        SoundPhysics.setLastSoundCategoryAndName(soundSource, soundInstance.getLocation());
     }
 
     @Inject(method = "tickInGameSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;isStopped()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
@@ -43,7 +43,7 @@ public class SoundSystemMixin {
 
         if (minecraft.level != null && (minecraft.level.getGameTime() + sound.hashCode()) % SoundPhysicsMod.CONFIG.soundUpdateInterval.get() == 0) {
             channelHandle.execute(channel -> {
-                SoundPhysics.processSound(((ChannelAccessor) channel).getSource(), sound.getX(), sound.getY(), sound.getZ(), sound.getSource(), sound.getLocation().toString());
+                SoundPhysics.processSound(((ChannelAccessor) channel).getSource(), sound.getX(), sound.getY(), sound.getZ(), sound.getSource(), sound.getLocation());
             });
         }
     }

@@ -1,12 +1,14 @@
 package com.sonicether.soundphysics.utils;
 
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SoundRateCounter {
 
     // Static map to store sound counts, shared across the application
-    private static final Map<String, Integer> soundCounts = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, Integer> soundCounts = new ConcurrentHashMap<>();
 
     private SoundRateCounter() {
     }
@@ -18,7 +20,7 @@ public class SoundRateCounter {
      * @param sound the identifier of the sound to track
      * @return the count of how many times the sound has been encountered so far
      */
-    public static int getCountAndIncrement(String sound) {
+    public static int getCountAndIncrement(ResourceLocation sound) {
         return soundCounts.merge(sound, 1, Integer::sum) - 1;
     }
 

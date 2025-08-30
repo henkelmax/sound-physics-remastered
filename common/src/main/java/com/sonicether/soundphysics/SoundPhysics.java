@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.utils.RaycastUtils;
-import com.sonicether.soundphysics.utils.SoundsPerTickCounter;
+import com.sonicether.soundphysics.utils.SoundRateCounter;
 import net.minecraft.tags.FluidTags;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL10;
@@ -227,7 +227,7 @@ public class SoundPhysics {
             }
         }
 
-        if (SoundsPerTickCounter.getCountAndIncrement(sound) >= SoundPhysicsMod.MAX_SOUNDS_PER_TICK_CONFIG.getMaxCount(sound)) {
+        if (SoundRateCounter.getCountAndIncrement(sound) >= SoundPhysicsMod.SOUND_RATE_CONFIG.getMaxCount(sound)) {
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }

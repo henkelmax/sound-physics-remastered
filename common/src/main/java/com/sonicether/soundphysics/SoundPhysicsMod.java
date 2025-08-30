@@ -1,6 +1,6 @@
 package com.sonicether.soundphysics;
 
-import com.sonicether.soundphysics.config.MaxSoundsPerTickConfig;
+import com.sonicether.soundphysics.config.SoundRateConfig;
 import com.sonicether.soundphysics.config.OcclusionConfig;
 import com.sonicether.soundphysics.config.ReflectivityConfig;
 import com.sonicether.soundphysics.config.SoundPhysicsConfig;
@@ -19,7 +19,7 @@ public abstract class SoundPhysicsMod {
     public static SoundPhysicsConfig CONFIG;
     public static ReflectivityConfig REFLECTIVITY_CONFIG;
     public static OcclusionConfig OCCLUSION_CONFIG;
-    public static MaxSoundsPerTickConfig MAX_SOUNDS_PER_TICK_CONFIG;
+    public static SoundRateConfig SOUND_RATE_CONFIG;
 
     public void init() {
         initConfig();
@@ -33,7 +33,7 @@ public abstract class SoundPhysicsMod {
 
         REFLECTIVITY_CONFIG = new ReflectivityConfig(getConfigFolder().resolve(MODID).resolve("reflectivity.properties"));
         OCCLUSION_CONFIG = new OcclusionConfig(getConfigFolder().resolve(MODID).resolve("occlusion.properties"));
-        MAX_SOUNDS_PER_TICK_CONFIG = new MaxSoundsPerTickConfig(getConfigFolder().resolve(MODID).resolve("max_sounds_per_tick.properties"));
+        SOUND_RATE_CONFIG = new SoundRateConfig(getConfigFolder().resolve(MODID).resolve("sound_rates.properties"));
     }
 
     private void initConfig() {
@@ -44,18 +44,12 @@ public abstract class SoundPhysicsMod {
 
     private void renameAllowedSounds() {
         Path oldPath = getConfigFolder().resolve(MODID).resolve("allowed_sounds.properties");
-        Path newPath = getConfigFolder().resolve(MODID).resolve("max_sounds_per_tick.properties");
+        Path newPath = getConfigFolder().resolve(MODID).resolve("sound_rates.properties");
 
         try {
             Files.move(oldPath, newPath);
             Loggers.log("{} file renamed to {}", oldPath.getFileName(), newPath.getFileName());
-        } catch (NoSuchFileException ignored) {
-        } catch (FileAlreadyExistsException ignored) {
-            try {
-                Files.delete(oldPath); // If max_sounds_per_tick was already generated but allowed_sounds for some reason returned(by user, etc) we should delete it
-                Loggers.warn("{} was deleted - {} already exists", oldPath.getFileName(), newPath.getFileName());
-            } catch (IOException ignored1) {
-            }
+        } catch (NoSuchFileException | FileAlreadyExistsException ignored) {
         } catch (IOException e) {
             Loggers.error("Error renaming allowed_sounds config", e);
         }

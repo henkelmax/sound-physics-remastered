@@ -30,10 +30,7 @@ public class SoundRateCounter {
     }
 
     public static void onClientTick(ClientLevel level) {
-        // Clear all sound counts every second
-        if (level.getGameTime() % 20 == 0) {
-            clear();
-        }
+        clear();
     }
 
     public static void clear() {

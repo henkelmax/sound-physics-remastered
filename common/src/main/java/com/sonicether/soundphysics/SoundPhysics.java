@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.utils.RaycastUtils;
-import com.sonicether.soundphysics.utils.SoundRateCounter;
+import com.sonicether.soundphysics.utils.SoundRateManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import org.joml.Vector3f;
@@ -227,7 +227,13 @@ public class SoundPhysics {
             }
         }
 
-        if (SoundRateCounter.incrementAndCheckLimit(sound)) {
+        if (!SoundRateManager.isWorldInitialized()) {
+            Loggers.logDebug("Sound {} skipped because the world is not initialized yet", sound);
+            setDefaultEnvironment(sourceID, auxOnly);
+            return null;
+        }
+
+        if (SoundRateManager.incrementAndCheckLimit(sound)) {
             Loggers.logDebug("Sound {} skipped due to sound rate limit", sound);
             setDefaultEnvironment(sourceID, auxOnly);
             return null;

@@ -1,5 +1,7 @@
 package com.sonicether.soundphysics;
 
+import com.sonicether.soundphysics.integration.voicechat.AudioChannel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -17,18 +19,18 @@ public class ReflectedAudio {
 
     private final double occlusion;
 
-    private final String sound;
+    private final ResourceLocation sound;
 
     private int sharedAirspaces;
 
-    public ReflectedAudio(double occlusion, String sound) {
+    public ReflectedAudio(double occlusion, ResourceLocation sound) {
         this.occlusion = occlusion;
         this.sound = sound;
         this.airspaceDirections = new LinkedList<>();
     }
 
     public boolean shouldEvaluateDirection() {
-        return SoundPhysicsMod.CONFIG.soundDirectionEvaluation.get() && (occlusion > 0D || !SoundPhysicsMod.CONFIG.redirectNonOccludedSounds.get()) && !SoundPhysics.isVoicechatSound(sound);
+        return SoundPhysicsMod.CONFIG.soundDirectionEvaluation.get() && (occlusion > 0D || !SoundPhysicsMod.CONFIG.redirectNonOccludedSounds.get()) && !AudioChannel.isVoicechatSound(sound);
     }
 
     public int getSharedAirspaces() {

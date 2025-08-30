@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.utils.RaycastUtils;
 import com.sonicether.soundphysics.utils.SoundsPerTickCounter;
+import net.minecraft.tags.FluidTags;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
@@ -246,7 +247,7 @@ public class SoundPhysics {
 
         BlockPos soundBlockPos = BlockPos.containing(soundPos);
         FluidState soundFluidState = getLevelProxy().getFluidState(soundBlockPos);
-        boolean sourceIsUnderwater = soundFluidState.is(net.minecraft.world.level.material.Fluids.WATER);
+        boolean sourceIsUnderwater = soundFluidState.is(FluidTags.WATER);
 
         Loggers.logDebug("Player pos: {}, {}, {} \tSound Pos: {}, {}, {} \tTo player vector: {}, {}, {}", playerPos.x, playerPos.y, playerPos.z, soundPos.x, soundPos.y, soundPos.z, normalToPlayer.x, normalToPlayer.y, normalToPlayer.z);
 

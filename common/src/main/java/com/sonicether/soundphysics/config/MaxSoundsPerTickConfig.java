@@ -30,14 +30,17 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
 
         Map<String, Integer> map = createDefaultMap();
 
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
-            String key = entry.getKey();
+        for (String key : properties.keySet()) {
+            String valueString = properties.get(key);
+            if (valueString == null) {
+                continue;
+            }
             int value;
             try {
-                value = Integer.parseInt(entry.getValue());
+                value = Integer.parseInt(valueString);
             } catch (NumberFormatException ignored) {
                 try {
-                    boolean enabled = Boolean.parseBoolean(entry.getValue()); // Convert allowedSounds to maxSoundsPerTick
+                    boolean enabled = Boolean.parseBoolean(valueString); // Convert allowedSounds to maxSoundsPerTick
                     value = enabled ? -1 : 0;
                 } catch (Exception e) {
                     Loggers.warn("Failed to set max sounds per tick entry {}", key);

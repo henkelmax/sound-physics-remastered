@@ -43,11 +43,14 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
 
         super.load();
 
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
-            String key = entry.getKey();
+        for (String key : properties.keySet()) {
+            String valueString = properties.get(key);
+            if (valueString == null) {
+                continue;
+            }
             float value;
             try {
-                value = Float.parseFloat(entry.getValue());
+                value = Float.parseFloat(valueString);
             } catch (NumberFormatException e) {
                 Loggers.warn("Failed to parse value of {}", key);
                 continue;

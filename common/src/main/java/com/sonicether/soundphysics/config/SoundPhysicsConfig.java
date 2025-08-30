@@ -109,7 +109,7 @@ public class SoundPhysicsConfig {
                         "Higher values mean air will absorb more high frequencies with distance",
                         "0 disables this effect"
                 );
-        underwaterFilter = builder.floatEntry("underwater_filter", 0.25F, 0F, 1F)
+        underwaterFilter = builder.floatEntry("underwater_filter", 0.9F, 0F, 1F)
                 .comment(
                         "How much sound is filtered when the player is underwater",
                         "0.0 means no filter",

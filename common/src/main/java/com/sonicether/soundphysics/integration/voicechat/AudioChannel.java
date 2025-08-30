@@ -11,7 +11,7 @@ import java.util.UUID;
 public class AudioChannel {
 
     private static final String VOICECHAT = "voicechat";
-    private static final ResourceLocation VOICECHAT_SOUND = ResourceLocation.fromNamespaceAndPath(VOICECHAT, VOICECHAT);
+    private static final ResourceLocation VOICECHAT_SOUND = new ResourceLocation(VOICECHAT, VOICECHAT);
 
     private final UUID channelId;
     private long lastUpdate;
@@ -33,7 +33,7 @@ public class AudioChannel {
             return;
         }
 
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, category == null ? VOICECHAT_SOUND : ResourceLocation.fromNamespaceAndPath(VOICECHAT, category));
+        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, category == null ? VOICECHAT_SOUND : new ResourceLocation(VOICECHAT, category));
 
         if (auxOnly) {
             SoundPhysics.onPlayReverb(soundPos.x(), soundPos.y(), soundPos.z(), source);

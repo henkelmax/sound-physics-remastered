@@ -3,7 +3,7 @@ package com.sonicether.soundphysics.mixin;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
-import com.sonicether.soundphysics.utils.SoundRateCounter;
+import com.sonicether.soundphysics.utils.SoundRateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,7 +42,7 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
         // split and assigned different priorities to address this.
         LevelAccessUtils.tickLevelCache((ClientLevel) (Object) this);
 
-        SoundRateCounter.onClientTick((ClientLevel) (Object) this);
+        SoundRateManager.onClientTick((ClientLevel) (Object) this);
     }
 
 }

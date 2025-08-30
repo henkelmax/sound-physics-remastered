@@ -7,12 +7,13 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SoundRateCounter {
+public class SoundRateManager {
 
     // Static map to store sound counts, shared across the application
     private static final Map<ResourceLocation, Integer> soundCounts = new ConcurrentHashMap<>();
+    private static boolean worldInitialized;
 
-    private SoundRateCounter() {
+    private SoundRateManager() {
     }
 
     /**
@@ -29,12 +30,26 @@ public class SoundRateCounter {
         return false;
     }
 
+    public static boolean isWorldInitialized() {
+        return worldInitialized;
+    }
+
     public static void onClientTick(ClientLevel level) {
         clear();
+        worldInitialized = true;
     }
 
     public static void clear() {
         soundCounts.clear();
     }
 
+    public static void onLoadLevel(ClientLevel clientLevel) {
+        clear();
+        worldInitialized = false;
+    }
+
+    public static void onUnloadLevel(ClientLevel clientLevel) {
+        clear();
+        worldInitialized = false;
+    }
 }

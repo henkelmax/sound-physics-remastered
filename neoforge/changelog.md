@@ -1,2 +1,3 @@
 - Fixed direction evaluation not working at distances further than 16 blocks
 - Replaced `allowed_sound_config` with `max_sounds_per_tick` config
+- Improve underwater sound muffling

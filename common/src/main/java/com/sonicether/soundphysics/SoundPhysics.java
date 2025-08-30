@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.utils.RaycastUtils;
 import com.sonicether.soundphysics.utils.SoundRateCounter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL10;
@@ -40,7 +41,6 @@ public class SoundPhysics {
 
     private static final Pattern AMBIENT_PATTERN = Pattern.compile("^[a-zA-Z0-9_\\-\\.]+:ambient\\..*$");
     private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
-    private static final Pattern VOICECHAT_PATTERN = Pattern.compile("^voicechat:.*$");
 
     private static int auxFXSlot0;
     private static int auxFXSlot1;
@@ -60,7 +60,7 @@ public class SoundPhysics {
     private static TaskProfiler profiler;
 
     private static SoundSource lastSoundCategory;
-    private static String lastSoundName;
+    private static ResourceLocation lastSound;
     private static int maxAuxSends;
 
     public static void init() {
@@ -152,23 +152,23 @@ public class SoundPhysics {
         syncReverbParams();
     }
 
-    public static void setLastSoundCategoryAndName(SoundSource sc, String name) {
+    public static void setLastSoundCategoryAndName(SoundSource sc, ResourceLocation id) {
         lastSoundCategory = sc;
-        lastSoundName = name;
+        lastSound = id;
     }
 
     /**
      * The old method signature of soundphysics to stay compatible
      */
     public static void onPlaySound(double posX, double posY, double posZ, int sourceID) {
-        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSoundName, false);
+        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSound, false);
     }
 
     /**
      * The old method signature of soundphysics to stay compatible
      */
     public static void onPlayReverb(double posX, double posY, double posZ, int sourceID) {
-        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSoundName, true);
+        processSound(sourceID, posX, posY, posZ, lastSoundCategory, lastSound, true);
     }
 
     /**
@@ -176,7 +176,7 @@ public class SoundPhysics {
      *
      * @return The new sound origin or null if it didn't change
      */
-    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, String sound) {
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound) {
         return processSound(source, posX, posY, posZ, category, sound, false);
     }
 
@@ -186,7 +186,7 @@ public class SoundPhysics {
      * @return The new sound origin or null if it didn't change
      */
     @Nullable
-    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, boolean auxOnly) {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return null;
         }
@@ -204,7 +204,7 @@ public class SoundPhysics {
     }
 
     @Nullable
-    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, String sound, boolean auxOnly) {
+    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, boolean auxOnly) {
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
 
@@ -459,12 +459,8 @@ public class SoundPhysics {
         return newSoundPos;
     }
 
-    public static boolean isVoicechatSound(String sound) {
-        return VOICECHAT_PATTERN.matcher(sound).matches();
-    }
-
-    public static boolean isAmbientSound(String sound) {
-        return AMBIENT_PATTERN.matcher(sound).matches();
+    public static boolean isAmbientSound(ResourceLocation sound) {
+        return AMBIENT_PATTERN.matcher(sound.toString()).matches();
     }
 
     private static float getBlockReflectivity(BlockPos blockPos) {
@@ -489,11 +485,11 @@ public class SoundPhysics {
         return new Vec3(x, y, z);
     }
 
-    private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, String sound) {
+    private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, ResourceLocation sound) {
         if (SoundPhysicsMod.CONFIG.strictOcclusion.get()) {
             return Math.min(runOcclusion(soundPos, playerPos), SoundPhysicsMod.CONFIG.maxOcclusion.get());
         }
-        boolean isBlock = category == SoundSource.BLOCKS || BLOCK_PATTERN.matcher(sound).matches();
+        boolean isBlock = category == SoundSource.BLOCKS || BLOCK_PATTERN.matcher(sound.toString()).matches();
         double variationFactor = SoundPhysicsMod.CONFIG.occlusionVariation.get();
 
         if (isBlock) {

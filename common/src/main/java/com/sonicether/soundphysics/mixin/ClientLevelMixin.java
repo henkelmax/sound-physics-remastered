@@ -42,10 +42,7 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
         // split and assigned different priorities to address this.
         LevelAccessUtils.tickLevelCache((ClientLevel) (Object) this);
 
-        // Reset the sound rate counter every second
-        if (((ClientLevel) (Object) this).getGameTime() % 20 == 0) {
-            SoundRateCounter.resetAllCounts();
-        }
+        SoundRateCounter.onClientTick((ClientLevel) (Object) this);
     }
 
 }

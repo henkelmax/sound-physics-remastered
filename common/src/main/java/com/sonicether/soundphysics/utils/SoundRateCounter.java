@@ -1,5 +1,7 @@
 package com.sonicether.soundphysics.utils;
 
+import com.sonicether.soundphysics.SoundPhysicsMod;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
@@ -14,21 +16,28 @@ public class SoundRateCounter {
     }
 
     /**
-     * Returns the current count of how many times the specified sound has been encountered, then increments it.
-     * If the sound is new, returns 0 and starts counting from 1.
-     *
-     * @param sound the identifier of the sound to track
-     * @return the count of how many times the sound has been encountered so far
+     * @param sound the sound to increment
+     * @return if the sound rate is above the limit
      */
-    public static int getCountAndIncrement(ResourceLocation sound) {
-        return soundCounts.merge(sound, 1, Integer::sum) - 1;
+    public static boolean incrementAndCheckLimit(ResourceLocation sound) {
+        int count = soundCounts.getOrDefault(sound, 0);
+        int max = SoundPhysicsMod.SOUND_RATE_CONFIG.getMaxCount(sound);
+        if (count >= max) {
+            return true;
+        }
+        soundCounts.put(sound, count + 1);
+        return false;
     }
 
+    public static void onClientTick(ClientLevel level) {
+        // Clear all sound counts every second
+        if (level.getGameTime() % 20 == 0) {
+            clear();
+        }
+    }
 
-    /**
-     * Resets all sound counts to 0 by clearing the map.
-     */
-    public static void resetAllCounts() {
+    public static void clear() {
         soundCounts.clear();
     }
+
 }

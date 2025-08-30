@@ -33,14 +33,14 @@ public class LevelAccessUtils {
         Loggers.logDebug("Creating initial level cache");
         updateLevelCache(clientLevel, levelOriginFromPlayer(), clientLevel.getGameTime());
 
-        SoundRateCounter.clear();
+        SoundRateManager.onLoadLevel(clientLevel);
     }
 
     public static void onUnloadLevel(ClientLevel clientLevel) {
         Loggers.logDebug("Removing level cache due to level unload");
         ((CachingClientLevel) clientLevel).sound_physics_remastered$setCachedClone(null);
 
-        SoundRateCounter.clear();
+        SoundRateManager.onUnloadLevel(clientLevel);
     }
 
     public static void tickLevelCache(ClientLevel clientLevel) {

@@ -1,1 +1,1 @@
-- Fixed logger crash if config is not initialized yet
+- Fixed direction evaluation not working at distances further than 16 blocks

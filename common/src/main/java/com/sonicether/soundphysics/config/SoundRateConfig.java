@@ -14,11 +14,11 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
+public class SoundRateConfig extends CommentedPropertyConfig {
 
-    private Map<String, Integer> maxSoundsPerTick;
+    private Map<String, Integer> soundRateConfig;
 
-    public MaxSoundsPerTickConfig(Path path) {
+    public SoundRateConfig(Path path) {
         super(new CommentedProperties(false));
         this.path = path;
         reload();
@@ -40,10 +40,10 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException ignored) {
                 try {
-                    boolean enabled = Boolean.parseBoolean(valueString); // Convert allowedSounds to maxSoundsPerTick
+                    boolean enabled = Boolean.parseBoolean(valueString); // Convert allowedSounds to sound rate
                     value = enabled ? -1 : 0;
                 } catch (Exception e) {
-                    Loggers.warn("Failed to set max sounds per tick entry {}", key);
+                    Loggers.warn("Failed to set sound rate entry {}", key);
                     continue;
                 }
             }
@@ -51,7 +51,7 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
             try {
                 resourceLocation = new ResourceLocation(key);
             } catch (Exception e) {
-                Loggers.warn("Failed to set allowed sound entry {}", key);
+                Loggers.warn("Failed to set sound rate entry {}", key);
                 continue;
             }
 
@@ -61,7 +61,7 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
 
             map.put(resourceLocation.toString(), value);
         }
-        maxSoundsPerTick = ConfigUtils.sortMap(map);
+        soundRateConfig = ConfigUtils.sortMap(map);
 
         saveSync();
     }
@@ -70,10 +70,10 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
         try {
             SoundEvent soundEvent = BuiltInRegistries.SOUND_EVENT.get(resourceLocation);
             if (soundEvent == null) {
-                Loggers.log("Unknown sound in allowed sound config: {}", resourceLocation);
+                Loggers.log("Unknown sound in sound rate config: {}", resourceLocation);
             }
         } catch (Exception e) {
-            Loggers.warn("Failed to parse allowed sound entry {}", resourceLocation, e);
+            Loggers.warn("Failed to parse sound rate entry {}", resourceLocation, e);
         }
     }
 
@@ -81,25 +81,25 @@ public class MaxSoundsPerTickConfig extends CommentedPropertyConfig {
     public void saveSync() {
         properties.clear();
 
-        properties.addHeaderComment("Max sounds per tick");
-        properties.addHeaderComment("Set to '-1' for an unlimited number of sounds per tick rendered via the sound physics mod for that sound.");
+        properties.addHeaderComment("Max sounds per second.");
+        properties.addHeaderComment("Set to '-1' for an unlimited number of sounds per second processed.");
         properties.addHeaderComment("Set to '0' to disable sound physics for that sound.");
-        properties.addHeaderComment("Set to '>=1' to configure the maximum number of sounds per tick rendered via the sound physics mod for that sound.");
-        properties.addHeaderComment("This can help prevent lag when some mod or mechanism produces hundreds of sounds per tick, such as large Create mod mining contraptions.");
+        properties.addHeaderComment("Set to '>=1' to configure the maximum number of sounds per second processed.");
+        properties.addHeaderComment("This can help prevent lag when some mod or mechanism produces hundreds of sounds per tick.");
 
-        for (Map.Entry<String, Integer> entry : maxSoundsPerTick.entrySet()) {
+        for (Map.Entry<String, Integer> entry : soundRateConfig.entrySet()) {
             properties.set(entry.getKey(), String.valueOf(entry.getValue()));
         }
 
         super.saveSync();
     }
 
-    public Map<String, Integer> getMaxSoundsPerTick() {
-        return maxSoundsPerTick;
+    public Map<String, Integer> getSoundRateConfig() {
+        return soundRateConfig;
     }
 
     public Integer getMaxCount(String soundEvent) {
-        int count = maxSoundsPerTick.getOrDefault(soundEvent, -1);
+        int count = soundRateConfig.getOrDefault(soundEvent, -1);
         return count <= -1 ? Integer.MAX_VALUE : count;
     }
 

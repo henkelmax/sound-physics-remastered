@@ -3,12 +3,12 @@ package com.sonicether.soundphysics.utils;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SoundsPerTickCounter {
+public class SoundRateCounter {
 
     // Static map to store sound counts, shared across the application
     private static final Map<String, Integer> soundCounts = new ConcurrentHashMap<>();
 
-    private SoundsPerTickCounter() {
+    private SoundRateCounter() {
     }
 
     /**

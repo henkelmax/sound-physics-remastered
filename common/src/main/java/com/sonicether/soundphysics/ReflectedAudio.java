@@ -41,7 +41,7 @@ public class ReflectedAudio {
 
     public void addSharedAirspace(Vec3 sharedAirspaceVector, double totalRayDistance) {
         double length = totalRayDistance + sharedAirspaceVector.length();
-        if (length <= 0D || length > 16D / SoundPhysicsMod.CONFIG.attenuationFactor.get()) {
+        if (length <= 0D || length > SoundPhysicsMod.CONFIG.maxSoundProcessingDistance.get() / SoundPhysicsMod.CONFIG.attenuationFactor.get()) {
             return;
         }
         sharedAirspaces++;

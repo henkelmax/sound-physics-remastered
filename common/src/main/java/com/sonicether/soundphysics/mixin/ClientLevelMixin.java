@@ -3,7 +3,7 @@ package com.sonicether.soundphysics.mixin;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
-import com.sonicether.soundphysics.utils.SoundsPerTickCounter;
+import com.sonicether.soundphysics.utils.SoundRateCounter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,7 +41,11 @@ public abstract class ClientLevelMixin implements CachingClientLevel {
         // any changes made on tick would not be included. Sound and level caching mixins could be
         // split and assigned different priorities to address this.
         LevelAccessUtils.tickLevelCache((ClientLevel) (Object) this);
-        SoundsPerTickCounter.resetAllCounts();
+
+        // Reset the sound rate counter every second
+        if (((ClientLevel) (Object) this).getGameTime() % 20 == 0) {
+            SoundRateCounter.resetAllCounts();
+        }
     }
 
 }

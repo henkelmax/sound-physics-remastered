@@ -228,11 +228,13 @@ public class SoundPhysics {
         }
 
         if (SoundRateCounter.getCountAndIncrement(sound) >= SoundPhysicsMod.SOUND_RATE_CONFIG.getMaxCount(sound)) {
+            Loggers.logDebug("Sound {} skipped due to sound rate limit", sound);
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }
 
         if (!SoundPhysicsMod.CONFIG.evaluateAmbientSounds.get() && isAmbientSound(sound)) {
+            Loggers.logDebug("Sound {} skipped due to ambient sound evaluation option", sound);
             setDefaultEnvironment(sourceID, auxOnly);
             return null;
         }

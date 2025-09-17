@@ -11,7 +11,6 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
@@ -44,7 +43,7 @@ public class ClonedLevelChunk extends ChunkAccess {
     private final LevelChunkTicks<Fluid> fluidTicks;
 
     public ClonedLevelChunk(Level level, ChunkPos chunkPos, @Nullable LevelChunkSection[] levelChunkSections) {
-        super(chunkPos, null, new ClonedLevelHeightAccessor(level), level.registryAccess().lookupOrThrow(Registries.BIOME), 0, levelChunkSections, null);
+        super(chunkPos, null, new ClonedLevelHeightAccessor(level), level.palettedContainerFactory(), 0, levelChunkSections, null);
 
         Heightmap.Types[] heightMapTypes = Heightmap.Types.values();
         int numberOfHeightMapTypes = heightMapTypes.length;

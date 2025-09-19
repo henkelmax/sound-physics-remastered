@@ -48,7 +48,7 @@ public class ClothConfigIntegration {
                 SoundPhysicsMod.CONFIG.attenuationFactor
         ));
         general.addEntry(fromConfigEntry(entryBuilder,
-                Component.translatable("cloth_config.sound_physics_remastered.reverb_attenuation_distance"), 
+                Component.translatable("cloth_config.sound_physics_remastered.reverb_attenuation_distance"),
                 Component.translatable("cloth_config.sound_physics_remastered.reverb_attenuation_distance.description"),
                 SoundPhysicsMod.CONFIG.reverbAttenuationDistance
         ));
@@ -229,7 +229,7 @@ public class ClothConfigIntegration {
             SoundPhysicsMod.CONFIG.enabled.save();
             SoundPhysicsMod.REFLECTIVITY_CONFIG.save();
             SoundPhysicsMod.OCCLUSION_CONFIG.save();
-            SoundPhysicsMod.ALLOWED_SOUND_CONFIG.save();
+            SoundPhysicsMod.SOUND_RATE_CONFIG.save();
             SoundPhysicsMod.CONFIG.reloadClient();
         });
 

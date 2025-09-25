@@ -87,7 +87,12 @@ public class ReflectedAudio {
             double w = 1D / (val * val);
             sum = sum.add(direction.getKey().normalize().scale(w));
         }
-        return sum.normalize().scale(soundPos.distanceTo(listenerPos)).add(listenerPos);
+        Vec3 normalized = sum.normalize();
+        // If the vector is too small to normalize
+        if (normalized.length() < 0.5D) {
+            return null;
+        }
+        return normalized.scale(soundPos.distanceTo(listenerPos)).add(listenerPos);
     }
 
 }

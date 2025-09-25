@@ -402,6 +402,7 @@ public class SoundPhysics {
 
         if (newSoundPos != null) {
             setSoundPos(sourceID, newSoundPos);
+            soundPos = newSoundPos;
         }
 
         float sharedAirspace = audioDirection.getSharedAirspaces() * 64F * rcpTotalRays;

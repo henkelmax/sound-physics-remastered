@@ -1,4 +1,1 @@
-- Fixed direction evaluation not working at distances further than 16 blocks
-- Replaced `allowed_sound_config` with `sound_rates` config
-- Improve underwater sound muffling
-- Fixed lag spike when joining worlds with a lot of sounds playing
+- Fixed direction evaluation being inaccurate at long distances

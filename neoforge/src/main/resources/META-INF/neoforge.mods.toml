@@ -13,6 +13,8 @@ authors = "Sonic Ether, vlad2305m, Max Henkel"
 credits = "Sonic Ether, vlad2305m"
 description = '''Provides realistic sound attenuation, reverberation, and absorption through blocks.'''
 displayTest = "IGNORE_ALL_VERSION"
+[[mixins]]
+config = "sound_physics_remastered.mixins.json"
 [[dependencies.sound_physics_remastered]]
 modId = "neoforge"
 type = "required"

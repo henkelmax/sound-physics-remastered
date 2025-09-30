@@ -49,6 +49,6 @@ public class NeoForgeSoundPhysicsMod extends SoundPhysicsMod {
 
     @Override
     public Path getConfigFolder() {
-        return FMLLoader.getGamePath().resolve("config");
+        return FMLLoader.getCurrent().getGameDir().resolve("config");
     }
 }

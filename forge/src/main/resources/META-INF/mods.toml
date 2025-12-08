@@ -32,8 +32,8 @@ versionRange = "[${cloth_config_version},)"
 ordering = "AFTER"
 side = "BOTH"
 [[dependencies.sound_physics_remastered]]
-modId = "voicechat"
+modId = "voicechat_api"
 mandatory = false
-versionRange = "[${minecraft_version}-${voicechat_api_version},)"
+versionRange = "[${voicechat_api_version},)"
 ordering = "AFTER"
 side = "BOTH"

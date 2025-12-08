@@ -26,6 +26,6 @@ repositories {
 
 dependencies {
     compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-    implementation "maven.modrinth:simple-voice-chat:forge-${voicechat_version}"
+    implementation "maven.modrinth:simple-voice-chat:forge-${voicechat_mod_version}"
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }

@@ -1,4 +1,7 @@
 {
+  "category.sound_physics_remastered.own_voice": "Own voice",
+  "category.sound_physics_remastered.own_voice.description": "The volume of your own voice",
+
   "cloth_config.sound_physics_remastered.settings": "Sound Physics Settings",
 
   "cloth_config.sound_physics_remastered.category.general": "General",

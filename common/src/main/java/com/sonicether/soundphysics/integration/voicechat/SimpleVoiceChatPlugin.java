@@ -58,7 +58,9 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
         var ownVoice = event.getVoicechat().volumeCategoryBuilder()
                 .setId(OWN_VOICE_CATEGORY)
                 .setName("Own voice")
+                .setNameTranslationKey("category.sound_physics_remastered.own_voice")
                 .setDescription("The volume of your own voice")
+                .setDescriptionTranslationKey("category.sound_physics_remastered.own_voice.description")
                 .build();
         event.getVoicechat().registerVolumeCategory(ownVoice);
     }

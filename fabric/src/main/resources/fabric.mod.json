@@ -49,6 +49,5 @@
     "modmenu": "*",
     "cloth-config2": ">=${cloth_config_version}",
     "voicechat_api": ">=${voicechat_api_version}"
-  },
-  "accessWidener": "sound_physics_remastered.accesswidener"
+  }
 }

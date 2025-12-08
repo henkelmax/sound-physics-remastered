@@ -2,7 +2,7 @@ package com.sonicether.soundphysics.config.blocksound;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -43,7 +43,7 @@ public class BlockTagDefinition extends BlockDefinition {
             return null;
         }
         String id = configString.substring(1).trim();
-        ResourceLocation resourceLocation = ResourceLocation.tryParse(id);
+        Identifier resourceLocation = Identifier.tryParse(id);
         if (resourceLocation == null) {
             return null;
         }

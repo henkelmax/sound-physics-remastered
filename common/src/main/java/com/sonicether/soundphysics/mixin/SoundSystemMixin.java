@@ -8,7 +8,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.ChannelAccess;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.client.sounds.WeighedSoundEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,8 +31,8 @@ public class SoundSystemMixin {
     }
 
     @Inject(method = "play", at = @At(value = "FIELD", target = "Lnet/minecraft/client/sounds/SoundEngine;instanceBySource:Lcom/google/common/collect/Multimap;"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void play(SoundInstance soundInstance, CallbackInfoReturnable<SoundEngine.PlayResult> cir, WeighedSoundEvents weighedSoundEvents, ResourceLocation resourceLocation, Sound sound, float f, float g, SoundSource soundSource) {
-        SoundPhysics.setLastSoundCategoryAndName(soundSource, soundInstance.getLocation());
+    private void play(SoundInstance soundInstance, CallbackInfoReturnable<SoundEngine.PlayResult> cir, WeighedSoundEvents weighedSoundEvents, Identifier resourceLocation, Sound sound, float f, float g, SoundSource soundSource) {
+        SoundPhysics.setLastSoundCategoryAndName(soundSource, soundInstance.getIdentifier());
     }
 
     @Inject(method = "tickInGameSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;isStopped()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
@@ -43,7 +43,7 @@ public class SoundSystemMixin {
 
         if (minecraft.level != null && (minecraft.level.getGameTime() + sound.hashCode()) % SoundPhysicsMod.CONFIG.soundUpdateInterval.get() == 0) {
             channelHandle.execute(channel -> {
-                SoundPhysics.processSound(((ChannelAccessor) channel).getSource(), sound.getX(), sound.getY(), sound.getZ(), sound.getSource(), sound.getLocation());
+                SoundPhysics.processSound(((ChannelAccessor) channel).getSource(), sound.getX(), sound.getY(), sound.getZ(), sound.getSource(), sound.getIdentifier());
             });
         }
     }

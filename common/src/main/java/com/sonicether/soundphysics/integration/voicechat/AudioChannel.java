@@ -1,7 +1,7 @@
 package com.sonicether.soundphysics.integration.voicechat;
 
 import com.sonicether.soundphysics.SoundPhysics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 
@@ -11,7 +11,7 @@ import java.util.UUID;
 public class AudioChannel {
 
     private static final String VOICECHAT = "voicechat";
-    private static final ResourceLocation VOICECHAT_SOUND = ResourceLocation.fromNamespaceAndPath(VOICECHAT, VOICECHAT);
+    private static final Identifier VOICECHAT_SOUND = Identifier.fromNamespaceAndPath(VOICECHAT, VOICECHAT);
 
     private final UUID channelId;
     private long lastUpdate;
@@ -33,7 +33,7 @@ public class AudioChannel {
             return;
         }
 
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, category == null ? VOICECHAT_SOUND : ResourceLocation.fromNamespaceAndPath(VOICECHAT, category));
+        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, category == null ? VOICECHAT_SOUND : Identifier.fromNamespaceAndPath(VOICECHAT, category));
 
         if (auxOnly) {
             SoundPhysics.onPlayReverb(soundPos.x(), soundPos.y(), soundPos.z(), source);
@@ -53,7 +53,7 @@ public class AudioChannel {
         return System.currentTimeMillis() - lastUpdate > 5_000L;
     }
 
-    public static boolean isVoicechatSound(ResourceLocation sound) {
+    public static boolean isVoicechatSound(Identifier sound) {
         return sound.getNamespace().equals(VOICECHAT);
     }
 

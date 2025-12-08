@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.utils.RaycastUtils;
 import com.sonicether.soundphysics.utils.SoundRateManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL10;
@@ -60,7 +60,7 @@ public class SoundPhysics {
     private static TaskProfiler profiler;
 
     private static SoundSource lastSoundCategory;
-    private static ResourceLocation lastSound;
+    private static Identifier lastSound;
     private static int maxAuxSends;
 
     public static void init() {
@@ -152,7 +152,7 @@ public class SoundPhysics {
         syncReverbParams();
     }
 
-    public static void setLastSoundCategoryAndName(SoundSource sc, ResourceLocation id) {
+    public static void setLastSoundCategoryAndName(SoundSource sc, Identifier id) {
         lastSoundCategory = sc;
         lastSound = id;
     }
@@ -176,7 +176,7 @@ public class SoundPhysics {
      *
      * @return The new sound origin or null if it didn't change
      */
-    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound) {
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, Identifier sound) {
         return processSound(source, posX, posY, posZ, category, sound, false);
     }
 
@@ -186,7 +186,7 @@ public class SoundPhysics {
      * @return The new sound origin or null if it didn't change
      */
     @Nullable
-    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, boolean auxOnly) {
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, Identifier sound, boolean auxOnly) {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return null;
         }
@@ -204,7 +204,7 @@ public class SoundPhysics {
     }
 
     @Nullable
-    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, boolean auxOnly) {
+    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, Identifier sound, boolean auxOnly) {
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
 
@@ -250,7 +250,7 @@ public class SoundPhysics {
 
         // Direct sound occlusion
 
-        Vec3 playerPos = minecraft.gameRenderer.getMainCamera().getPosition();
+        Vec3 playerPos = minecraft.gameRenderer.getMainCamera().position();
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
         BlockPos soundBlockPos = BlockPos.containing(soundPos);
@@ -325,7 +325,7 @@ public class SoundPhysics {
 
                 float totalRayDistance = (float) rayLength;
 
-                RaycastRenderer.addSoundBounceRay(soundPos, rayHit.getLocation(), ChatFormatting.GREEN.getColor());
+                RaycastRenderer.addSoundBounceRay(soundPos, rayHit.getLocation(), RaycastRenderer.color(ChatFormatting.GREEN));
 
                 Vec3 firstSharedAirspaceVector = getSharedAirspace(rayHit, playerPos);
                 if (firstSharedAirspaceVector != null) {
@@ -346,11 +346,11 @@ public class SoundPhysics {
                     if (newRayHit.getType() == HitResult.Type.MISS) {
                         totalRayDistance += lastHitPos.distanceTo(playerPos);
 
-                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayEnd, ChatFormatting.RED.getColor());
+                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayEnd, RaycastRenderer.color(ChatFormatting.RED));
                     } else {
                         Vec3 newRayHitPos = newRayHit.getLocation();
 
-                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayHitPos, ChatFormatting.BLUE.getColor());
+                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayHitPos, RaycastRenderer.color(ChatFormatting.BLUE));
 
                         double newRayLength = lastHitPos.distanceTo(newRayHitPos);
 
@@ -468,7 +468,7 @@ public class SoundPhysics {
         return newSoundPos;
     }
 
-    public static boolean isAmbientSound(ResourceLocation sound) {
+    public static boolean isAmbientSound(Identifier sound) {
         return AMBIENT_PATTERN.matcher(sound.toString()).matches();
     }
 
@@ -494,7 +494,7 @@ public class SoundPhysics {
         return new Vec3(x, y, z);
     }
 
-    private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, ResourceLocation sound) {
+    private static double calculateOcclusion(Vec3 soundPos, Vec3 playerPos, SoundSource category, Identifier sound) {
         if (SoundPhysicsMod.CONFIG.strictOcclusion.get()) {
             return Math.min(runOcclusion(soundPos, playerPos), SoundPhysicsMod.CONFIG.maxOcclusion.get());
         }
@@ -540,11 +540,11 @@ public class SoundPhysics {
             lastBlockPos = rayHit.getBlockPos();
 
             if (rayHit.getType() == HitResult.Type.MISS) {
-                RaycastRenderer.addOcclusionRay(rayOrigin, playerPos.add(0D, -0.1D, 0D), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F));
+                RaycastRenderer.addOcclusionRay(rayOrigin, playerPos.add(0D, -0.1D, 0D), Mth.hsvToArgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F, 0xFF));
                 break;
             }
 
-            RaycastRenderer.addOcclusionRay(rayOrigin, rayHit.getLocation(), Mth.hsvToRgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F));
+            RaycastRenderer.addOcclusionRay(rayOrigin, rayHit.getLocation(), Mth.hsvToArgb(1F / 3F * (1F - Math.min(1F, (float) occlusionAccumulation / 12F)), 1F, 1F, 0xFF));
 
             BlockPos blockHitPos = rayHit.getBlockPos();
             rayOrigin = rayHit.getLocation();
@@ -608,7 +608,7 @@ public class SoundPhysics {
     private static Vec3 getSharedAirspace(Vec3 soundPosition, Vec3 listenerPosition) {
         BlockHitResult finalRayHit = RaycastUtils.rayCast(getLevelProxy(), soundPosition, listenerPosition, null);
         if (finalRayHit.getType() == HitResult.Type.MISS) {
-            RaycastRenderer.addSoundBounceRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), ChatFormatting.WHITE.getColor());
+            RaycastRenderer.addSoundBounceRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), RaycastRenderer.color(ChatFormatting.WHITE));
             return soundPosition.subtract(listenerPosition);
         }
         return null;

@@ -3,12 +3,11 @@ package com.sonicether.soundphysics.config.blocksound;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.Optional;
 
 public class BlockIdDefinition extends BlockDefinition {
 
@@ -43,7 +42,7 @@ public class BlockIdDefinition extends BlockDefinition {
         if (!configString.contains(":")) {
             return null;
         }
-        ResourceLocation resourceLocation = ResourceLocation.tryParse(configString);
+        Identifier resourceLocation = Identifier.tryParse(configString);
         if (resourceLocation == null) {
             return null;
         }

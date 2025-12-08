@@ -1,24 +1,26 @@
 package com.sonicether.soundphysics.debug;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.sonicether.soundphysics.SoundPhysicsMod;
-import com.sonicether.soundphysics.utils.RenderTypeUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.debug.DebugRenderer;
+import net.minecraft.gizmos.GizmoProperties;
+import net.minecraft.gizmos.Gizmos;
+import net.minecraft.util.debug.DebugValueAccess;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RaycastRenderer {
+public class RaycastRenderer implements DebugRenderer.SimpleDebugRenderer {
 
     private static final List<Ray> rays = Collections.synchronizedList(new ArrayList<>());
     private static final Minecraft mc = Minecraft.getInstance();
 
-    public static void renderRays(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, double x, double y, double z) {
+    @Override
+    public void emitGizmos(double d, double e, double f, DebugValueAccess debugValueAccess, Frustum frustum, float g) {
         if (mc.level == null) {
             return;
         }
@@ -34,9 +36,22 @@ public class RaycastRenderer {
             rays.removeIf(ray -> (gameTime - ray.tickCreated) > ray.lifespan || (gameTime - ray.tickCreated) < 0L);
 
             for (Ray ray : rays) {
-                renderRay(ray, poseStack, bufferSource, x, y, z);
+                GizmoProperties line = Gizmos.line(ray.start, ray.end, ray.color);
+                line.persistForMillis(ray.lifespan * 50);
+                line.fadeOut();
+                if (ray.throughWalls) {
+                    line.setAlwaysOnTop();
+                }
             }
         }
+    }
+
+    public static int color(ChatFormatting color) {
+        Integer colorValue = color.getColor();
+        if (colorValue == null) {
+            return 0xFF000000;
+        }
+        return colorValue | 0xFF000000;
     }
 
     public static void addSoundBounceRay(Vec3 start, Vec3 end, int color) {
@@ -55,7 +70,7 @@ public class RaycastRenderer {
         addRay(start, end, color, true);
     }
 
-    public static void addRay(Vec3 start, Vec3 end, int color, boolean throughWalls) {
+    private static void addRay(Vec3 start, Vec3 end, int color, boolean throughWalls) {
         if (mc.player.position().distanceTo(start) > 32D && mc.player.position().distanceTo(end) > 32D) {
             return;
         }
@@ -65,45 +80,12 @@ public class RaycastRenderer {
         }
     }
 
-    public static void renderRay(Ray ray, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, double x, double y, double z) {
-        poseStack.pushPose();
-        int red = getRed(ray.color);
-        int green = getGreen(ray.color);
-        int blue = getBlue(ray.color);
-
-        VertexConsumer consumer;
-        if (ray.throughWalls) {
-            consumer = bufferSource.getBuffer(RenderTypeUtils.DEBUG_LINE_STRIP_SEETHROUGH);
-        } else {
-            consumer = bufferSource.getBuffer(RenderTypeUtils.DEBUG_LINE_STRIP);
-        }
-
-        Matrix4f matrix4f = poseStack.last().pose();
-
-        consumer.addVertex(matrix4f, (float) (ray.start.x - x), (float) (ray.start.y - y), (float) (ray.start.z - z)).setColor(red, green, blue, 255);
-        consumer.addVertex(matrix4f, (float) (ray.end.x - x), (float) (ray.end.y - y), (float) (ray.end.z - z)).setColor(red, green, blue, 255);
-
-        poseStack.popPose();
-    }
-
-    private static int getRed(int argb) {
-        return (argb >> 16) & 0xFF;
-    }
-
-    private static int getGreen(int argb) {
-        return (argb >> 8) & 0xFF;
-    }
-
-    private static int getBlue(int argb) {
-        return argb & 0xFF;
-    }
-
     private static class Ray {
         private final Vec3 start;
         private final Vec3 end;
         private final int color;
         private final long tickCreated;
-        private final long lifespan;
+        private final int lifespan;
         private final boolean throughWalls;
 
         public Ray(Vec3 start, Vec3 end, int color, boolean throughWalls) {

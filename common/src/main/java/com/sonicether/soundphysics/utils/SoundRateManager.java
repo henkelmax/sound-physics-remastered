@@ -2,7 +2,7 @@ package com.sonicether.soundphysics.utils;
 
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SoundRateManager {
 
     // Static map to store sound counts, shared across the application
-    private static final Map<ResourceLocation, Integer> soundCounts = new ConcurrentHashMap<>();
+    private static final Map<Identifier, Integer> soundCounts = new ConcurrentHashMap<>();
     private static boolean worldInitialized;
 
     private SoundRateManager() {
@@ -20,7 +20,7 @@ public class SoundRateManager {
      * @param sound the sound to increment
      * @return if the sound rate is above the limit
      */
-    public static boolean incrementAndCheckLimit(ResourceLocation sound) {
+    public static boolean incrementAndCheckLimit(Identifier sound) {
         int count = soundCounts.getOrDefault(sound, 0);
         int max = SoundPhysicsMod.SOUND_RATE_CONFIG.getMaxCount(sound);
         if (count >= max) {

@@ -1,7 +1,7 @@
 package com.sonicether.soundphysics;
 
 import com.sonicether.soundphysics.integration.voicechat.AudioChannel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -19,11 +19,11 @@ public class ReflectedAudio {
 
     private final double occlusion;
 
-    private final ResourceLocation sound;
+    private final Identifier sound;
 
     private int sharedAirspaces;
 
-    public ReflectedAudio(double occlusion, ResourceLocation sound) {
+    public ReflectedAudio(double occlusion, Identifier sound) {
         this.occlusion = occlusion;
         this.sound = sound;
         this.airspaceDirections = new LinkedList<>();

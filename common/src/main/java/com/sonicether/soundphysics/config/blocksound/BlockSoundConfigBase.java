@@ -134,7 +134,7 @@ public abstract class BlockSoundConfigBase extends CommentedPropertyConfig {
     }
 
     public static <T> boolean isTagIn(TagKey<T> tagKey, T entry) {
-        Optional<? extends Registry<?>> registryOptional = BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().location());
+        Optional<? extends Registry<?>> registryOptional = BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
         if (registryOptional.isPresent()) {
             if (tagKey.isFor(registryOptional.get().key())) {
                 Registry<T> registry = (Registry<T>) registryOptional.get();

@@ -1,10 +1,9 @@
 plugins {
     id 'net.neoforged.gradle.userdev' version "${neogradle_version}"
-    id 'net.neoforged.gradle.mixin' version "${neogradle_mixin_version}"
 }
 
 apply plugin: 'com.gradleup.shadow'
-apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'de.maxhenkel.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'mod-update'
 

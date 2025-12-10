@@ -21,6 +21,10 @@ public class DebugRendererMixin {
 
     @Inject(method = "refreshRendererList", at = @At("RETURN"))
     private void refreshRendererList(CallbackInfo ci) {
+        if (SoundPhysicsMod.CONFIG == null) {
+            return;
+        }
+        //TODO Check if this gets called when the config value changed
         if (SoundPhysicsMod.CONFIG.renderSoundBounces.get() || SoundPhysicsMod.CONFIG.renderOcclusion.get()) {
             renderers.add(new RaycastRenderer());
         }

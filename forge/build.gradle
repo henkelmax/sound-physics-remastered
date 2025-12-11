@@ -1,10 +1,9 @@
 plugins {
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
-    id 'org.spongepowered.mixin' version "${mixingradle_version}"
 }
 
 apply plugin: 'com.gradleup.shadow'
-apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'de.maxhenkel.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'mod-update'
 

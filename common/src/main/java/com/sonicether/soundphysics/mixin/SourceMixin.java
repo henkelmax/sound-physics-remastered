@@ -9,6 +9,7 @@ import org.lwjgl.openal.AL10;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -21,6 +22,7 @@ public class SourceMixin {
     @Final
     private int source;
 
+    @Unique
     private Vec3 pos;
 
     @Inject(method = "setSelfPosition", at = @At("HEAD"))
@@ -30,6 +32,9 @@ public class SourceMixin {
 
     @Inject(method = "play", at = @At("HEAD"))
     private void play(CallbackInfo ci) {
+        if (pos == null) {
+            return;
+        }
         SoundPhysics.onPlaySound(pos.x, pos.y, pos.z, source);
         Loggers.logALError("Sound play injector");
     }

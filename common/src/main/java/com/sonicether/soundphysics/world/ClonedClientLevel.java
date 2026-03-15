@@ -42,8 +42,8 @@ public class ClonedClientLevel implements ClientLevelProxy {
 
         for (int x = -range; x < range; x++) {
             for (int z = -range; z < range; z++) {
-                var chunkPos = new ChunkPos(originChunkPos.x + x, originChunkPos.z + z);
-                var chunk = cache.getChunk(chunkPos.x, chunkPos.z, false);
+                var chunkPos = new ChunkPos(originChunkPos.x() + x, originChunkPos.z() + z);
+                var chunk = cache.getChunk(chunkPos.x(), chunkPos.z(), false);
 
                 if (chunk == null) {
                     continue;

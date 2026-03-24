@@ -1,6 +1,5 @@
 package com.sonicether.soundphysics.integration;
-//TODO Add back
-/*
+
 import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import com.sonicether.soundphysics.config.blocksound.BlockDefinition;
@@ -285,4 +284,3 @@ public class ClothConfigIntegration {
     }
 
 }
-*/

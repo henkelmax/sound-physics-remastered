@@ -1,5 +1,5 @@
 plugins {
-    id 'net.neoforged.gradle.userdev' version "${neogradle_version}"
+    id 'net.neoforged.moddev' version "${moddevgradle_version}"
 }
 
 apply plugin: 'com.gradleup.shadow'
@@ -15,7 +15,8 @@ processResources {
                 'neoforge_dependency': neoforge_dependency,
                 'minecraft_version': minecraft_version,
                 'cloth_config_version': cloth_config_version,
-                'voicechat_api_version': voicechat_api_version
+                'voicechat_api_version': voicechat_api_version,
+                'minecraft_dependency': minecraft_dependency
     }
 }
 

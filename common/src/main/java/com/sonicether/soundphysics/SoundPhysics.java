@@ -632,37 +632,37 @@ public class SoundPhysics {
             EXTEfx.alFilterf(sendFilter0, EXTEfx.AL_LOWPASS_GAIN, sendGain0);
             EXTEfx.alFilterf(sendFilter0, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff0);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot0, 3, sendFilter0);
-            Loggers.logALError("Set environment filter0:");
+            Loggers.logALError("Set environment filter0");
         }
 
         if (maxAuxSends >= 3) {
             EXTEfx.alFilterf(sendFilter1, EXTEfx.AL_LOWPASS_GAIN, sendGain1);
             EXTEfx.alFilterf(sendFilter1, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff1);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot1, 2, sendFilter1);
-            Loggers.logALError("Set environment filter1:");
+            Loggers.logALError("Set environment filter1");
         }
 
         if (maxAuxSends >= 2) {
             EXTEfx.alFilterf(sendFilter2, EXTEfx.AL_LOWPASS_GAIN, sendGain2);
             EXTEfx.alFilterf(sendFilter2, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff2);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot2, 1, sendFilter2);
-            Loggers.logALError("Set environment filter2:");
+            Loggers.logALError("Set environment filter2");
         }
 
         if (maxAuxSends >= 1) {
             EXTEfx.alFilterf(sendFilter3, EXTEfx.AL_LOWPASS_GAIN, sendGain3);
             EXTEfx.alFilterf(sendFilter3, EXTEfx.AL_LOWPASS_GAINHF, sendCutoff3);
             AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, auxFXSlot3, 0, sendFilter3);
-            Loggers.logALError("Set environment filter3:");
+            Loggers.logALError("Set environment filter3");
         }
 
         EXTEfx.alFilterf(directFilter0, EXTEfx.AL_LOWPASS_GAIN, directGain);
         EXTEfx.alFilterf(directFilter0, EXTEfx.AL_LOWPASS_GAINHF, directCutoff);
         AL11.alSourcei(sourceID, EXTEfx.AL_DIRECT_FILTER, directFilter0);
-        Loggers.logALError("Set environment directFilter0:");
+        Loggers.logALError("Set environment directFilter0");
 
         AL11.alSourcef(sourceID, EXTEfx.AL_AIR_ABSORPTION_FACTOR, SoundPhysicsMod.CONFIG.airAbsorption.get());
-        Loggers.logALError("Set environment airAbsorption:");
+        Loggers.logALError("Set environment airAbsorption");
     }
 
     private static void setSoundPos(int sourceID, Vec3 pos) {
@@ -674,27 +674,27 @@ public class SoundPhysics {
      */
     protected static void setReverbParams(ReverbParams r, int auxFXSlot, int reverbSlot) {
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DENSITY, r.density);
-        Loggers.logALError("Error while assigning reverb density: " + r.density);
+        Loggers.logALError("Error while assigning reverb density " + r.density);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DIFFUSION, r.diffusion);
-        Loggers.logALError("Error while assigning reverb diffusion: " + r.diffusion);
+        Loggers.logALError("Error while assigning reverb diffusion " + r.diffusion);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_GAIN, r.gain);
-        Loggers.logALError("Error while assigning reverb gain: " + r.gain);
+        Loggers.logALError("Error while assigning reverb gain " + r.gain);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_GAINHF, r.gainHF);
-        Loggers.logALError("Error while assigning reverb gainHF: " + r.gainHF);
+        Loggers.logALError("Error while assigning reverb gainHF " + r.gainHF);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DECAY_TIME, r.decayTime);
-        Loggers.logALError("Error while assigning reverb decayTime: " + r.decayTime);
+        Loggers.logALError("Error while assigning reverb decayTime " + r.decayTime);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_DECAY_HFRATIO, r.decayHFRatio);
-        Loggers.logALError("Error while assigning reverb decayHFRatio: " + r.decayHFRatio);
+        Loggers.logALError("Error while assigning reverb decayHFRatio " + r.decayHFRatio);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_REFLECTIONS_GAIN, r.reflectionsGain);
-        Loggers.logALError("Error while assigning reverb reflectionsGain: " + r.reflectionsGain);
+        Loggers.logALError("Error while assigning reverb reflectionsGain " + r.reflectionsGain);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_LATE_REVERB_GAIN, r.lateReverbGain);
-        Loggers.logALError("Error while assigning reverb lateReverbGain: " + r.lateReverbGain);
+        Loggers.logALError("Error while assigning reverb lateReverbGain " + r.lateReverbGain);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_LATE_REVERB_DELAY, r.lateReverbDelay);
-        Loggers.logALError("Error while assigning reverb lateReverbDelay: " + r.lateReverbDelay);
+        Loggers.logALError("Error while assigning reverb lateReverbDelay " + r.lateReverbDelay);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_AIR_ABSORPTION_GAINHF, r.airAbsorptionGainHF);
-        Loggers.logALError("Error while assigning reverb airAbsorptionGainHF: " + r.airAbsorptionGainHF);
+        Loggers.logALError("Error while assigning reverb airAbsorptionGainHF " + r.airAbsorptionGainHF);
         EXTEfx.alEffectf(reverbSlot, EXTEfx.AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, r.roomRolloffFactor);
-        Loggers.logALError("Error while assigning reverb roomRolloffFactor: " + r.roomRolloffFactor);
+        Loggers.logALError("Error while assigning reverb roomRolloffFactor " + r.roomRolloffFactor);
 
         // Attach updated effect object
         EXTEfx.alAuxiliaryEffectSloti(auxFXSlot, EXTEfx.AL_EFFECTSLOT_EFFECT, reverbSlot);

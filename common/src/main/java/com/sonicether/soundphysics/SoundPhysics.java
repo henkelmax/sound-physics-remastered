@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.sonicether.soundphysics.utils.RaycastUtils;
 import com.sonicether.soundphysics.utils.SoundRateManager;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import org.joml.Vector3f;
@@ -21,7 +22,6 @@ import com.sonicether.soundphysics.profiling.TaskProfiler.TaskProfilerHandle;
 import com.sonicether.soundphysics.utils.LevelAccessUtils;
 import com.sonicether.soundphysics.world.ClientLevelProxy;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -250,7 +250,7 @@ public class SoundPhysics {
 
         // Direct sound occlusion
 
-        Vec3 playerPos = minecraft.gameRenderer.getMainCamera().position();
+        Vec3 playerPos = minecraft.gameRenderer.mainCamera().position();
         Vec3 normalToPlayer = playerPos.subtract(soundPos).normalize();
 
         BlockPos soundBlockPos = BlockPos.containing(soundPos);
@@ -325,7 +325,7 @@ public class SoundPhysics {
 
                 float totalRayDistance = (float) rayLength;
 
-                RaycastRenderer.addSoundBounceRay(soundPos, rayHit.getLocation(), RaycastRenderer.color(ChatFormatting.GREEN));
+                RaycastRenderer.addSoundBounceRay(soundPos, rayHit.getLocation(), RaycastRenderer.color(TextColor.GREEN));
 
                 Vec3 firstSharedAirspaceVector = getSharedAirspace(rayHit, playerPos);
                 if (firstSharedAirspaceVector != null) {
@@ -346,11 +346,11 @@ public class SoundPhysics {
                     if (newRayHit.getType() == HitResult.Type.MISS) {
                         totalRayDistance += lastHitPos.distanceTo(playerPos);
 
-                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayEnd, RaycastRenderer.color(ChatFormatting.RED));
+                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayEnd, RaycastRenderer.color(TextColor.RED));
                     } else {
                         Vec3 newRayHitPos = newRayHit.getLocation();
 
-                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayHitPos, RaycastRenderer.color(ChatFormatting.BLUE));
+                        RaycastRenderer.addSoundBounceRay(newRayStart, newRayHitPos, RaycastRenderer.color(TextColor.BLUE));
 
                         double newRayLength = lastHitPos.distanceTo(newRayHitPos);
 
@@ -608,7 +608,7 @@ public class SoundPhysics {
     private static Vec3 getSharedAirspace(Vec3 soundPosition, Vec3 listenerPosition) {
         BlockHitResult finalRayHit = RaycastUtils.rayCast(getLevelProxy(), soundPosition, listenerPosition, null);
         if (finalRayHit.getType() == HitResult.Type.MISS) {
-            RaycastRenderer.addSoundBounceRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), RaycastRenderer.color(ChatFormatting.WHITE));
+            RaycastRenderer.addSoundBounceRay(soundPosition, listenerPosition.add(0D, -0.1D, 0D), RaycastRenderer.color(TextColor.WHITE));
             return soundPosition.subtract(listenerPosition);
         }
         return null;

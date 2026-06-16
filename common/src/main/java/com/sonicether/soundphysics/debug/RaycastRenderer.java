@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.gizmos.GizmoProperties;
 import net.minecraft.gizmos.Gizmos;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.debug.DebugValueAccess;
 import net.minecraft.world.phys.Vec3;
 
@@ -46,12 +47,8 @@ public class RaycastRenderer implements DebugRenderer.SimpleDebugRenderer {
         }
     }
 
-    public static int color(ChatFormatting color) {
-        Integer colorValue = color.getColor();
-        if (colorValue == null) {
-            return 0xFF000000;
-        }
-        return colorValue | 0xFF000000;
+    public static int color(TextColor color) {
+        return color.getValue() | 0xFF000000;
     }
 
     public static void addSoundBounceRay(Vec3 start, Vec3 end, int color) {

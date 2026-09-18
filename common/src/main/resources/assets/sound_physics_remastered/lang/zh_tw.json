@@ -1,4 +1,7 @@
 {
+  "category.sound_physics_remastered.own_voice": "自己的聲音",
+  "category.sound_physics_remastered.own_voice.description": "你自己聲音的音量",
+
   "cloth_config.sound_physics_remastered.settings": "聲音物理設定",
 
   "cloth_config.sound_physics_remastered.category.general": "一般",
@@ -15,6 +18,8 @@
   "cloth_config.sound_physics_remastered.simple_voice_chat_hear_self.description": "使用 Simple Voice Chat 時啟用／停用聽見自己的回音。",
   "cloth_config.sound_physics_remastered.attenuation_factor": "衰減係數",
   "cloth_config.sound_physics_remastered.attenuation_factor.description": "影響聲音基於距離變得多安靜。數值越低表示遠處的聲音越大聲。此設定需要您處於單人遊戲或伺服器上已安裝模組。1.0 是物理上正確的值。",
+  "cloth_config.sound_physics_remastered.reverb_attenuation_distance": "混響衰減距離",
+  "cloth_config.sound_physics_remastered.reverb_attenuation_distance.description": "混響開始時的射線距離。\n0.0 停用混響衰減。",
   "cloth_config.sound_physics_remastered.reverb_gain": "混響增益",
   "cloth_config.sound_physics_remastered.reverb_gain.description": "模擬混響的音量。",
   "cloth_config.sound_physics_remastered.reverb_brightness": "混響亮度",

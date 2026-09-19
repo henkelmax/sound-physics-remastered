@@ -3,18 +3,14 @@ package com.sonicether.soundphysics.mixin;
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.ChannelAccess;
 import net.minecraft.client.sounds.SoundEngine;
-import net.minecraft.client.sounds.WeighedSoundEvents;
-import net.minecraft.resources.Identifier;
-import net.minecraft.sounds.SoundSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
@@ -30,9 +26,11 @@ public class SoundSystemMixin {
         SoundPhysics.init();
     }
 
-    @Inject(method = "play", at = @At(value = "FIELD", target = "Lnet/minecraft/client/sounds/SoundEngine;instanceBySource:Lcom/google/common/collect/Multimap;"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void play(SoundInstance soundInstance, CallbackInfoReturnable<SoundEngine.PlayResult> cir, WeighedSoundEvents weighedSoundEvents, Identifier resourceLocation, Sound sound, float f, float g, SoundSource soundSource) {
-        SoundPhysics.setLastSoundCategoryAndName(soundSource, soundInstance.getIdentifier());
+    @ModifyArg(method = "play", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;put(Ljava/lang/Object;Ljava/lang/Object;)Z"), index = 1)
+    private Object play(Object instance) {
+        SoundInstance soundInstance = (SoundInstance) instance;
+        SoundPhysics.setLastSoundCategoryAndName(soundInstance.getSource(), soundInstance.getIdentifier());
+        return instance;
     }
 
     @Inject(method = "tickInGameSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;isStopped()Z"), locals = LocalCapture.CAPTURE_FAILHARD)

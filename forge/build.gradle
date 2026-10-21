@@ -1,5 +1,4 @@
 plugins {
-    id 'net.minecraftforge.accesstransformers' version "${forge_accesstransformers_version}"
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
 }
 
@@ -9,6 +8,10 @@ apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'mod-update'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+minecraft {
+    useDefaultAccessTransformer()
+}
 
 processResources {
     filesMatching('**/*.toml') {

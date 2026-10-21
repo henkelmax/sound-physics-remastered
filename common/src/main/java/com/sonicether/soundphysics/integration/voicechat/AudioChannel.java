@@ -22,8 +22,10 @@ public class AudioChannel {
     }
 
     public void onSound(int source, @Nullable Vec3 soundPos, boolean auxOnly, @Nullable String category) {
+        float directGainScale = getDirectGainScale(auxOnly);
+
         if (soundPos == null) {
-            SoundPhysics.setDefaultEnvironment(source, auxOnly);
+            SoundPhysics.setDefaultEnvironment(source, directGainScale);
             return;
         }
 
@@ -33,16 +35,22 @@ public class AudioChannel {
             return;
         }
 
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, category == null ? VOICECHAT_SOUND : Identifier.fromNamespaceAndPath(VOICECHAT, category));
-
-        if (auxOnly) {
-            SoundPhysics.onPlayReverb(soundPos.x(), soundPos.y(), soundPos.z(), source);
-        } else {
-            SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
-        }
+        Identifier sound = category == null ? VOICECHAT_SOUND : Identifier.fromNamespaceAndPath(VOICECHAT, category);
+        SoundPhysics.processSound(source, soundPos.x(), soundPos.y(), soundPos.z(), SoundSource.MASTER, sound, directGainScale);
 
         lastUpdate = time;
         lastPos = soundPos;
+    }
+
+    /**
+     * The reference distance workaround doubles the gain of the direct sound.
+     * Minecraft caps it with the default <code>AL_MAX_GAIN</code> of 1, but voice chat doesn't, so it needs to be compensated.
+     */
+    private static float getDirectGainScale(boolean auxOnly) {
+        if (auxOnly) {
+            return 0F;
+        }
+        return SoundPhysics.hasReferenceDistanceBug() ? 0.5F : 1F;
     }
 
     public UUID getChannelId() {

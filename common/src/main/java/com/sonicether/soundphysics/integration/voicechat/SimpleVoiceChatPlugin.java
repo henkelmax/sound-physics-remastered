@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import de.maxhenkel.voicechat.api.events.*;
+import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.EXTThreadLocalContext;
 
 import com.sonicether.soundphysics.Loggers;
@@ -104,6 +105,10 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
 
         if (channelId == null) {
             return;
+        }
+
+        if (SoundPhysicsMod.CONFIG.enabled.get()) {
+            SoundPhysics.applyReferenceDistanceWorkaround(event.getSource(), AL10.alGetSourcef(event.getSource(), AL10.AL_MAX_DISTANCE));
         }
 
         boolean auxOnly = SoundPhysicsMod.CONFIG.hearSelf.get() && OWN_VOICE_ID.equals(channelId);

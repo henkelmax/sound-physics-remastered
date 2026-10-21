@@ -1,1 +1,2 @@
-- Added support for 26.1.2
+- Applied a proper fix for OpenAL reference distance issue in affected versions
+- Restored old linear attenuation by distance behavior

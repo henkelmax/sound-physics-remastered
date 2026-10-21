@@ -1,1 +1,2 @@
-- Updated to 1.21.11
+- Applied a proper fix for OpenAL reference distance issue in affected versions
+- Restored old linear attenuation by distance behavior

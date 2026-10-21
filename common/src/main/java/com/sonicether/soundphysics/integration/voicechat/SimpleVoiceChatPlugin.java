@@ -17,6 +17,7 @@ import com.sonicether.soundphysics.SoundPhysicsMod;
 import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.VoicechatApi;
+import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import net.minecraft.client.Minecraft;
@@ -120,7 +121,22 @@ public class SimpleVoiceChatPlugin implements VoicechatPlugin {
             audioChannels.put(channelId, audioChannel);
         }
 
-        audioChannel.onSound(event.getSource(), position == null ? null : new Vec3(position.getX(), position.getY(), position.getZ()), auxOnly, event.getCategory());
+        audioChannel.onSound(event.getSource(), position == null ? null : new Vec3(position.getX(), position.getY(), position.getZ()), getDirectGainScale(event.getVoicechat(), auxOnly), event.getCategory());
+    }
+
+    /**
+     * The reference distance workaround doubles the gain of the direct sound in voice chats normal audio type, which uses the linear distance model of OpenAL.
+     * Minecraft caps it with the default <code>AL_MAX_GAIN</code> of 1, but voice chat doesn't, so it needs to be compensated.
+     * The other audio types calculate the distance volume themselves.
+     */
+    private static float getDirectGainScale(VoicechatClientApi api, boolean auxOnly) {
+        if (auxOnly) {
+            return 0F;
+        }
+        if (SoundPhysics.hasReferenceDistanceBug() && api.getClientConfig().getString("audio_type", "NORMAL").equals("NORMAL")) {
+            return 0.5F;
+        }
+        return 1F;
     }
 
 }

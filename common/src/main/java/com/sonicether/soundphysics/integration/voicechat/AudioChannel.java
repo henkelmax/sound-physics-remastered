@@ -21,9 +21,7 @@ public class AudioChannel {
         this.channelId = channelId;
     }
 
-    public void onSound(int source, @Nullable Vec3 soundPos, boolean auxOnly, @Nullable String category) {
-        float directGainScale = getDirectGainScale(auxOnly);
-
+    public void onSound(int source, @Nullable Vec3 soundPos, float directGainScale, @Nullable String category) {
         if (soundPos == null) {
             SoundPhysics.setDefaultEnvironment(source, directGainScale);
             return;
@@ -40,17 +38,6 @@ public class AudioChannel {
 
         lastUpdate = time;
         lastPos = soundPos;
-    }
-
-    /**
-     * The reference distance workaround doubles the gain of the direct sound.
-     * Minecraft caps it with the default <code>AL_MAX_GAIN</code> of 1, but voice chat doesn't, so it needs to be compensated.
-     */
-    private static float getDirectGainScale(boolean auxOnly) {
-        if (auxOnly) {
-            return 0F;
-        }
-        return SoundPhysics.hasReferenceDistanceBug() ? 0.5F : 1F;
     }
 
     public UUID getChannelId() {

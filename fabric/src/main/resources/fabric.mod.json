@@ -46,7 +46,7 @@
   },
   "breaks": {
     "soundphysics": "*",
-    "voicechat": "<1.21-2.3.0"
+    "voicechat": "<1.21-2.4.11"
   },
   "suggests": {
     "modmenu": "*",

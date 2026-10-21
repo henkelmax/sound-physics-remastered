@@ -41,6 +41,7 @@ public class SoundPhysics {
 
     private static final Pattern AMBIENT_PATTERN = Pattern.compile("^[a-zA-Z0-9_\\-\\.]+:ambient\\..*$");
     private static final Pattern BLOCK_PATTERN = Pattern.compile(".*block..*");
+    private static final Pattern REFERENCE_DISTANCE_BUG_VERSION = Pattern.compile("ALSOFT 1\\.(22|23)\\.");
 
     private static int auxFXSlot0;
     private static int auxFXSlot1;
@@ -61,6 +62,8 @@ public class SoundPhysics {
 
     private static SoundSource lastSoundCategory;
     private static ResourceLocation lastSound;
+    @Nullable
+    private static Boolean referenceDistanceBug;
     private static int maxAuxSends;
 
     public static void init() {
@@ -152,6 +155,25 @@ public class SoundPhysics {
         syncReverbParams();
     }
 
+    /**
+     * OpenAL Soft 1.22.0 to 1.23.1 doesn't apply any reverb to sources with a reference distance of 0.
+     * See <a href="https://github.com/kcat/openal-soft/issues/943">https://github.com/kcat/openal-soft/issues/943</a>.
+     */
+    public static void applyReferenceDistanceWorkaround(int sourceID, float maxDistance) {
+        if (!hasReferenceDistanceBug()) {
+            return;
+        }
+        AL10.alSourcef(sourceID, AL10.AL_REFERENCE_DISTANCE, maxDistance / 2F);
+    }
+
+    public static boolean hasReferenceDistanceBug() {
+        if (referenceDistanceBug == null) {
+            String version = AL10.alGetString(AL10.AL_VERSION);
+            referenceDistanceBug = version != null && REFERENCE_DISTANCE_BUG_VERSION.matcher(version).find();
+        }
+        return referenceDistanceBug;
+    }
+
     public static void setLastSoundCategoryAndName(SoundSource sc, ResourceLocation id) {
         lastSoundCategory = sc;
         lastSound = id;
@@ -187,6 +209,17 @@ public class SoundPhysics {
      */
     @Nullable
     public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, boolean auxOnly) {
+        return processSound(source, posX, posY, posZ, category, sound, auxOnly ? 0F : 1F);
+    }
+
+    /**
+     * Processes the current sound
+     *
+     * @param directGainScale the factor to scale the gain of the direct sound with
+     * @return The new sound origin or null if it didn't change
+     */
+    @Nullable
+    public static Vec3 processSound(int source, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, float directGainScale) {
         if (!SoundPhysicsMod.CONFIG.enabled.get()) {
             return null;
         }
@@ -194,7 +227,7 @@ public class SoundPhysics {
         Loggers.logDebug("Playing sound with source id '{}', position x:{}, y:{}, z:{}, \tcategory: '{}' \tname: '{}'", source, posX, posY, posZ, category.toString(), sound);
 
         TaskProfilerHandle profile = profiler.profile();
-        @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, auxOnly);
+        @Nullable Vec3 newPos = evaluateEnvironment(source, posX, posY, posZ, category, sound, directGainScale);
         profile.finish();
 
         Loggers.logProfiling("Evaluated environment for sound {} in {} ms", sound, profile.getDuration());
@@ -204,44 +237,44 @@ public class SoundPhysics {
     }
 
     @Nullable
-    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, boolean auxOnly) {
+    private static Vec3 evaluateEnvironment(int sourceID, double posX, double posY, double posZ, SoundSource category, ResourceLocation sound, float directGainScale) {
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
 
         if (player == null || level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
-            setDefaultEnvironment(sourceID, auxOnly);
+            setDefaultEnvironment(sourceID, directGainScale);
             return null;
         }
         Vec3 soundPos = new Vec3(posX, posY, posZ);
         double distance = player.position().distanceTo(soundPos);
         if (distance > SoundPhysicsMod.CONFIG.maxSoundProcessingDistance.get()) {
             Loggers.logDebug("Sound {} is too far away from player ({} blocks)", sound, distance);
-            setDefaultEnvironment(sourceID, auxOnly);
+            setDefaultEnvironment(sourceID, directGainScale);
             return null;
         }
 
         if (!SoundPhysicsMod.CONFIG.updateMovingSounds.get()) {
             if (category == SoundSource.RECORDS) {
-                setDefaultEnvironment(sourceID, auxOnly);
+                setDefaultEnvironment(sourceID, directGainScale);
                 return null;
             }
         }
 
         if (!SoundRateManager.isWorldInitialized()) {
             Loggers.logDebug("Sound {} skipped because the world is not initialized yet", sound);
-            setDefaultEnvironment(sourceID, auxOnly);
+            setDefaultEnvironment(sourceID, directGainScale);
             return null;
         }
 
         if (SoundRateManager.incrementAndCheckLimit(sound)) {
             Loggers.logDebug("Sound {} skipped due to sound rate limit", sound);
-            setDefaultEnvironment(sourceID, auxOnly);
+            setDefaultEnvironment(sourceID, directGainScale);
             return null;
         }
 
         if (!SoundPhysicsMod.CONFIG.evaluateAmbientSounds.get() && isAmbientSound(sound)) {
             Loggers.logDebug("Sound {} skipped due to ambient sound evaluation option", sound);
-            setDefaultEnvironment(sourceID, auxOnly);
+            setDefaultEnvironment(sourceID, directGainScale);
             return null;
         }
 
@@ -262,7 +295,7 @@ public class SoundPhysics {
         double occlusionAccumulation = calculateOcclusion(soundPos, playerPos, category, sound);
 
         directCutoff = (float) Math.exp(-occlusionAccumulation * absorptionCoeff);
-        float directGain = auxOnly ? 0F : (float) Math.pow(directCutoff, 0.1D);
+        float directGain = directGainScale * (float) Math.pow(directCutoff, 0.1D);
 
         Loggers.logOcclusion("Direct cutoff: {}, direct gain: {}", directCutoff, directGain);
 
@@ -422,7 +455,7 @@ public class SoundPhysics {
         // Attempt to preserve directionality when airspace is shared by allowing some of the dry signal through but filtered
         float averageSharedAirspace = (sharedAirspaceWeight0 + sharedAirspaceWeight1 + sharedAirspaceWeight2 + sharedAirspaceWeight3) * 0.25F;
         directCutoff = Math.max((float) Math.pow(averageSharedAirspace, 0.5D) * 0.2F, directCutoff);
-        directGain = auxOnly ? 0F : (float) Math.pow(directCutoff, 0.1D);
+        directGain = directGainScale * (float) Math.pow(directCutoff, 0.1D);
 
         sendGain1 *= bounceReflectivityRatio[1];
 
@@ -615,11 +648,11 @@ public class SoundPhysics {
     }
 
     public static void setDefaultEnvironment(int sourceID) {
-        setDefaultEnvironment(sourceID, false);
+        setDefaultEnvironment(sourceID, 1F);
     }
 
-    public static void setDefaultEnvironment(int sourceID, boolean auxOnly) {
-        setEnvironment(sourceID, 0F, 0F, 0F, 0F, 1F, 1F, 1F, 1F, 1F, auxOnly ? 0F : 1F);
+    public static void setDefaultEnvironment(int sourceID, float directGain) {
+        setEnvironment(sourceID, 0F, 0F, 0F, 0F, 1F, 1F, 1F, 1F, 1F, directGain);
     }
 
     public static void setEnvironment(int sourceID, float sendGain0, float sendGain1, float sendGain2, float sendGain3, float sendCutoff0, float sendCutoff1, float sendCutoff2, float sendCutoff3, float directCutoff, float directGain) {

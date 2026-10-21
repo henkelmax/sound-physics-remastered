@@ -5,7 +5,6 @@ import com.sonicether.soundphysics.Loggers;
 import com.sonicether.soundphysics.SoundPhysics;
 import com.sonicether.soundphysics.SoundPhysicsMod;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.openal.AL10;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -49,7 +48,7 @@ public class SourceMixin {
 
     @Inject(method = "linearAttenuation", at = @At("RETURN"))
     private void linearAttenuation2(float attenuation, CallbackInfo ci) {
-        AL10.alSourcef(source, AL10.AL_REFERENCE_DISTANCE, attenuation / 2F);
+        SoundPhysics.applyReferenceDistanceWorkaround(source, attenuation);
     }
 
 }

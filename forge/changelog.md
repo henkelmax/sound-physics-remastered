@@ -1,1 +1,2 @@
-- Fixed direction evaluation being inaccurate at long distances
+- Applied a proper fix for OpenAL reference distance issue in affected versions
+- Restored old linear attenuation by distance behavior

@@ -241,7 +241,12 @@ public class SoundPhysics {
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
 
-        if (player == null || level == null || (posX == 0D && posY == 0D && posZ == 0D)) {
+        if (player == null || level == null) {
+            setDefaultEnvironment(sourceID, directGainScale);
+            return null;
+        }
+        if (AL10.alGetSourcei(sourceID, AL10.AL_SOURCE_RELATIVE) == AL10.AL_TRUE) {
+            Loggers.logDebug("Skipping relative sound {}", sound);
             setDefaultEnvironment(sourceID, directGainScale);
             return null;
         }

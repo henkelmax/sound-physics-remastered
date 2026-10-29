@@ -1,4 +1,7 @@
 {
+  "category.sound_physics_remastered.own_voice": "自己的声音",
+  "category.sound_physics_remastered.own_voice.description": "你自己声音的音量",
+
   "cloth_config.sound_physics_remastered.settings": "物理声效设置",
 
   "cloth_config.sound_physics_remastered.category.general": "一般",

@@ -26,7 +26,8 @@ public class SoundSystemMixin {
         SoundPhysics.init();
     }
 
-    @ModifyArg(method = "play", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;put(Ljava/lang/Object;Ljava/lang/Object;)Z"), index = 1)
+    // NeoForge split "play" off, so we also need to do it for "playWithoutEvent"
+    @ModifyArg(method = {"play", "playWithoutEvent"}, at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;put(Ljava/lang/Object;Ljava/lang/Object;)Z"), index = 1)
     private Object play(Object instance) {
         SoundInstance soundInstance = (SoundInstance) instance;
         SoundPhysics.setLastSoundCategoryAndName(soundInstance.getSource(), soundInstance.getIdentifier());
